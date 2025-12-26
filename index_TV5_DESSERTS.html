@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CHICKENZZ - TV5 POUTINES SALADES DESSERTS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;600;700&family=Oswald:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Barlow Condensed', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        :root {
+            --yellow: #FFC000;
+            --dark-bg: #111;
+        }
+
+        #viewport {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #screen {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            background: #0a0a0a;
+            box-shadow: 0 0 0 10000px #000;
+            display: grid;
+            grid-template-rows: 100px 1fr;
+            overflow: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: linear-gradient(180deg, #000 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+        }
+
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #fff;
+            object-fit: cover;
+        }
+
+        .top-brand h1 {
+            font-family: 'Anton';
+            font-size: 38px;
+            line-height: 1;
+        }
+
+        .top-brand h1 span {
+            color: var(--yellow);
+        }
+
+        .top-brand p {
+            font-family: 'Oswald';
+            font-size: 14px;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        .top-halal {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 192, 0, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 192, 0, 0.3);
+        }
+
+        .top-halal .ar {
+            font-size: 24px;
+            color: var(--yellow);
+        }
+
+        .top-halal .text {
+            font-family: 'Anton';
+            font-size: 18px;
+        }
+
+        /* Canvas Layout */
+        .main-canvas {
+            display: grid;
+            grid-template-columns: 1.3fr 0.9fr;
+            /* Left (Poutines) larger */
+            grid-template-rows: 1fr;
+            gap: 40px;
+            padding: 30px 50px 50px 50px;
+        }
+
+        /* LEFT PANEL: POUTINES */
+        .poutine-panel {
+            background: linear-gradient(135deg, rgba(255, 192, 0, 0.05) 0%, transparent 100%);
+            border: 1px solid rgba(255, 192, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--yellow);
+            padding-bottom: 10px;
+        }
+
+        .panel-title {
+            font-family: 'Anton';
+            font-size: 65px;
+            text-transform: uppercase;
+            line-height: 0.9;
+        }
+
+        .panel-title span {
+            color: var(--yellow);
+        }
+
+        .panel-subtitle {
+            font-family: 'Barlow Condensed';
+            font-size: 24px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        /* Poutine Grid */
+        .poutine-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            z-index: 2;
+        }
+
+        .poutine-item {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 5px solid var(--yellow);
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .p-info h3 {
+            font-family: 'Anton';
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .p-info p {
+            font-family: 'Barlow Condensed';
+            font-size: 20px;
+            color: #bbb;
+            line-height: 1;
+        }
+
+        .p-prices {
+            text-align: right;
+        }
+
+        .p-price-row {
+            display: flex;
+            gap: 15px;
+            align-items: baseline;
+            justify-content: flex-end;
+        }
+
+        .price-tag {
+            font-family: 'Anton';
+            font-size: 28px;
+            color: var(--yellow);
+        }
+
+        .size-label {
+            font-family: 'Oswald';
+            font-size: 16px;
+            color: #666;
+            margin-right: 5px;
+        }
+
+        .poutine-img-decor {
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 350px;
+            height: auto;
+            transform: rotate(-10deg);
+            z-index: 1;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+            opacity: 0.9;
+        }
+
+        /* RIGHT COLUMN: SALADS & DESSERTS */
+        .right-col {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .sub-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            z-index: 2;
+        }
+
+        .sub-title {
+            font-family: 'Anton';
+            font-size: 45px;
+            color: #fff;
+        }
+
+        .yellow-badge {
+            background: var(--yellow);
+            color: #000;
+            font-family: 'Anton';
+            font-size: 28px;
+            padding: 5px 15px;
+            border-radius: 8px;
+        }
+
+        /* LISTS */
+        .simple-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 2;
+        }
+
+        .simple-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .s-name {
+            font-family: 'Anton';
+            font-size: 26px;
+            color: #fff;
+        }
+
+        .s-detail {
+            font-family: 'Barlow Condensed';
+            font-size: 18px;
+            color: #aaa;
+        }
+
+        .s-price {
+            font-family: 'Anton';
+            font-size: 26px;
+            color: var(--yellow);
+        }
+
+        .decor-img {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 180px;
+            height: auto;
+            object-fit: contain;
+            opacity: 0.8;
+            transform: rotate(5deg);
+            z-index: 1;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+        }
+    </style>
+</head>
+
+<body>
+    <div id="viewport">
+        <div id="screen">
+            <!-- TOP BAR -->
+            <div class="top-bar">
+                <div class="top-left">
+                    <img src="assets/logo.jpg" alt="Chickenzz" class="top-logo">
+                    <div class="top-brand">
+                        <h1>FRIED <span>CHICKENZZ</span></h1>
+                        <p>BEST IN TOWN</p>
+                    </div>
+                </div>
+                <div class="top-halal"><span class="ar">حلال</span><span class="text">100% HALAL</span></div>
+            </div>
+
+            <div class="main-canvas">
+
+                <!-- POUTINES -->
+                <div class="poutine-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">NOS <span>POUTINES</span></div>
+                        <div class="panel-subtitle">Riz ou Frites, Sauce Fromagère, Gratiné Mozzarella</div>
+                    </div>
+
+                    <div class="poutine-grid">
+                        <div class="poutine-item">
+                            <div class="p-info">
+                                <h3>CLASSIC</h3>
+                                <p>Gratiné Mozzarella</p>
+                            </div>
+                            <div class="p-prices">
+                                <div class="p-price-row"><span class="size-label">M</span> <span
+                                        class="price-tag">8.90€</span></div>
+                                <div class="p-price-row"><span class="size-label">XL</span> <span
+                                        class="price-tag">12.90€</span></div>
+                            </div>
+                        </div>
+                        <div class="poutine-item">
+                            <div class="p-info">
+                                <h3>CHÈVRE MIEL</h3>
+                                <p>Tenders, Gratiné Chèvre-Miel</p>
+                            </div>
+                            <div class="p-prices">
+                                <div class="p-price-row"><span class="size-label">M</span> <span
+                                        class="price-tag">10.90€</span></div>
+                                <div class="p-price-row"><span class="size-label">XL</span> <span
+                                        class="price-tag">14.90€</span></div>
+                            </div>
+                        </div>
+                        <div class="poutine-item">
+                            <div class="p-info">
+                                <h3>BOURSIN</h3>
+                                <p>Cordon Bleu, Gratiné Boursin</p>
+                            </div>
+                            <div class="p-prices">
+                                <div class="p-price-row"><span class="size-label">M</span> <span
+                                        class="price-tag">10.90€</span></div>
+                                <div class="p-price-row"><span class="size-label">XL</span> <span
+                                        class="price-tag">14.90€</span></div>
+                            </div>
+                        </div>
+                        <div class="poutine-item">
+                            <div class="p-info">
+                                <h3>RACLETTE</h3>
+                                <p>Poulet Tikka, Gratiné Raclette</p>
+                            </div>
+                            <div class="p-prices">
+                                <div class="p-price-row"><span class="size-label">M</span> <span
+                                        class="price-tag">10.90€</span></div>
+                                <div class="p-price-row"><span class="size-label">XL</span> <span
+                                        class="price-tag">14.90€</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder Poutine Image if available in assets, else generic -->
+                    <img src="AssetsTv4/poutine.png" class="poutine-img-decor" onerror="this.style.display='none'">
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div class="right-col">
+
+                    <!-- SALADES -->
+                    <div class="sub-panel">
+                        <div class="sub-header">
+                            <div class="sub-title">NOS SALADES</div>
+                            <div class="yellow-badge">7.50€</div>
+                        </div>
+                        <div style="margin-bottom: 10px; color:#aaa; font-family:'Barlow Condensed'; font-size:18px;">
+                            Base : Légumes + Œuf</div>
+
+                        <div class="simple-list">
+                            <div class="simple-item"><span class="s-name">CÉSAR</span> <span
+                                    class="s-detail">(Poulet)</span></div>
+                            <div class="simple-item"><span class="s-name">NEMS</span> <span
+                                    class="s-detail">(Poulet)</span></div>
+                            <div class="simple-item"><span class="s-name">INDIENNE</span> <span class="s-detail">(P.
+                                    Tikka)</span></div>
+                            <div class="simple-item"><span class="s-name">THON</span> <span class="s-detail"></span>
+                            </div>
+                        </div>
+
+                        <img src="AssetsTv4/salad.png" class="decor-img" onerror="this.style.display='none'">
+                    </div>
+
+                    <!-- DESSERTS -->
+                    <div class="sub-panel">
+                        <div class="sub-header">
+                            <div class="sub-title">DESSERTS</div>
+                        </div>
+                        <div class="simple-list">
+                            <div class="simple-item">
+                                <div class="s-name">TIRAMISU</div>
+                                <div class="s-price">3.50€</div>
+                            </div>
+                            <div class="simple-item">
+                                <div class="s-name">TARTE AU DAIM</div>
+                                <div class="s-price">3.90€</div>
+                            </div>
+                            <div class="simple-item">
+                                <div class="s-name">PANINI NUTELLA</div>
+                                <div class="s-price">4.00€</div>
+                            </div>
+                        </div>
+                        <img src="AssetsTv4/dessert.png" class="decor-img" onerror="this.style.display='none'">
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        function lockAspectRatio() {
+            const screen = document.getElementById('screen');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const targetWidth = 1920;
+            const targetHeight = 1080;
+
+            const scaleX = windowWidth / targetWidth;
+            const scaleY = windowHeight / targetHeight;
+            const scale = Math.min(scaleX, scaleY);
+
+            screen.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            screen.style.left = '50%';
+            screen.style.top = '50%';
+        }
+        window.addEventListener('resize', lockAspectRatio);
+        window.addEventListener('load', lockAspectRatio);
+        lockAspectRatio();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHICKENZZ - BALANCED SCREEN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --yellow: #FFC000;
+            --dark: #080808;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* === 16:9 STRICT === */
+        #screen {
+            width: 1920px;
+            height: 1080px;
+            /* Fond noir uni + texture noise pour éviter le banding */
+            background: #0a0a0a;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* === TOP BAR (Logo + Brand + Halal) === */
+        .top-bar {
+            height: 80px;
+            background: linear-gradient(180deg, #000 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            flex-shrink: 0;
+        }
+
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fff;
+        }
+
+        .top-brand h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: 40px;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .top-brand h1 span {
+            color: var(--yellow);
+        }
+
+        .top-brand p {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            color: #666;
+            letter-spacing: 3px;
+        }
+
+        .top-halal {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 192, 0, 0.1);
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 192, 0, 0.3);
+        }
+
+        .top-halal .ar {
+            font-size: 28px;
+            color: var(--yellow);
+        }
+
+        .top-halal .text {
+            font-family: 'Anton';
+            font-size: 22px;
+            color: #fff;
+        }
+
+        /* === MAIN CONTENT (Tout l'espace) === */
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            padding: 20px 50px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* === VUE GLOBALE: 4 BUCKETS PLEIN ÉCRAN === */
+        .global-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 60px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .global-title span {
+            color: var(--yellow);
+        }
+
+        .buckets-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .bucket-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bucket-card img {
+            height: 220px;
+            object-fit: contain;
+            filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.8));
+            margin-bottom: 20px;
+        }
+
+        .bucket-card .price {
+            font-family: 'Anton', sans-serif;
+            font-size: 65px;
+            color: var(--yellow);
+            line-height: 1;
+        }
+
+        .bucket-card .name {
+            font-family: 'Anton', sans-serif;
+            font-size: 36px;
+            color: #fff;
+            margin-top: 5px;
+        }
+
+        .bucket-card .desc {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 22px;
+            color: #aaa;
+            text-align: center;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        /* === VUE SOLO: BUCKET HERO === */
+        .solo-layout {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .solo-info {
+            flex: 1;
+        }
+
+        .solo-info .name {
+            font-family: 'Anton', sans-serif;
+            font-size: 160px;
+            color: #fff;
+            line-height: 0.85;
+            margin-bottom: 30px;
+        }
+
+        .solo-info .list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .solo-info .item {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 48px;
+            color: #ddd;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .solo-info .item::before {
+            content: '✓';
+            color: var(--yellow);
+            font-size: 40px;
+        }
+
+        .solo-info .price {
+            font-family: 'Anton', sans-serif;
+            font-size: 140px;
+            color: var(--yellow);
+        }
+
+        .solo-image {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .solo-image img {
+            max-height: 500px;
+            object-fit: contain;
+            filter: drop-shadow(0 50px 80px rgba(0, 0, 0, 0.9));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* === BOTTOM BAR (Tex Mex + Extras) === */
+        .bottom-bar {
+            height: 260px;
+            background: linear-gradient(180deg, transparent 0%, #000 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            gap: 30px;
+            flex-shrink: 0;
+        }
+
+        .tex-mex-section {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .tex-mex-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .tex-mex-title span {
+            color: var(--yellow);
+        }
+
+        .tex-mex-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .tex-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .tex-item .n {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: #ccc;
+            text-transform: uppercase;
+        }
+
+        .tex-item .p {
+            font-family: 'Anton', sans-serif;
+            font-size: 22px;
+            color: var(--yellow);
+        }
+
+        .extras-section {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        .extra-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #111;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+
+        .extra-box img {
+            height: 50px;
+        }
+
+        .extra-box .info h4 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .extra-box .info p {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            color: #aaa;
+        }
+
+        .extra-box .info strong {
+            color: var(--yellow);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="screen">
+
+        <!-- === TOP BAR === -->
+        <div class="top-bar">
+            <div class="top-left">
+                <img src="assets/logo_new.jpg" alt="Chickenzz" class="top-logo">
+                <div class="top-brand">
+                    <h1>FRIED <span>CHICKENZZ</span></h1>
+                    <p>BEST IN TOWN</p>
+                </div>
+            </div>
+            <div class="top-halal">
+                <span class="ar">حلال</span>
+                <span class="text">100% HALAL</span>
+            </div>
+        </div>
+
+        <!-- === MAIN CONTENT === -->
+        <div class="main-content">
+
+            <!-- Global View -->
+            <div class="slide active" id="slide-global">
+                <div class="global-title">NOS <span>BUCKETS</span></div>
+                <div class="buckets-grid">
+                    <div class="bucket-card">
+                        <img src="assets/Bucket 1.png" alt="Bucket 1">
+                        <div class="price">7.90€</div>
+                        <div class="name">BUCKET 1</div>
+                        <div class="desc">3 Wings • 2 Tenders<br>Frites • Boisson</div>
+                    </div>
+                    <div class="bucket-card">
+                        <img src="assets/Bucket 2 et 3.png" alt="Bucket 2">
+                        <div class="price">9.90€</div>
+                        <div class="name">BUCKET 2</div>
+                        <div class="desc">5 Wings • 3 Tenders<br>Frites • Boisson</div>
+                    </div>
+                    <div class="bucket-card">
+                        <img src="assets/Bucket 2 et 3.png" alt="Bucket 3">
+                        <div class="price">18.90€</div>
+                        <div class="name">BUCKET 3</div>
+                        <div class="desc">7 Wings • 5 Tenders<br>4 Mozza • 2 Frites</div>
+                    </div>
+                    <div class="bucket-card">
+                        <img src="assets/Bucket 4.png" alt="Bucket 4">
+                        <div class="price">28.90€</div>
+                        <div class="name">BUCKET 4</div>
+                        <div class="desc">8 Tenders • 8 Wings<br>6 Mozza • 10 Rings</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solo Views -->
+            <div class="slide" id="slide-1">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 1</div>
+                        <div class="list">
+                            <div class="item">3 Wings</div>
+                            <div class="item">2 Tenders</div>
+                            <div class="item">Frites</div>
+                            <div class="item">Boisson</div>
+                        </div>
+                        <div class="price">7.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="assets/Bucket 1.png"></div>
+                </div>
+            </div>
+
+            <div class="slide" id="slide-2">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 2</div>
+                        <div class="list">
+                            <div class="item">5 Wings</div>
+                            <div class="item">3 Tenders</div>
+                            <div class="item">Frites</div>
+                            <div class="item">Boisson</div>
+                        </div>
+                        <div class="price">9.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="assets/Bucket 2 et 3.png"></div>
+                </div>
+            </div>
+
+            <div class="slide" id="slide-3">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 3</div>
+                        <div class="list">
+                            <div class="item">7 Wings</div>
+                            <div class="item">5 Tenders</div>
+                            <div class="item">4 Mozza Sticks</div>
+                            <div class="item">2 Frites • 2 Boissons</div>
+                        </div>
+                        <div class="price">18.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="assets/Bucket 2 et 3.png"></div>
+                </div>
+            </div>
+
+            <div class="slide" id="slide-4">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 4</div>
+                        <div class="list">
+                            <div class="item">8 Tenders</div>
+                            <div class="item">8 Wings</div>
+                            <div class="item">6 Mozza</div>
+                            <div class="item">10 Rings • 3 Frites</div>
+                        </div>
+                        <div class="price">28.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="assets/Bucket 4.png"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- === BOTTOM BAR === -->
+        <div class="bottom-bar">
+            <div class="tex-mex-section">
+                <div class="tex-mex-title">TEX <span>MEX</span></div>
+                <div class="tex-mex-grid">
+                    <div class="tex-item"><span class="n">Wings X5</span><span class="p">5€</span></div>
+                    <div class="tex-item"><span class="n">Tenders X5</span><span class="p">6€</span></div>
+                    <div class="tex-item"><span class="n">Nuggets X6</span><span class="p">5€</span></div>
+                    <div class="tex-item"><span class="n">Jalapenos X5</span><span class="p">5.50€</span></div>
+                    <div class="tex-item"><span class="n">Oignons X7</span><span class="p">5.50€</span></div>
+                    <div class="tex-item"><span class="n">Nems X5</span><span class="p">6€</span></div>
+                    <div class="tex-item"><span class="n">Mozza X6</span><span class="p">5€</span></div>
+                    <div class="tex-item"><span class="n">Camembert X6</span><span class="p">5€</span></div>
+                    <div class="tex-item"><span class="n">Chèvre X5</span><span class="p">6€</span></div>
+                    <div class="tex-item"><span class="n">King Prawn</span><span class="p">6.50€</span></div>
+                    <div class="tex-item"><span class="n">Samoussas</span><span class="p">4.50€</span></div>
+                </div>
+            </div>
+            <div class="extras-section">
+                <div class="extra-box">
+                    <img src="assets/Frites PNG.png">
+                    <div class="info">
+                        <h4>FRITES</h4>
+                        <p>M <strong>2.50€</strong> XL <strong>3.50€</strong></p>
+                    </div>
+                </div>
+                <div class="extra-box">
+                    <img src="assets/potatos.png">
+                    <div class="info">
+                        <h4>POTATOES</h4>
+                        <p>M <strong>3.50€</strong> XL <strong>4.50€</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function scale() {
+            const s = document.getElementById('screen');
+            const r = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            s.style.transform = `scale(${r})`;
+            s.style.transformOrigin = 'center center';
+        }
+        window.onresize = scale;
+        window.onload = scale;
+
+        const seq = ['slide-global', 'slide-1', 'slide-global', 'slide-2', 'slide-global', 'slide-3', 'slide-global', 'slide-4'];
+        let i = 0;
+        setInterval(() => {
+            document.getElementById(seq[i]).classList.remove('active');
+            i = (i + 1) % seq.length;
+            document.getElementById(seq[i]).classList.add('active');
+        }, 5000);
+    </script>
+
+</body>
+
+</html>

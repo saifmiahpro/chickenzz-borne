@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHICKENZZ - TV3 CALIBRATION MODE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #000;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            color: #fff;
+        }
+
+        #screen {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            background: #080808;
+            /* Grille stricte 3 colonnes pour 1920px */
+            display: grid;
+            grid-template-columns: 1050px 520px 350px;
+            grid-template-rows: 100%;
+            padding: 0;
+            gap: 0;
+            overflow: hidden;
+        }
+
+
+
+
+        /* === COL 1: BURGERS (55%) === */
+        .col-burgers {
+            grid-column: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #222;
+        }
+
+        .burger-slider {
+            height: 400px;
+            background: linear-gradient(135deg, rgba(255, 87, 34, 0.15), transparent);
+            border-bottom: 4px solid #FF5722;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #FF5722;
+            color: #fff;
+            padding: 8px 30px;
+            border-radius: 6px;
+            font-family: 'Anton';
+            font-size: 24px;
+            transform: skew(-10deg);
+            z-index: 20;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .slide-left {
+            width: 65%;
+            /* More space for horizontal layout */
+            display: flex;
+            flex-direction: row;
+            /* Side by side */
+            align-items: center;
+            /* Vertically centered */
+            gap: 30px;
+        }
+
+        .slide-title {
+            font-family: 'Anton';
+            font-size: 75px;
+            line-height: 0.9;
+            color: #fff;
+            text-transform: uppercase;
+            margin-bottom: 0px;
+            /* Removed margin */
+        }
+
+        .slide-title span {
+            color: #FF5722;
+        }
+
+        .slide-desc {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .sd-item {
+            font-size: 28px;
+            color: #ccc;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-left: 4px solid #FF5722;
+            padding-left: 10px;
+        }
+
+        .slide-center {
+            flex: 1;
+            /* Less space needed now */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide img {
+            height: 420px;
+            /* Bigger image */
+            filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.8));
+            transform: scale(1.15) translateY(10px);
+            animation: float 4s ease-in-out infinite;
+            margin-left: -100px;
+            /* Overlap with text/price */
+            z-index: 1;
+        }
+
+        .slide-left {
+            width: 80%;
+            position: relative;
+            z-index: 2;
+            /* Text on top */
+        }
+
+        .slide-price {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            font-size: 110px;
+            /* Huge price */
+            color: #FFC000;
+            line-height: 0.8;
+            margin-left: -20px;
+            margin-top: 10px;
+            transform: rotate(-5deg);
+            /* Stylish tilt */
+        }
+
+        .grid-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gh-title {
+            font-family: 'Anton';
+            font-size: 30px;
+            color: #444;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #222;
+        }
+
+        .burgers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
+            flex: 1;
+        }
+
+        .b-mini {
+            display: grid;
+            grid-template-columns: 210px 1fr;
+            /* Increased image space */
+            align-items: center;
+            /* No background, no border - Clean look */
+            border-radius: 8px;
+            padding: 0 10px;
+            overflow: visible;
+        }
+
+        /* INVERT ROW 2 (Items 3 and 4) to create checkerboard effect */
+        .burgers-grid>.b-mini:nth-child(3),
+        .burgers-grid>.b-mini:nth-child(4) {
+            grid-template-columns: 1fr 210px;
+            /* Swap columns */
+        }
+
+        .burgers-grid>.b-mini:nth-child(3) img,
+        .burgers-grid>.b-mini:nth-child(4) img {
+            grid-column: 2;
+            /* Image on right */
+            margin-left: 0;
+            margin-right: -20px;
+        }
+
+        .burgers-grid>.b-mini:nth-child(3) .bm-content,
+        .burgers-grid>.b-mini:nth-child(4) .bm-content {
+            grid-column: 1;
+            /* Content on left */
+            align-items: flex-end;
+            /* Align text to right to be close to image */
+            text-align: right;
+            padding-right: 15px;
+        }
+
+        .b-mini img {
+            height: 200px;
+            /* Bigger! */
+            width: 220px;
+            object-fit: contain;
+            margin-left: -30px;
+            filter: drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.6));
+            grid-row: 1;
+            grid-column: 1;
+            transition: transform 0.3s;
+        }
+
+        .bm-content {
+            grid-row: 1;
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .bm-name {
+            font-family: 'Anton';
+            font-size: 38px;
+            /* Slightly bigger */
+            line-height: 0.9;
+            color: #fff;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            transform: rotate(-3deg);
+            /* Dynamic tilt */
+            display: inline-block;
+        }
+
+        .bm-price {
+            font-family: 'Anton';
+            font-size: 42px;
+            color: #FFC000;
+            line-height: 1;
+            transform: rotate(-3deg);
+            /* Match tilt */
+            margin-top: 5px;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .b-mini.highlight {
+            background: radial-gradient(circle closest-side, rgba(255, 87, 34, 0.15), transparent);
+            border: none;
+        }
+
+
+        /* === COL 2: BOWLS (27%) === */
+        .col-bowls {
+            grid-column: 2;
+            background: #0d0d0d;
+            border-left: 2px solid #4CAF50;
+            border-right: 2px solid #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cb-header {
+            background: #4CAF50;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .cb-title {
+            font-family: 'Anton';
+            font-size: 45px;
+            color: #000;
+            line-height: 1;
+        }
+
+        .cb-sub {
+            font-family: 'Barlow Condensed';
+            font-weight: 800;
+            font-size: 22px;
+            color: #000;
+        }
+
+        .bowls-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bowl-row {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #222;
+            overflow: visible;
+            position: relative;
+        }
+
+        /* Overflow Visible for Controls */
+
+        .bowl-img {
+            width: 280px;
+            height: 100%;
+            object-fit: contain;
+            margin-right: -20px;
+            margin-left: -40px;
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.6));
+            transform-origin: center center;
+            cursor: pointer;
+        }
+
+        .bowl-info {
+            padding-right: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            z-index: 2;
+            padding-left: 10px;
+        }
+
+        .bi-name {
+            font-family: 'Anton';
+            font-size: 38px;
+            line-height: 0.9;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .bi-desc {
+            font-size: 20px;
+            color: #bbb;
+            line-height: 1.1;
+            margin-top: 5px;
+        }
+
+        .bi-price {
+            font-family: 'Anton';
+            font-size: 48px;
+            color: #4CAF50;
+            margin-top: 2px;
+        }
+
+        .bowl-row.chef-row {
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .bowl-row.chef-row .bi-name {
+            color: #4CAF50;
+        }
+
+
+        /* === COL 3: FRITES (18%) === */
+        .col-fries {
+            grid-column: 3;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cf-header {
+            background: #FFC000;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .cf-title {
+            font-family: 'Anton';
+            font-size: 35px;
+            color: #000;
+            line-height: 1;
+        }
+
+        .fries-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fry-row {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #333;
+            padding: 10px;
+        }
+
+        .fry-row img {
+            height: 120px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.6));
+        }
+
+        .fry-name {
+            font-family: 'Anton';
+            font-size: 30px;
+            color: #fff;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .fry-price {
+            font-family: 'Anton';
+            font-size: 38px;
+            color: #FFC000;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: scale(1.15) translateY(10px);
+            }
+
+            50% {
+                transform: scale(1.15) translateY(0px);
+            }
+        }
+
+        .bounce-wrap {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: float-bowl 5s ease-in-out infinite;
+        }
+
+        @keyframes float-bowl {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="screen">
+
+        <!-- BURGERS (No changes) -->
+        <div class="col-burgers">
+            <div class="burger-slider">
+                <div class="promo-badge">MENU +2€</div>
+                <div class="slide active" id="s1">
+                    <div class="slide-left">
+                        <div class="slide-title">Smash<br><span>Tower</span></div>
+                        <div class="slide-desc"><span class="sd-item">Triple Steak</span><span class="sd-item">Galette
+                                P.D.T</span><span class="sd-item">Bacon</span></div>
+                        <div class="slide-price">14.90€</div>
+                    </div>
+                    <div class="slide-center"><img src="AssetsTv3/smash_tower.png"></div>
+                </div>
+            </div>
+            <div class="grid-area">
+                <!-- Removed Title as requested -->
+                <div class="burgers-grid">
+                    <div class="b-mini highlight"><img src="AssetsTv3/smash_tower.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Smash Tower</div>
+                            <div class="bm-price">14.90€</div>
+                        </div>
+                    </div>
+                    <div class="b-mini"><img src="AssetsTv3/mega burger.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Le Méga</div>
+                            <div class="bm-price">13.00€</div>
+                        </div>
+                    </div>
+                    <div class="b-mini"><img src="AssetsTv3/delices_burger.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Le Délice</div>
+                            <div class="bm-price">11.50€</div>
+                        </div>
+                    </div>
+                    <div class="b-mini"><img src="AssetsTv3/chicken_cheese.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Bacon Fried Chicken</div>
+                            <div class="bm-price">8.50€</div>
+                        </div>
+                    </div>
+                    <div class="b-mini"><img src="AssetsTv3/double_cheese.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Double Smash</div>
+                            <div class="bm-price">7.00€</div>
+                        </div>
+                    </div>
+                    <div class="b-mini"><img src="AssetsTv3/cheeseburger.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Smash Burger</div>
+                            <div class="bm-price">5.50€</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOWLS (CALIBRATION MODE) -->
+        <div class="col-bowls">
+            <div class="cb-header">
+                <div class="cb-title">NOS BOWLS</div>
+                <div class="cb-sub">BOISSON +1.50€</div>
+            </div>
+
+            <div class="bowls-list">
+                <!-- CHEF -->
+                <div class="bowl-row chef-row">
+                    <div class="bounce-wrap" style="animation-delay: 0s;">
+                        <img src="AssetsTv3/chef bowl.png" class="bowl-img chef" id="img-chef"
+                            style="transform: scale(1.5);">
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bi-name">Chef Bowl</div>
+                        <div class="bi-desc">Avocat, Poulet, Fromage</div>
+                        <div class="bi-price">10.90€</div>
+                    </div>
+                </div>
+                <!-- HOT -->
+                <div class="bowl-row">
+                    <div class="bounce-wrap" style="animation-delay: 0.5s;">
+                        <img src="AssetsTv3/spicy bowl.png" class="bowl-img spicy" id="img-spicy"
+                            style="transform: scale(1.55) translateY(5px);">
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bi-name">Hot Bowl</div>
+                        <div class="bi-desc">Piment, Jalapenos, Riz</div>
+                        <div class="bi-price">10.90€</div>
+                    </div>
+                </div>
+                <!-- INDIAN -->
+                <div class="bowl-row">
+                    <div class="bounce-wrap" style="animation-delay: 1s;">
+                        <img src="AssetsTv3/indian bowl.png" class="bowl-img indian" id="img-indian"
+                            style="transform: scale(1.55) translateY(5px);">
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bi-name">Indian</div>
+                        <div class="bi-desc">Curry, Oignons Rouges</div>
+                        <div class="bi-price">9.90€</div>
+                    </div>
+                </div>
+                <!-- CROUSTY -->
+                <div class="bowl-row">
+                    <div class="bounce-wrap" style="animation-delay: 1.5s;">
+                        <img src="AssetsTv3/crousty bowl.png" class="bowl-img crousty" id="img-crousty"
+                            style="transform: scale(1.6) translateX(10px);">
+                    </div>
+                    <div class="bowl-info" style="padding-left: 30px;">
+                        <div class="bi-name">Crousty</div>
+                        <div class="bi-desc">Oignons Frits, Cheese</div>
+                        <div class="bi-price">9.90€</div>
+                    </div>
+                </div>
+                <!-- CLASSIQUE -->
+                <div class="bowl-row">
+                    <div class="bounce-wrap" style="animation-delay: 2s;">
+                        <img src="AssetsTv3/classique bowl.png" class="bowl-img classique" id="img-classique"
+                            style="transform: scale(1.3);">
+                    </div>
+                    <div class="bowl-info">
+                        <div class="bi-name">Classique</div>
+                        <div class="bi-desc">Tenders, Riz, Sauce</div>
+                        <div class="bi-price">8.90€</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FRITES (No changes) -->
+        <div class="col-fries">
+            <div class="cf-header">
+                <div class="cf-title">FRITES SPÉCIALES</div>
+            </div>
+            <div class="fries-list">
+                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png">
+                    <div class="fry-name">Bacon</div>
+                    <div class="fry-price">4.90€</div>
+                </div>
+                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png">
+                    <div class="fry-name">Lardon</div>
+                    <div class="fry-price">4.90€</div>
+                </div>
+                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png" style="filter:hue-rotate(-20deg);">
+                    <div class="fry-name">Boursin</div>
+                    <div class="fry-price">4.90€</div>
+                </div>
+                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png">
+                    <div class="fry-name">Cheddar</div>
+                    <div class="fry-price">3.90€</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CALIBRATION SCRIPT -->
+    <script>
+        function fitScreen() {
+            const s = document.getElementById('screen');
+            const r = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            s.style.transform = `translate(-50%,-50%) scale(${r})`;
+            s.style.left = '50%'; s.style.top = '50%';
+        }
+
+        // Slider Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function nextSlide() {
+            // Simple logic for 1 slide for now, but enabling structure
+            // If there were multiple:
+            // slides[currentSlide].classList.remove('active');
+            // currentSlide = (currentSlide + 1) % slides.length;
+            // slides[currentSlide].classList.add('active');
+        }
+
+        // Auto-run slider if more slides exist
+        if (slides.length > 1) {
+            setInterval(nextSlide, 5000);
+        }
+
+        window.onresize = fitScreen; window.onload = fitScreen; fitScreen();
+
+
+    </script>
+</body>
+
+</html>

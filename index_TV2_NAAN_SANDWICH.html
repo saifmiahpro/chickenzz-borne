@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHICKENZZ - TV2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --yellow: #FFC000;
+            --orange: #FF5722;
+        }
+
+        /* ANIMATIONS DYNAMIQUES */
+        @keyframes priceGlow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+                filter: brightness(1.2);
+            }
+        }
+
+        @keyframes pricePulse {
+
+            0%,
+            100% {
+                box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 8px 35px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        @keyframes textGlowGold {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 192, 0, 0.3);
+            }
+
+            50% {
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 192, 0, 0.5), 0 0 60px rgba(255, 192, 0, 0.3);
+            }
+        }
+
+        @keyframes textGlowOrange {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px rgba(255, 140, 0, 0.5), 0 0 20px rgba(255, 140, 0, 0.3);
+            }
+
+            50% {
+                text-shadow: 0 0 20px rgba(255, 140, 0, 0.8), 0 0 40px rgba(255, 140, 0, 0.5), 0 0 60px rgba(255, 140, 0, 0.3);
+            }
+        }
+
+        @keyframes textGlowRed {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px rgba(255, 68, 68, 0.5), 0 0 20px rgba(220, 50, 50, 0.3);
+            }
+
+            50% {
+                text-shadow: 0 0 20px rgba(255, 68, 68, 0.8), 0 0 40px rgba(220, 50, 50, 0.5), 0 0 60px rgba(220, 50, 50, 0.3);
+            }
+        }
+
+        @keyframes textGlowGreen {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px rgba(102, 187, 106, 0.5), 0 0 20px rgba(76, 175, 80, 0.3);
+            }
+
+            50% {
+                text-shadow: 0 0 20px rgba(102, 187, 106, 0.8), 0 0 40px rgba(76, 175, 80, 0.5), 0 0 60px rgba(76, 175, 80, 0.3);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(-50%, -55%);
+            }
+
+            50% {
+                transform: translate(-50%, -58%);
+            }
+        }
+
+        @keyframes borderGlow {
+
+            0%,
+            100% {
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+
+            50% {
+                border-color: rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        body {
+            background: #000;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            color: #fff;
+        }
+
+        #screen {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            background: #000;
+            display: grid;
+            grid-template-rows: 410px 670px;
+            overflow: hidden;
+        }
+
+        /* === HEADER === */
+        header {
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 4px solid var(--yellow);
+        }
+
+        .logo {
+            font-family: 'Anton';
+            font-size: 40px;
+        }
+
+        .logo span {
+            color: var(--yellow);
+        }
+
+        .title {
+            font-family: 'Anton';
+            font-size: 48px;
+            color: var(--yellow);
+        }
+
+        .halal {
+            font-size: 24px;
+            background: #333;
+            padding: 5px 20px;
+            border-radius: 5px;
+        }
+
+        /* === NAANS === */
+        .naans {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: #0a0a0a;
+            border-bottom: 2px solid #333;
+        }
+
+        .naan {
+            position: relative;
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 12px;
+        }
+
+        .naan:last-child {
+            border-right: none;
+        }
+
+        /* THEMES PAR NAAN - STYLISÉS */
+        .naan.royal {
+            background: url('AssetsTv2/bg_royal.png') center/cover, linear-gradient(180deg, rgba(255, 192, 0, 0.25) 0%, rgba(255, 192, 0, 0.05) 50%, #0a0a0a 100%);
+            border: 3px solid rgba(255, 192, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 192, 0, 0.3), inset 0 0 50px rgba(255, 192, 0, 0.1);
+        }
+
+        .naan.royal .naan-price {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC000 100%);
+            box-shadow: 0 5px 20px rgba(255, 192, 0, 0.5);
+            animation: priceGlow 2s ease-in-out infinite, pricePulse 2s ease-in-out infinite;
+        }
+
+        .naan.royal .naan-name {
+            color: #FFD700;
+            animation: textGlowGold 2.5s ease-in-out infinite;
+        }
+
+        .naan.royal .naan-text {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 192, 0, 0.3);
+        }
+
+        .naan.cheesy {
+            background: url('AssetsTv2/bg_cheesy.png') center/cover, linear-gradient(180deg, rgba(255, 140, 0, 0.25) 0%, rgba(255, 140, 0, 0.05) 50%, #0a0a0a 100%);
+            border: 3px solid rgba(255, 140, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 140, 0, 0.3), inset 0 0 50px rgba(255, 140, 0, 0.1);
+        }
+
+        .naan.cheesy .naan-price {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            box-shadow: 0 5px 20px rgba(255, 140, 0, 0.5);
+            animation: priceGlow 2s ease-in-out infinite 0.5s, pricePulse 2s ease-in-out infinite 0.5s;
+        }
+
+        .naan.cheesy .naan-name {
+            color: #FFA500;
+            animation: textGlowOrange 2.5s ease-in-out infinite 0.5s;
+        }
+
+        .naan.cheesy .naan-text {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 140, 0, 0.3);
+        }
+
+        .naan.spicy {
+            background: url('AssetsTv2/bg_spicy.png') center/cover, linear-gradient(180deg, rgba(220, 50, 50, 0.25) 0%, rgba(220, 50, 50, 0.05) 50%, #0a0a0a 100%);
+            border: 3px solid rgba(220, 50, 50, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(220, 50, 50, 0.3), inset 0 0 50px rgba(220, 50, 50, 0.1);
+        }
+
+        .naan.spicy .naan-price {
+            background: linear-gradient(135deg, #FF4444 0%, #DC3232 100%);
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(220, 50, 50, 0.5);
+            animation: priceGlow 2s ease-in-out infinite 1s, pricePulse 2s ease-in-out infinite 1s;
+        }
+
+        .naan.spicy .naan-name {
+            color: #FF4444;
+            animation: textGlowRed 2.5s ease-in-out infinite 1s;
+        }
+
+        .naan.spicy .naan-text {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(220, 50, 50, 0.3);
+        }
+
+        .naan.mexican {
+            background: url('AssetsTv2/bg_mexican.png') center/cover, linear-gradient(180deg, rgba(76, 175, 80, 0.25) 0%, rgba(76, 175, 80, 0.05) 50%, #0a0a0a 100%);
+            border: 3px solid rgba(76, 175, 80, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.3), inset 0 0 50px rgba(76, 175, 80, 0.1);
+        }
+
+        .naan.mexican .naan-price {
+            background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.5);
+            animation: priceGlow 2s ease-in-out infinite 1.5s, pricePulse 2s ease-in-out infinite 1.5s;
+        }
+
+        .naan.mexican .naan-name {
+            color: #66BB6A;
+            animation: textGlowGreen 2.5s ease-in-out infinite 1.5s;
+        }
+
+        .naan.mexican .naan-text {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .naan img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -55%);
+            height: 200px;
+            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.9));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .naan-text {
+            z-index: 2;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(20, 20, 20, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        .naan-name {
+            font-family: 'Anton';
+            font-size: 52px;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .naan-desc {
+            font-size: 20px;
+            color: #fff;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+
+        .naan-price {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'Anton';
+            font-size: 48px;
+            color: #000;
+            background: var(--yellow);
+            padding: 5px 18px;
+            border-radius: 12px;
+            transform: rotate(3deg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* === BOTTOM === */
+        .bottom {
+            display: grid;
+            grid-template-columns: 1200px 720px;
+        }
+
+        /* SANDWICHS */
+        .sandwichs {
+            background: #0d0d0d;
+            border-right: 4px solid var(--yellow);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sec-title {
+            font-family: 'Anton';
+            font-size: 50px;
+            border-bottom: 3px solid var(--yellow);
+            margin-bottom: 15px;
+        }
+
+        .sec-title span {
+            color: var(--yellow);
+        }
+
+        .sand-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .box {
+            background: #151515;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .box-title {
+            font-size: 26px;
+            color: #888;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .pains-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .pain {
+            background: #222;
+            font-size: 28px;
+            text-align: center;
+            padding: 15px 5px;
+            border-radius: 8px;
+        }
+
+        .pain.special {
+            background: rgba(255, 192, 0, 0.15);
+            color: var(--yellow);
+            border: 2px solid var(--yellow);
+            font-weight: bold;
+        }
+
+        .formulas {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .formula {
+            flex: 1;
+            background: #1a1a1a;
+            border-left: 8px solid var(--yellow);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 10px;
+        }
+
+        .f-name {
+            font-family: 'Anton';
+            font-size: 50px;
+        }
+
+        .f-sub {
+            font-size: 28px;
+            color: #bbb;
+            margin-left: 15px;
+        }
+
+        .f-price {
+            font-family: 'Anton';
+            font-size: 60px;
+            color: var(--yellow);
+        }
+
+        .viandes-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viandes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .viande {
+            background: #222;
+            font-size: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .supps {
+            margin-top: 12px;
+            background: #111;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 28px;
+            color: #bbb;
+        }
+
+        .supps b {
+            color: #fff;
+        }
+
+        /* ASSIETTES */
+        .assiettes {
+            background: #0a0a0a;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sec-title.orange {
+            border-color: var(--orange);
+        }
+
+        .sec-title.orange span {
+            color: var(--orange);
+        }
+
+        .ass-comp {
+            background: #1a1a1a;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 26px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        /* ASSIETTES STYLE IDENTIQUE AUX NAANS */
+        .ass-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .ass-card {
+            position: relative;
+            background: #0a0a0a;
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 12px;
+            overflow: hidden;
+        }
+
+        .ass-card img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -55%);
+            height: 250px;
+            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.9));
+        }
+
+        .ass-card .ass-text {
+            z-index: 2;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .ass-card .ass-name {
+            font-family: 'Anton';
+            font-size: 44px;
+            line-height: 1.1;
+        }
+
+        .ass-card .ass-price-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'Anton';
+            font-size: 44px;
+            color: #000;
+            background: var(--orange);
+            padding: 4px 14px;
+            border-radius: 8px;
+        }
+
+        .ass-opts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .opt {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .opt.menu {
+            border: 2px solid var(--orange);
+        }
+
+        .opt-label {
+            font-size: 24px;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .opt-price {
+            font-family: 'Anton';
+            font-size: 40px;
+            color: #fff;
+        }
+
+        .opt.menu .opt-price {
+            color: var(--orange);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="screen">
+
+
+
+        <div class="naans">
+            <div class="naan royal">
+                <div class="naan-price">9.00€</div>
+                <img src="AssetsTv2/Royal.png">
+                <div class="naan-text">
+                    <div class="naan-name">ROYAL</div>
+                    <div class="naan-desc">Tikka • Tenders • Cheddar</div>
+                </div>
+            </div>
+            <div class="naan cheesy">
+                <div class="naan-price">10.50€</div>
+                <img src="AssetsTv2/cheesy.png">
+                <div class="naan-text">
+                    <div class="naan-name">CHEESY</div>
+                    <div class="naan-desc">Steak • Cordon Bleu • Raclette</div>
+                </div>
+            </div>
+            <div class="naan spicy">
+                <div class="naan-price">9.50€</div>
+                <img src="AssetsTv2/spicy.png">
+                <div class="naan-text">
+                    <div class="naan-name">SPICY</div>
+                    <div class="naan-desc">Tikka • Kefta • Algérienne</div>
+                </div>
+            </div>
+            <div class="naan mexican">
+                <div class="naan-price">8.90€</div>
+                <img src="AssetsTv2/Mexicain.png">
+                <div class="naan-text">
+                    <div class="naan-name">MEXICAN</div>
+                    <div class="naan-desc">Tikka • Tenders • Chili</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom">
+
+            <div class="sandwichs">
+                <div class="sec-title">NOS <span>SANDWICHS</span></div>
+
+                <div class="sand-grid">
+                    <div class="col">
+                        <div class="box">
+                            <div class="box-title">CHOIX DU PAIN</div>
+                            <div class="pains-grid">
+                                <div class="pain">Naan Nature</div>
+                                <div class="pain special">Naan Fromage +2€</div>
+                                <div class="pain">Pain Rond</div>
+                                <div class="pain">Galette</div>
+                            </div>
+                        </div>
+
+                        <div class="formulas">
+                            <div class="formula">
+                                <div><span class="f-name">CLASSIQUE</span> <span class="f-sub">1 Viande</span></div>
+                                <div class="f-price">6.90€</div>
+                            </div>
+                            <div class="formula">
+                                <div><span class="f-name">MÉGA</span> <span class="f-sub">1 Viande</span></div>
+                                <div class="f-price">10.50€</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="box viandes-box">
+                            <div class="box-title" style="color:var(--yellow)">CHOIX VIANDES</div>
+                            <div class="viandes-grid">
+                                <div class="viande">Cordon Bleu</div>
+                                <div class="viande">Poulet Tikka</div>
+                                <div class="viande">Kebab</div>
+                                <div class="viande">Steak</div>
+                                <div class="viande">Kefta</div>
+                                <div class="viande">Tenders</div>
+                                <div class="viande">Falafel</div>
+                                <div class="viande">Merguez</div>
+                            </div>
+                        </div>
+                        <div class="supps">
+                            Viande <b>+1.50€</b> • Fromage <b>+1.50€</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="assiettes">
+                <div class="sec-title orange">NOS <span>ASSIETTES</span></div>
+
+                <div class="ass-comp">Salade • Tomate • Oignon • Poivrons + Pain inclus</div>
+
+                <div class="ass-grid">
+                    <div class="ass-card">
+                        <div class="ass-price-badge">10.00€</div>
+                        <img src="AssetsTv3/assiette 1 viande.png">
+                        <div class="ass-text">
+                            <div class="ass-name">1 VIANDE</div>
+                        </div>
+                    </div>
+                    <div class="ass-card">
+                        <div class="ass-price-badge">13.50€</div>
+                        <img src="AssetsTv3/Assiette 3 viandes.png">
+                        <div class="ass-text">
+                            <div class="ass-name">3 VIANDES</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ass-opts">
+                    <div class="opt menu">
+                        <div class="opt-label">MENU COMPLET</div>
+                        <div class="opt-price">+1.00€</div>
+                    </div>
+                    <div class="opt">
+                        <div class="opt-label">NAAN FROMAGE</div>
+                        <div class="opt-price">+1.00€</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function lockAspectRatio() {
+            const screen = document.getElementById('screen');
+            const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            screen.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            screen.style.left = '50%';
+            screen.style.top = '50%';
+        }
+        window.addEventListener('resize', lockAspectRatio);
+        window.addEventListener('load', lockAspectRatio);
+        lockAspectRatio();
+    </script>
+</body>
+
+</html>
