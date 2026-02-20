@@ -1972,14 +1972,12 @@
         }
 
         function adminChoosePrinter() {
-            // Ouvre la boîte de dialogue système d'impression
-            // où on peut choisir le périphérique
-            const ticketDiv = document.getElementById('ticket-print');
-            ticketDiv.innerHTML = `<div style="text-align:center;">
-                <div style="font-weight:bold;">Choisissez votre imprimante dans la boîte de dialogue</div>
-            </div>`;
-            // En mode non-kiosk, window.print() ouvre le sélecteur d'imprimante
-            window.print();
+            // Ouvre les paramètres imprimantes Windows
+            // ms-settings:printers fonctionne sur Windows 10/11
+            window.open('ms-settings:printers', '_blank');
+            // Fallback : ouvrir le panneau de configuration classique
+            // Si ms-settings ne marche pas, l'utilisateur peut aussi
+            // aller dans Paramètres > Imprimantes manuellement
         }
 
         function adminCloseKiosk() {
