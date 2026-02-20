@@ -863,13 +863,7 @@
 
         /* ============ IMPRESSION ============ */
         @media print {
-            body>*:not(#print-frame) {
-                display: none !important;
-            }
-        }
-
-        #print-frame {
-            display: none;
+            body { display: none !important; }
         }
     </style>
 </head>
@@ -1026,9 +1020,6 @@
     <!-- Toast de notification -->
     <div id="toast">Ajouté au panier !</div>
 
-    <!-- Iframe caché pour l'impression -->
-    <iframe id="print-frame" name="print-frame" style="position:absolute;width:0;height:0;border:none;"></iframe>
-
     <!-- ============ MODAL ADMIN (5 clics secrets) ============ -->
     <div class="modal" id="admin-modal" style="justify-content: center; align-items: center; z-index: 5000;">
         <div
@@ -1038,19 +1029,15 @@
                 ⚙️ MENU ADMIN</h2>
             <div style="display: flex; flex-direction: column; gap: 20px;">
                 <button onclick="adminTestPrint()"
-                    style="background: var(--glass); border: 2px solid var(--border); border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(18px, 2.5vw, 26px); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
-                    🖨️ IMPRIMER UN TICKET TEST
-                </button>
-                <button onclick="adminChoosePrinter()"
-                    style="background: var(--glass); border: 2px solid var(--border); border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(18px, 2.5vw, 26px); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
-                    🔧 CHOISIR IMPRIMANTE
+                    style="background: var(--glass); border: 2px solid var(--border); border-radius: 15px; padding: 25px; font-family: 'Anton', sans-serif; font-size: clamp(20px, 3vw, 30px); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    🖨️ IMPRIMER TICKET TEST
                 </button>
                 <button onclick="adminCloseKiosk()"
-                    style="background: rgba(255,51,51,0.1); border: 2px solid #ff3333; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(18px, 2.5vw, 26px); color: #ff3333; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    style="background: rgba(255,51,51,0.15); border: 2px solid #ff3333; border-radius: 15px; padding: 25px; font-family: 'Anton', sans-serif; font-size: clamp(20px, 3vw, 30px); color: #ff3333; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
                     ✕ FERMER LA BORNE
                 </button>
                 <button onclick="closeAdminModal()"
-                    style="background: transparent; border: 2px solid var(--border); border-radius: 15px; padding: 15px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2vw, 22px); color: var(--text-dim); cursor: pointer; margin-top: 10px;">
+                    style="background: transparent; border: 2px solid var(--border); border-radius: 15px; padding: 18px; font-family: 'Anton', sans-serif; font-size: clamp(18px, 2.5vw, 26px); color: var(--text-dim); cursor: pointer; margin-top: 15px;">
                     ← RETOUR
                 </button>
             </div>
@@ -1820,85 +1807,220 @@
         }
 
         function printTicket(htmlContent) {
-            const frame = document.getElementById('print-frame');
-            const doc = frame.contentWindow || frame.contentDocument;
-            const printDoc = doc.document || doc;
+            const printWindow = window.open('', 'PRINT_TICKET', 'width=400,height=800');
 
-            printDoc.open();
-            printDoc.write(`<!DOCTYPE html>
-            <html><head><style>
-                body {
-                    font-family: 'Courier New', monospace;
-                    font-size: 12px;
-                    color: black;
-                    background: white;
-                    width: 80mm;
-                    margin: 0;
-                    padding: 5px;
+            if (!printWindow) {
+                showToast('Erreur: popup bloqué');
+                return;
+            }
+
+            const ticketStyles = `
+                @page { size: 80mm auto; margin: 0; }
+                @media print {
+                    body { margin: 0; }
+                    .no-print { display: none !important; }
                 }
-                .ticket-section { margin-bottom: 40px; }
-                .center { text-align: center; }
-                .bold { font-weight: bold; }
-                .big { font-size: 18px; }
-                .medium { font-size: 16px; }
-                .small { font-size: 12px; }
-                .separator { border-top: 1px dashed black; margin: 8px 0; }
-                .line { display: flex; justify-content: space-between; }
-                .indent { margin-left: 15px; }
-                .mt { margin-top: 10px; }
-            </style></head><body>${htmlContent}</body></html>`);
-            printDoc.close();
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body {
+                    font-family: 'Courier New', Courier, monospace;
+                    font-size: 12px;
+                    color: #000;
+                    background: #fff;
+                    width: 72mm;
+                    margin: 0 auto;
+                    padding: 3mm;
+                    line-height: 1.3;
+                }
 
-            // Attendre que le contenu soit chargé avant d'imprimer
-            setTimeout(() => {
-                frame.contentWindow.focus();
-                frame.contentWindow.print();
-            }, 300);
+                /* ===== TICKET CLIENT ===== */
+                .ticket { margin-bottom: 15mm; page-break-after: always; }
+                .ticket:last-child { page-break-after: avoid; }
+
+                .header { text-align: center; margin-bottom: 4mm; }
+                .logo { font-size: 22px; font-weight: bold; letter-spacing: 2px; }
+                .address { font-size: 10px; margin-top: 2mm; }
+
+                .order-info {
+                    background: #000;
+                    color: #fff;
+                    padding: 3mm;
+                    text-align: center;
+                    margin: 3mm 0;
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+                .order-number { font-size: 28px; }
+                .order-type { font-size: 16px; margin-top: 1mm; }
+
+                .datetime { text-align: center; font-size: 11px; margin: 2mm 0; }
+
+                .divider { border-top: 1px dashed #000; margin: 3mm 0; }
+                .divider-bold { border-top: 2px solid #000; margin: 3mm 0; }
+
+                .items { margin: 3mm 0; }
+                .item { margin-bottom: 2mm; }
+                .item-line { display: flex; justify-content: space-between; font-size: 13px; }
+                .item-name { font-weight: bold; }
+                .item-details { font-size: 11px; padding-left: 4mm; color: #333; }
+
+                .totals { margin: 3mm 0; }
+                .total-line { display: flex; justify-content: space-between; font-size: 12px; margin: 1mm 0; }
+                .total-final { font-size: 18px; font-weight: bold; margin-top: 2mm; }
+
+                .footer { text-align: center; margin-top: 4mm; font-size: 10px; }
+                .legal { font-size: 9px; margin-top: 3mm; color: #555; }
+                .merci { font-size: 14px; font-weight: bold; margin: 3mm 0; }
+
+                /* ===== TICKET CUISINE ===== */
+                .kitchen { background: #fff; }
+                .kitchen .header-kitchen {
+                    border: 3px solid #000;
+                    padding: 4mm;
+                    text-align: center;
+                    margin-bottom: 4mm;
+                }
+                .kitchen .order-big { font-size: 36px; font-weight: bold; }
+                .kitchen .client-name { font-size: 24px; font-weight: bold; margin-top: 2mm; }
+                .kitchen .order-type-big {
+                    font-size: 20px;
+                    font-weight: bold;
+                    padding: 2mm;
+                    margin-top: 2mm;
+                    background: #000;
+                    color: #fff;
+                }
+
+                .kitchen .item-kitchen {
+                    border: 2px solid #000;
+                    padding: 3mm;
+                    margin-bottom: 3mm;
+                }
+                .kitchen .item-qty { font-size: 24px; font-weight: bold; }
+                .kitchen .item-title { font-size: 18px; font-weight: bold; text-transform: uppercase; }
+                .kitchen .item-custom {
+                    font-size: 14px;
+                    padding: 2mm 0 0 4mm;
+                    border-top: 1px dashed #000;
+                    margin-top: 2mm;
+                }
+                .kitchen .item-custom div { margin: 1mm 0; }
+
+                .kitchen .time-stamp {
+                    text-align: center;
+                    font-size: 14px;
+                    margin-top: 4mm;
+                    padding-top: 3mm;
+                    border-top: 2px solid #000;
+                }
+            `;
+
+            const ticketPage = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ticket</title><style>' +
+                ticketStyles + '</style></head><body>' + htmlContent + '</body></html>';
+
+            printWindow.document.write(ticketPage);
+            printWindow.document.close();
+
+            printWindow.onload = function() {
+                setTimeout(function() {
+                    printWindow.print();
+                    setTimeout(function() { printWindow.close(); }, 3000);
+                }, 500);
+            };
         }
 
         function generateTicketHTML() {
             const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tva = total * 0.10; // TVA 10% restauration
+            const ht = total - tva;
             const mode = state.mode === 'sur_place' ? 'SUR PLACE' : 'À EMPORTER';
-            const date = new Date().toLocaleString('fr-FR');
+            const now = new Date();
+            const date = now.toLocaleDateString('fr-FR');
+            const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            const orderNum = String(now.getHours() * 100 + now.getMinutes()).padStart(4, '0');
 
-            // Ticket Client
-            let html = `<div class="ticket-section">
-                <div class="center bold">================================</div>
-                <div class="center bold big">CHICKENZZ</div>
-                <div class="center bold">================================</div>
-                <div class="center big mt">CLIENT(E) : ${state.prenom.toUpperCase()}</div>
-                <div class="center">${mode}</div>
-                <div class="separator"></div>`;
+            // ========== TICKET CLIENT ==========
+            let html = `<div class="ticket">
+                <div class="header">
+                    <div class="logo">CHICKENZZ</div>
+                    <div class="address">
+                        123 Rue du Restaurant<br>
+                        75000 Paris<br>
+                        Tél: 01 23 45 67 89
+                    </div>
+                </div>
+
+                <div class="order-info">
+                    <div>COMMANDE</div>
+                    <div class="order-number">#${orderNum}</div>
+                    <div class="order-type">${mode}</div>
+                </div>
+
+                <div class="datetime">${date} à ${time}</div>
+                <div class="divider"></div>
+
+                <div class="items">`;
 
             state.cart.forEach(item => {
-                html += `<div class="line"><span>${item.quantity}x ${item.name}</span><span>${(item.price * item.quantity).toFixed(2)}€</span></div>`;
+                html += `<div class="item">
+                    <div class="item-line">
+                        <span class="item-name">${item.quantity}x ${item.name}</span>
+                        <span>${(item.price * item.quantity).toFixed(2)}€</span>
+                    </div>`;
+                if (item.details) {
+                    html += `<div class="item-details">${item.details}</div>`;
+                }
+                html += `</div>`;
             });
 
-            html += `<div class="separator"></div>
-                <div class="line bold medium"><span>TOTAL:</span><span>${total.toFixed(2)}€</span></div>
-                <div class="center bold">================================</div>
-                <div class="center mt">Bon appétit !</div>
+            html += `</div>
+                <div class="divider-bold"></div>
+
+                <div class="totals">
+                    <div class="total-line"><span>Sous-total HT</span><span>${ht.toFixed(2)}€</span></div>
+                    <div class="total-line"><span>TVA (10%)</span><span>${tva.toFixed(2)}€</span></div>
+                    <div class="divider"></div>
+                    <div class="total-line total-final"><span>TOTAL TTC</span><span>${total.toFixed(2)}€</span></div>
+                </div>
+
+                <div class="footer">
+                    <div class="merci">Merci ${state.prenom.toUpperCase()} !</div>
+                    <div>Présentez ce ticket en caisse</div>
+                    <div class="legal">
+                        SIRET: 123 456 789 00012<br>
+                        TVA FR12345678901
+                    </div>
+                </div>
             </div>`;
 
-            // Ticket Cuisine
-            html += `<div class="ticket-section">
-                <div class="center bold">================================</div>
-                <div class="center bold big">CUISINE - ${state.prenom.toUpperCase()}</div>
-                <div class="center bold">================================</div>
-                <div class="center">${mode}</div>
-                <div class="center small">${date}</div>
-                <div class="separator"></div>`;
+            // ========== TICKET CUISINE ==========
+            html += `<div class="ticket kitchen">
+                <div class="header-kitchen">
+                    <div class="order-big">#${orderNum}</div>
+                    <div class="client-name">${state.prenom.toUpperCase()}</div>
+                    <div class="order-type-big">${mode}</div>
+                </div>`;
 
             state.cart.forEach(item => {
-                html += `<div class="bold mt">${item.quantity}x ${item.name.toUpperCase()}</div>`;
+                html += `<div class="item-kitchen">
+                    <div>
+                        <span class="item-qty">${item.quantity}x</span>
+                        <span class="item-title">${item.name.toUpperCase()}</span>
+                    </div>`;
                 if (item.details) {
+                    html += `<div class="item-custom">`;
                     item.details.split(' • ').forEach(d => {
-                        html += `<div class="indent">→ ${d}</div>`;
+                        html += `<div>→ ${d}</div>`;
                     });
+                    html += `</div>`;
                 }
+                html += `</div>`;
             });
 
-            html += `<div class="separator"></div></div>`;
+            html += `<div class="time-stamp">
+                    Commande passée à ${time}
+                </div>
+            </div>`;
+
             return html;
         }
 
@@ -1967,38 +2089,93 @@
         }
 
         function adminTestPrint() {
-            const date = new Date().toLocaleString('fr-FR');
-            const testHTML = `<div>
-                <div class="center bold">================================</div>
-                <div class="center bold big">CHICKENZZ</div>
-                <div class="center bold">================================</div>
-                <div class="center big mt">TEST D'IMPRESSION</div>
-                <div class="separator"></div>
-                <div>Date : ${date}</div>
-                <div>Imprimante OK ✓</div>
-                <div class="separator"></div>
-                <div class="center">Si vous lisez ceci,</div>
-                <div class="center bold">l'impression fonctionne !</div>
-                <div class="center bold">================================</div>
-            </div>`;
+            showToast('Impression du ticket test...');
+            closeAdminModal();
+
+            const now = new Date();
+            const date = now.toLocaleDateString('fr-FR');
+            const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+            const testHTML = `
+                <div class="ticket">
+                    <div class="header">
+                        <div class="logo">CHICKENZZ</div>
+                        <div class="address">Test d'impression</div>
+                    </div>
+
+                    <div class="order-info">
+                        <div>TEST</div>
+                        <div class="order-number">#0000</div>
+                        <div class="order-type">IMPRIMANTE OK</div>
+                    </div>
+
+                    <div class="datetime">${date} à ${time}</div>
+                    <div class="divider"></div>
+
+                    <div class="items">
+                        <div class="item">
+                            <div class="item-line">
+                                <span class="item-name">1x Tacos XL</span>
+                                <span>14.90€</span>
+                            </div>
+                            <div class="item-details">Tikka, Steak • Gratin Cheddar • Algérienne</div>
+                        </div>
+                        <div class="item">
+                            <div class="item-line">
+                                <span class="item-name">1x Naan Royal</span>
+                                <span>9.50€</span>
+                            </div>
+                            <div class="item-details">MENU</div>
+                        </div>
+                    </div>
+
+                    <div class="divider-bold"></div>
+                    <div class="totals">
+                        <div class="total-line total-final"><span>TOTAL</span><span>24.40€</span></div>
+                    </div>
+
+                    <div class="footer">
+                        <div class="merci">Test réussi !</div>
+                    </div>
+                </div>
+
+                <div class="ticket kitchen">
+                    <div class="header-kitchen">
+                        <div class="order-big">#0000</div>
+                        <div class="client-name">TEST</div>
+                        <div class="order-type-big">TICKET CUISINE</div>
+                    </div>
+
+                    <div class="item-kitchen">
+                        <div>
+                            <span class="item-qty">1x</span>
+                            <span class="item-title">TACOS XL</span>
+                        </div>
+                        <div class="item-custom">
+                            <div>→ Tikka, Steak</div>
+                            <div>→ Gratin Cheddar</div>
+                            <div>→ Algérienne</div>
+                        </div>
+                    </div>
+
+                    <div class="item-kitchen">
+                        <div>
+                            <span class="item-qty">1x</span>
+                            <span class="item-title">NAAN ROYAL MENU</span>
+                        </div>
+                    </div>
+
+                    <div class="time-stamp">Test à ${time}</div>
+                </div>
+            `;
+
             printTicket(testHTML);
         }
 
-        function adminChoosePrinter() {
-            // Ouvre les paramètres imprimantes Windows
-            // ms-settings:printers fonctionne sur Windows 10/11
-            window.open('ms-settings:printers', '_blank');
-            // Fallback : ouvrir le panneau de configuration classique
-            // Si ms-settings ne marche pas, l'utilisateur peut aussi
-            // aller dans Paramètres > Imprimantes manuellement
-        }
-
         function adminCloseKiosk() {
-            if (confirm('Êtes-vous sûr de vouloir fermer la borne ?')) {
-                closeAdminModal();
-                window.close();
-                window.location.href = 'about:blank';
-            }
+            closeAdminModal();
+            window.close();
+            window.location.href = 'about:blank';
         }
 
         // ============ INIT ============
