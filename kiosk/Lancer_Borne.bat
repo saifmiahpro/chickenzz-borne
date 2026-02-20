@@ -1,0 +1,3 @@
+@echo off
+echo Demarrage de la Borne Chickenzz...
+start chrome --kiosk --kiosk-printing "%~dp0index.html"

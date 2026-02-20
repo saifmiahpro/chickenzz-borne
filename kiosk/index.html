@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chickenzz - Borne de Commande</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        :root {
+            --yellow: #FFC000;
+            --orange: #FF5722;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --glass: rgba(20, 20, 20, 0.95);
+            --glass-light: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --sidebar-width: 280px;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Barlow Condensed', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+        }
+
+        /* ============ ÉCRANS INTRO ============ */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, var(--dark) 0%, #1a1a1a 100%);
+            z-index: 100;
+            padding: 5vh 5vw;
+        }
+
+        .intro-screen.active {
+            display: flex;
+        }
+
+        .intro-screen .logo-big {
+            width: min(250px, 35vw);
+            margin-bottom: 5vh;
+        }
+
+        .intro-screen h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(24px, 5vw, 48px);
+            color: var(--yellow);
+            text-align: center;
+            margin-bottom: 3vh;
+        }
+
+        .intro-screen h2 {
+            font-size: clamp(18px, 3vw, 32px);
+            color: var(--text-dim);
+            text-align: center;
+            margin-bottom: 4vh;
+        }
+
+        /* Input prénom */
+        .prenom-input {
+            background: var(--glass);
+            border: 3px solid var(--border);
+            border-radius: 15px;
+            padding: 2.5vh 4vw;
+            font-size: clamp(24px, 4vw, 42px);
+            font-family: 'Anton', sans-serif;
+            color: var(--text);
+            text-align: center;
+            width: 100%;
+            max-width: min(600px, 85vw);
+            margin-bottom: 3vh;
+            letter-spacing: 3px;
+        }
+
+        /* Clavier */
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: clamp(4px, 0.8vw, 10px);
+            width: 100%;
+            max-width: min(800px, 95vw);
+            margin-bottom: 3vh;
+        }
+
+        .key {
+            background: var(--glass);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: clamp(10px, 1.8vh, 22px) clamp(5px, 0.5vw, 10px);
+            font-size: clamp(16px, 2.2vw, 28px);
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .key:active {
+            background: var(--yellow);
+            color: var(--dark);
+        }
+
+        .key.wide {
+            grid-column: span 2;
+        }
+
+        .key.delete {
+            background: #ff3333;
+            color: white;
+        }
+
+        /* Cartes mode (sur place / emporter) */
+        .mode-cards {
+            display: flex;
+            gap: clamp(15px, 3vw, 40px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .mode-card {
+            background: var(--glass);
+            border: 3px solid var(--border);
+            border-radius: 20px;
+            padding: clamp(25px, 4vw, 50px);
+            width: min(350px, 40vw);
+            min-width: 200px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .mode-card:active {
+            border-color: var(--yellow);
+            background: rgba(255, 192, 0, 0.1);
+        }
+
+        .mode-card .icon {
+            font-size: clamp(50px, 8vw, 100px);
+            margin-bottom: 2vh;
+        }
+
+        .mode-card h2 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(22px, 3.5vw, 38px);
+        }
+
+        /* Bouton principal */
+        .btn-primary {
+            background: var(--yellow);
+            color: var(--dark);
+            border: none;
+            padding: clamp(15px, 2.5vh, 28px) clamp(40px, 6vw, 80px);
+            font-size: clamp(20px, 3vw, 32px);
+            font-family: 'Anton', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 2vh;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* ============ LAYOUT PRINCIPAL AVEC SIDEBAR ============ */
+        .app-layout {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .app-layout.active {
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: 200px;
+            max-width: 320px;
+            height: 100%;
+            background: var(--darker);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 2vh 1.5vw;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-header img {
+            height: clamp(40px, 6vh, 70px);
+        }
+
+        .sidebar-mode {
+            padding: 1.5vh 1vw;
+            text-align: center;
+            background: var(--glass);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-mode .client-name {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(16px, 2vw, 22px);
+            color: var(--yellow);
+        }
+
+        .sidebar-mode .order-mode {
+            font-size: clamp(12px, 1.5vw, 16px);
+            color: var(--text-dim);
+        }
+
+        /* Navigation catégories */
+        .nav-categories {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1vh 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: clamp(12px, 1.5vh, 18px) clamp(15px, 1.5vw, 25px);
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            font-size: clamp(14px, 1.8vw, 20px);
+            font-weight: 600;
+        }
+
+        .nav-item:hover {
+            background: var(--glass-light);
+        }
+
+        .nav-item.active {
+            background: var(--glass);
+            border-left-color: var(--yellow);
+            color: var(--yellow);
+        }
+
+        .nav-item img {
+            width: clamp(30px, 4vw, 45px);
+            height: clamp(30px, 4vw, 45px);
+            object-fit: contain;
+        }
+
+        /* Bouton panier sidebar */
+        .sidebar-cart {
+            padding: 2vh 1vw;
+            border-top: 1px solid var(--border);
+        }
+
+        .cart-btn-sidebar {
+            width: 100%;
+            background: var(--yellow);
+            color: var(--dark);
+            border: none;
+            border-radius: 15px;
+            padding: clamp(12px, 2vh, 20px);
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(16px, 2vw, 22px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .cart-btn-sidebar .count {
+            background: var(--dark);
+            color: var(--yellow);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: clamp(14px, 1.5vw, 18px);
+        }
+
+        .cancel-btn-sidebar {
+            width: 100%;
+            background: rgba(255, 51, 51, 0.1);
+            color: #ff3333;
+            border: 2px solid #ff3333;
+            border-radius: 15px;
+            padding: clamp(10px, 1.5vh, 15px);
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(14px, 1.8vw, 20px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1vh;
+        }
+
+        .cancel-btn-sidebar:active {
+            background: #ff3333;
+            color: white;
+        }
+
+        /* Zone principale */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .main-header {
+            padding: 2vh 2vw;
+            background: var(--darker);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .main-header h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(22px, 3vw, 36px);
+            color: var(--yellow);
+        }
+
+        .main-header .back-btn {
+            background: var(--glass);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 1vh 2vw;
+            font-size: clamp(14px, 1.8vw, 20px);
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .main-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2vh 2vw;
+        }
+
+        /* Grille produits */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding-bottom: 5vh;
+        }
+
+        .product-card {
+            background: var(--darker);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card.full-width {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            background: linear-gradient(45deg, var(--darker), rgba(255, 192, 0, 0.1));
+            border-color: var(--yellow);
+        }
+
+        .product-card.full-width img {
+            height: clamp(80px, 12vw, 150px);
+            margin-bottom: 0;
+        }
+
+        .product-card.full-width h4 {
+            font-size: clamp(28px, 4vw, 42px);
+        }
+
+        .product-card:active {
+            border-color: var(--yellow);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: clamp(100px, 15vh, 180px);
+            object-fit: contain;
+            margin-bottom: 1vh;
+        }
+
+        .product-card h4 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(16px, 2vw, 24px);
+            color: var(--text);
+            margin-bottom: 0.5vh;
+        }
+
+        .product-card .desc {
+            font-size: clamp(12px, 1.4vw, 16px);
+            color: var(--text-dim);
+            margin-bottom: 1vh;
+            flex: 1;
+        }
+
+        .product-card .price {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(18px, 2.5vw, 28px);
+            color: var(--yellow);
+        }
+
+        .product-card .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--orange);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: clamp(10px, 1.2vw, 14px);
+            font-weight: 700;
+        }
+
+        /* ============ PANIER ============ */
+        .cart-view {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .cart-view.active {
+            display: flex;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2vh 2vw;
+        }
+
+        .cart-item {
+            background: var(--glass);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: clamp(12px, 2vh, 20px);
+            margin-bottom: clamp(10px, 1.5vh, 15px);
+            display: flex;
+            align-items: center;
+            gap: clamp(10px, 1.5vw, 20px);
+        }
+
+        .cart-item img {
+            width: clamp(60px, 8vw, 100px);
+            height: clamp(60px, 8vw, 100px);
+            object-fit: contain;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h4 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(16px, 2vw, 24px);
+            margin-bottom: 0.5vh;
+        }
+
+        .cart-item-info .details {
+            font-size: clamp(12px, 1.4vw, 16px);
+            color: var(--text-dim);
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1vw, 15px);
+        }
+
+        .qty-btn {
+            width: clamp(35px, 5vw, 50px);
+            height: clamp(35px, 5vw, 50px);
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--glass);
+            color: var(--text);
+            font-size: clamp(18px, 2.5vw, 28px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:active {
+            background: var(--yellow);
+            color: var(--dark);
+        }
+
+        .cart-item-price {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(18px, 2.5vw, 26px);
+            color: var(--yellow);
+            min-width: clamp(60px, 8vw, 100px);
+            text-align: right;
+        }
+
+        .delete-btn {
+            width: clamp(35px, 5vw, 50px);
+            height: clamp(35px, 5vw, 50px);
+            border-radius: 50%;
+            background: #ff3333;
+            color: white;
+            border: none;
+            font-size: clamp(16px, 2vw, 24px);
+            cursor: pointer;
+        }
+
+        .cart-footer {
+            padding: 2vh 2vw;
+            background: var(--darker);
+            border-top: 1px solid var(--border);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2vh;
+        }
+
+        .cart-total span {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(22px, 3vw, 32px);
+        }
+
+        .cart-total .amount {
+            color: var(--yellow);
+            font-size: clamp(28px, 4vw, 42px);
+        }
+
+        .cart-buttons {
+            display: flex;
+            gap: clamp(10px, 2vw, 20px);
+        }
+
+        .cart-buttons button {
+            flex: 1;
+            padding: clamp(12px, 2vh, 22px);
+            border-radius: 15px;
+            font-size: clamp(16px, 2vw, 24px);
+            font-family: 'Anton', sans-serif;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text);
+            border: 2px solid var(--border) !important;
+        }
+
+        /* Panier vide */
+        .empty-cart {
+            text-align: center;
+            padding: 10vh 4vw;
+        }
+
+        .empty-cart h3 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(22px, 3vw, 32px);
+            color: var(--text-dim);
+            margin-bottom: 2vh;
+        }
+
+        /* ============ MODAL BUILDER ============ */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-header {
+            padding: 2vh 3vw;
+            background: var(--darker);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(22px, 3vw, 32px);
+            color: var(--yellow);
+        }
+
+        .modal-close {
+            width: clamp(40px, 6vw, 60px);
+            height: clamp(40px, 6vw, 60px);
+            border-radius: 50%;
+            background: #ff3333;
+            color: white;
+            border: none;
+            font-size: clamp(20px, 3vw, 32px);
+            cursor: pointer;
+        }
+
+        .modal-content {
+            flex: 1;
+            padding: 2vh 3vw;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 2vh 3vw;
+            background: var(--darker);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-price {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(28px, 4vw, 42px);
+            color: var(--yellow);
+        }
+
+        .step-title {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(24px, 3.5vw, 36px);
+            margin-bottom: 4vh;
+            color: var(--yellow);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(12px, 2vw, 25px);
+            margin-bottom: 3vh;
+            width: 100%;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 2vw;
+        }
+
+        .option-btn {
+            background: var(--glass);
+            border: 3px solid var(--border);
+            border-radius: 20px;
+            padding: clamp(15px, 2vh, 30px) 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: clamp(16px, 2.2vw, 24px);
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s, border-color 0.2s, background 0.2s;
+            width: 100%;
+            height: 100%;
+        }
+
+        .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        .option-btn.selected {
+            border-color: var(--yellow);
+            background: rgba(255, 192, 0, 0.15);
+        }
+
+        .option-btn .option-price {
+            display: block;
+            color: var(--yellow);
+            font-size: clamp(16px, 2vw, 22px);
+            margin-top: 1vh;
+            font-family: 'Anton', sans-serif;
+        }
+
+        /* ============ TOAST ============ */
+        #toast {
+            position: fixed;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--yellow);
+            color: var(--dark);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(18px, 2.5vw, 24px);
+            z-index: 9999;
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* ============ BUILDER STEPS ============ */
+        .builder-step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            height: 100%;
+        }
+
+        .builder-step.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============ ÉCRAN CONFIRMATION ============ */
+        .confirm-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            z-index: 2000;
+            padding: 5vh 5vw;
+        }
+
+        .confirm-screen.active {
+            display: flex;
+        }
+
+        .confirm-screen h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(28px, 5vw, 48px);
+            color: var(--yellow);
+            margin-bottom: 3vh;
+        }
+
+        .order-number {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(60px, 12vw, 120px);
+            color: var(--yellow);
+            margin: 3vh 0;
+        }
+
+        .confirm-message {
+            font-size: clamp(20px, 3vw, 32px);
+            color: var(--text-dim);
+            margin-bottom: 3vh;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 200px;
+            }
+
+            .keyboard {
+                grid-template-columns: repeat(7, 1fr);
+            }
+
+            .key.wide {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .sidebar {
+                width: 70px;
+                min-width: 70px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .sidebar-mode,
+            .sidebar-header img {
+                display: none;
+            }
+
+            .cart-btn-sidebar span {
+                display: none;
+            }
+
+            .keyboard {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        /* ============ IMPRESSION ============ */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #ticket-print,
+            #ticket-print * {
+                visibility: visible;
+            }
+
+            #ticket-print {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80mm;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                color: black;
+                background: white;
+            }
+        }
+
+        #ticket-print {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ============ ÉCRAN 1: PRÉNOM ============ -->
+    <div id="screen-prenom" class="intro-screen active">
+        <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz" class="logo-big">
+        <h1>ENTREZ VOTRE PRÉNOM</h1>
+        <input type="text" class="prenom-input" id="prenom-input" readonly placeholder="VOTRE PRÉNOM">
+        <div class="keyboard" id="keyboard"></div>
+        <button class="btn-primary" id="btn-suivant" disabled>SUIVANT</button>
+    </div>
+
+    <!-- ============ ÉCRAN 2: MODE ============ -->
+    <div id="screen-mode" class="intro-screen">
+        <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz" class="logo-big">
+        <h1>BONJOUR <span id="display-prenom"></span> !</h1>
+        <h2>Où souhaitez-vous manger ?</h2>
+        <div class="mode-cards">
+            <div class="mode-card" onclick="selectMode('sur_place')">
+                <div class="icon">🍽️</div>
+                <h2>SUR PLACE</h2>
+            </div>
+            <div class="mode-card" onclick="selectMode('emporter')">
+                <div class="icon">🥡</div>
+                <h2>À EMPORTER</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ LAYOUT PRINCIPAL ============ -->
+    <div class="app-layout" id="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz">
+            </div>
+            <div class="sidebar-mode">
+                <div class="client-name" id="sidebar-name">SAIF</div>
+                <div class="order-mode" id="sidebar-mode">SUR PLACE</div>
+            </div>
+            <nav class="nav-categories" id="nav-categories">
+                <!-- Généré par JS -->
+            </nav>
+            <div class="sidebar-cart">
+                <button class="cart-btn-sidebar" onclick="showCart()">
+                    🛒 <span>PANIER</span>
+                    <span class="count" id="cart-count">0</span>
+                </button>
+                <button class="cancel-btn-sidebar" onclick="showCancelModal()">
+                    ✕ <span>ABANDONNER</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Zone principale -->
+        <main class="main-content">
+            <!-- Vue produits -->
+            <div id="products-view">
+                <div class="main-header">
+                    <h1 id="category-title">TACOS</h1>
+                </div>
+                <div class="main-body">
+                    <div class="products-grid" id="products-grid">
+                        <!-- Généré par JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vue panier -->
+            <div id="cart-view" class="cart-view">
+                <div class="main-header">
+                    <button class="back-btn" onclick="hideCart()">← Continuer</button>
+                    <h1>VOTRE PANIER</h1>
+                    <div style="width: 100px;"></div>
+                </div>
+                <div class="cart-items" id="cart-items">
+                    <!-- Généré par JS -->
+                </div>
+                <div class="cart-footer">
+                    <div class="cart-total">
+                        <span>TOTAL</span>
+                        <span class="amount" id="cart-total">0.00€</span>
+                    </div>
+                    <div class="cart-buttons">
+                        <button class="btn-secondary" onclick="hideCart()">AJOUTER</button>
+                        <button class="btn-primary" id="btn-validate" onclick="validateOrder()">VALIDER</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============ MODAL BUILDER ============ -->
+    <div class="modal" id="builder-modal">
+        <div class="modal-header">
+            <h2 id="builder-title">Personnaliser</h2>
+            <button class="modal-close" onclick="closeBuilder()">✕</button>
+        </div>
+        <div class="modal-content" id="builder-content"></div>
+        <div class="modal-footer" style="display: flex; gap: 15px;">
+            <button class="btn-secondary" id="btn-builder-prev" onclick="prevBuilderStep()"
+                style="padding: 10px 20px; font-size: clamp(16px, 2vw, 24px); border-radius: 10px; min-width: 120px;">RETOUR</button>
+            <div class="modal-price" id="builder-price" style="flex: 1; text-align: center;">0.00€</div>
+            <button class="btn-primary" id="btn-builder-next" onclick="nextBuilderStep()"
+                style="margin-top: 0; padding: 10px 20px; font-size: clamp(16px, 2vw, 24px); border-radius: 10px; min-width: 120px;">SUIVANT</button>
+        </div>
+    </div>
+
+    <!-- ============ ÉCRAN CONFIRMATION ============ -->
+    <div id="screen-confirm" class="confirm-screen">
+        <h1>COMMANDE VALIDÉE !</h1>
+        <p class="confirm-message" style="margin-top: 3vh;">Merci de votre visite,</p>
+        <div class="order-number" id="confirm-name">SAIF</div>
+
+        <p class="confirm-message" style="font-size: clamp(20px, 3vw, 32px); color: var(--yellow); margin-top: 3vh;">
+            Impression automatique de votre ticket en cours...
+        </p>
+        <p class="confirm-message" style="font-size: clamp(16px, 2vw, 24px); margin-top: 1vh;">
+            Récupérez vos tickets et allez en caisse.
+        </p>
+    </div>
+
+    <!-- ============ ÉCRAN MERCI ============ -->
+    <div id="screen-thanks" class="confirm-screen">
+        <h1>MERCI <span id="thank-name"></span> !</h1>
+        <p class="confirm-message" style="margin-bottom: 5vh;">Récupérez vos tickets et allez en caisse</p>
+        <button class="btn-primary" onclick="resetKiosk()"
+            style="font-size: clamp(20px, 3vw, 28px); padding: 20px 40px; border-radius: 20px;">NOUVELLE
+            COMMANDE</button>
+    </div>
+
+    <!-- ============ MODAL ABANDON ============ -->
+    <div class="modal" id="cancel-modal" style="justify-content: center; align-items: center; z-index: 3000;">
+        <div
+            style="background: var(--darker); border: 2px solid var(--border); border-radius: 20px; padding: 4vh 4vw; text-align: center; max-width: 500px; width: 90%;">
+            <h2
+                style="font-family: 'Anton', sans-serif; font-size: clamp(28px, 4vw, 42px); color: #ff3333; margin-bottom: 2vh;">
+                ABANDONNER ?</h2>
+            <p style="font-size: clamp(18px, 2.5vw, 26px); color: var(--text-dim); margin-bottom: 4vh;">Êtes-vous sûr de
+                vouloir annuler toute votre commande ?</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-secondary" onclick="closeCancelModal()"
+                    style="padding: 15px 30px; border-radius: 10px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2vw, 22px); cursor: pointer; flex: 1; min-width: 150px;">NON,
+                    RETOUR</button>
+                <button class="btn-primary" onclick="resetKiosk(); closeCancelModal();"
+                    style="background: #ff3333; color: white; padding: 15px 30px; border-radius: 10px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2vw, 22px); cursor: pointer; border: none; flex: 1; min-width: 150px; margin-top: 0;">OUI,
+                    ANNULER</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de notification -->
+    <div id="toast">Ajouté au panier !</div>
+
+    <!-- Zone d'impression cachée -->
+    <div id="ticket-print"></div>
+
+    <script src="products.js"></script>
+    <script>
+        // ============ ÉTAT ============
+        const state = {
+            prenom: '',
+            mode: '',
+            cart: [],
+            currentCategory: null,
+            currentProduct: null,
+            builderSelections: {},
+            builderTotalSteps: 0,
+            builderCurrentStep: 0
+        };
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            const cartBtn = document.querySelector('.cart-btn-sidebar');
+            if (cartBtn) {
+                cartBtn.style.transform = 'scale(1.1)';
+                cartBtn.style.transition = 'transform 0.2s';
+                setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
+            }
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // ============ NAVIGATION ============
+        function showIntroScreen(id) {
+            document.querySelectorAll('.intro-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('app-layout').classList.remove('active');
+            document.getElementById('screen-confirm').classList.remove('active'); // Ensure confirm screen is hidden
+            document.getElementById('screen-thanks').classList.remove('active'); // Ensure thanks screen is hidden
+        }
+
+        function showAppLayout() {
+            document.querySelectorAll('.intro-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('app-layout').classList.add('active');
+            document.getElementById('screen-confirm').classList.remove('active'); // Ensure confirm screen is hidden
+            document.getElementById('screen-thanks').classList.remove('active'); // Ensure thanks screen is hidden
+        }
+
+        // ============ CLAVIER ============
+        function initKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            const keys = 'AZERTYUIOPQSDFGHJKLMWXCVBN'.split('');
+
+            keys.forEach(key => {
+                const btn = document.createElement('div');
+                btn.className = 'key';
+                btn.textContent = key;
+                btn.onclick = () => addLetter(key);
+                keyboard.appendChild(btn);
+            });
+
+            const deleteBtn = document.createElement('div');
+            deleteBtn.className = 'key wide delete';
+            deleteBtn.textContent = '⌫';
+            deleteBtn.onclick = deleteLetter;
+            keyboard.appendChild(deleteBtn);
+
+            const spaceBtn = document.createElement('div');
+            spaceBtn.className = 'key wide';
+            spaceBtn.textContent = '⎵';
+            spaceBtn.onclick = () => addLetter(' ');
+            keyboard.appendChild(spaceBtn);
+        }
+
+        function addLetter(letter) {
+            if (state.prenom.length < 12) {
+                state.prenom += letter;
+                document.getElementById('prenom-input').value = state.prenom;
+                updateSuivantBtn();
+            }
+        }
+
+        function deleteLetter() {
+            state.prenom = state.prenom.slice(0, -1);
+            document.getElementById('prenom-input').value = state.prenom;
+            updateSuivantBtn();
+        }
+
+        function updateSuivantBtn() {
+            document.getElementById('btn-suivant').disabled = state.prenom.trim().length === 0;
+        }
+
+        document.getElementById('btn-suivant').onclick = () => {
+            document.getElementById('display-prenom').textContent = state.prenom.toUpperCase();
+            showIntroScreen('screen-mode');
+        };
+
+        // ============ MODE ============
+        function selectMode(mode) {
+            state.mode = mode;
+            document.getElementById('sidebar-name').textContent = state.prenom.toUpperCase();
+            document.getElementById('sidebar-mode').textContent = mode === 'sur_place' ? 'SUR PLACE' : 'À EMPORTER';
+            initNavigation();
+            showAppLayout();
+            selectCategory(CATEGORIES[0].id);
+        }
+
+        // ============ NAVIGATION SIDEBAR ============
+        function initNavigation() {
+            const nav = document.getElementById('nav-categories');
+            nav.innerHTML = '';
+
+            CATEGORIES.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'nav-item';
+                item.dataset.id = cat.id;
+                item.onclick = () => selectCategory(cat.id);
+                item.innerHTML = `
+                    <img src="${cat.image}" alt="${cat.name}" onerror="this.style.display='none'">
+                    <span>${cat.name}</span>
+                `;
+                nav.appendChild(item);
+            });
+        }
+
+        function selectCategory(categoryId) {
+            state.currentCategory = categoryId;
+
+            // MAJ nav active
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.id === categoryId);
+            });
+
+            const category = CATEGORIES.find(c => c.id === categoryId);
+            document.getElementById('category-title').textContent = category.name.toUpperCase();
+
+            renderProducts(categoryId);
+            hideCart();
+        }
+
+        // ============ PRODUITS ============
+        function renderProducts(categoryId) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            const products = PRODUCTS.filter(p => p.category === categoryId);
+
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = `product-card ${product.isFullWidth ? 'full-width' : ''}`;
+                card.onclick = () => handleProductClick(product);
+
+                const priceDisplay = product.sizes ?
+                    `${product.sizes[0].price.toFixed(2)}€` :
+                    `${product.price.toFixed(2)}€`;
+
+                card.innerHTML = `
+                    ${product.hasBuilder ? '<div class="badge">COMPOSER</div>' : ''}
+                    <img src="${product.image}" alt="${product.name}" onerror="this.src='../AssetsTv3/chickenzz_logo.jpg'">
+                    <h4>${product.name}</h4>
+                    <p class="desc">${product.description || ''}</p>
+                    <div class="price">${priceDisplay}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function handleProductClick(product) {
+            state.currentProduct = product;
+
+            if (product.hasBuilder) {
+                openBuilder(product);
+            } else {
+                addSimpleToCart(product);
+            }
+        }
+
+        function addSimpleToCart(product) {
+            const cartItem = {
+                id: Date.now(),
+                product: product,
+                name: product.name,
+                price: product.price,
+                quantity: 1,
+                details: '',
+                image: product.image
+            };
+            state.cart.push(cartItem);
+            updateCartCount();
+            showToast(`${product.name} ajouté !`);
+        }
+
+        // ============ BUILDER ============
+        function openBuilder(product) {
+            state.builderSelections = {};
+            document.getElementById('builder-title').textContent = product.name;
+
+            const content = document.getElementById('builder-content');
+            content.innerHTML = '';
+
+            if (product.type === 'tacos') buildTacosBuilder(content, product);
+            else if (product.type === 'naan') buildNaanBuilder(content, product);
+            else if (product.type === 'sandwich') buildSandwichBuilder(content, product);
+            else if (product.type === 'bowl') buildBowlBuilder(content, product);
+            else if (product.type === 'poutine') buildPoutineBuilder(content, product);
+            else if (product.type === 'assiette') buildAssietteBuilder(content, product);
+            else if (product.type === 'box') buildBoxBuilder(content, product);
+            else if (product.menuUpgrade) buildBurgerBuilder(content, product);
+
+            processBuilderSteps();
+            updateBuilderPrice();
+            document.getElementById('builder-modal').classList.add('active');
+        }
+
+        function processBuilderSteps() {
+            const content = document.getElementById('builder-content');
+            let steps = [];
+            let currentStep = document.createElement('div');
+            currentStep.className = 'builder-step';
+
+            Array.from(content.children).forEach(child => {
+                if (child.classList.contains('step-title')) {
+                    if (currentStep.children.length > 0) {
+                        steps.push(currentStep);
+                        currentStep = document.createElement('div');
+                        currentStep.className = 'builder-step';
+                    }
+                }
+                currentStep.appendChild(child.cloneNode(true));
+            });
+
+            if (currentStep.children.length > 0) {
+                steps.push(currentStep);
+            }
+
+            content.innerHTML = '';
+            steps.forEach(step => content.appendChild(step));
+
+            state.builderTotalSteps = steps.length;
+            showBuilderStep(1);
+        }
+
+        function showBuilderStep(stepNum) {
+            state.builderCurrentStep = stepNum;
+            const steps = document.querySelectorAll('.builder-step');
+            steps.forEach((step, index) => {
+                step.classList.toggle('active', index === (stepNum - 1));
+            });
+
+            const prevBtn = document.getElementById('btn-builder-prev');
+            const nextBtn = document.getElementById('btn-builder-next');
+
+            prevBtn.style.visibility = stepNum === 1 ? 'hidden' : 'visible';
+
+            if (stepNum === state.builderTotalSteps) {
+                nextBtn.textContent = 'AJOUTER';
+                nextBtn.onclick = addToCartFromBuilder;
+            } else {
+                nextBtn.textContent = 'SUIVANT';
+                nextBtn.onclick = nextBuilderStep;
+            }
+        }
+
+        function nextBuilderStep() {
+            if (state.builderCurrentStep < state.builderTotalSteps) {
+                showBuilderStep(state.builderCurrentStep + 1);
+            }
+        }
+
+        function prevBuilderStep() {
+            if (state.builderCurrentStep > 1) {
+                showBuilderStep(state.builderCurrentStep - 1);
+            }
+        }
+
+        function buildTacosBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">1. Choisissez la taille</div>`;
+            let html = '<div class="options-grid">';
+            product.sizes.forEach((size, i) => {
+                html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
+                    ${size.name} <span class="option-price">${size.price.toFixed(2)}€ (${size.meatCount} viande${size.meatCount > 1 ? 's' : ''})</span>
+                </div>`;
+            });
+            content.innerHTML += html + '</div>';
+            state.builderSelections.size = product.sizes[0];
+
+            content.innerHTML += `<div class="step-title">2. Choisissez vos viandes</div><div class="options-grid grid-dense">`;
+            VIANDES.forEach(v => {
+                content.innerHTML += `<div class="option-btn" onclick="toggleMeat('${v.id}', this)">${v.name}</div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.meats = [];
+
+            content.innerHTML += `<div class="step-title">3. Voulez-vous gratiner le tacos ? (optionnel)</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('gratin', 'none', this)">Sans gratin</div>`;
+
+            let initialGratinPrice = (product.sizes[0].id === 'L' || product.sizes[0].id === 'XL') ? 2.50 : 2.00;
+            GRATINS.forEach(g => {
+                content.innerHTML += `<div class="option-btn" onclick="selectOption('gratin', '${g.id}', this)">${g.name} <span class="option-price gratin-price-display">+${initialGratinPrice.toFixed(2)}€</span></div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.gratin = null;
+
+            content.innerHTML += `<div class="step-title">4. Choix des Sauces (3 max)</div><div class="options-grid">`;
+            SAUCES.forEach((s) => {
+                content.innerHTML += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.sauces = [];
+
+            content.innerHTML += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid grid-dense">`;
+            SUPPLEMENTS.forEach(supp => {
+                content.innerHTML += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.supplements = [];
+
+            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL</div>
+                <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+            </div>`;
+            state.builderSelections.menu = false;
+        }
+
+        function buildNaanBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">Choisissez la formule</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('formula', 'seul', this)" data-price="0">SEUL</div>
+                <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+                <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3.50€</span></div>
+            </div>`;
+            state.builderSelections.formula = { id: 'seul', price: 0 };
+            state.builderSelections.basePrice = product.price;
+        }
+
+        function buildSandwichBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">1. Formule</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('formula', 'classique', this)" data-price="7.9">CLASSIQUE <span class="option-price">7.90€</span></div>
+                <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="11">MÉGA XL <span class="option-price">11€</span></div>
+            </div>`;
+            state.builderSelections.formula = { id: 'classique', price: 7.9, meatCount: 1 };
+
+            content.innerHTML += `<div class="step-title">2. Pain</div><div class="options-grid">`;
+            PAINS.forEach((p, i) => {
+                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('bread', '${p.id}', this)">${p.name}</div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.bread = PAINS[0];
+
+            content.innerHTML += `<div class="step-title">3. Viande</div><div class="options-grid">`;
+            VIANDES.forEach((v, i) => {
+                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.meat = VIANDES[0];
+
+            content.innerHTML += `<div class="step-title">4. Choix des Sauces (3 max)</div><div class="options-grid">`;
+            SAUCES.forEach((s) => {
+                content.innerHTML += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.sauces = [];
+
+            content.innerHTML += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid">`;
+            SUPPLEMENTS.forEach(supp => {
+                content.innerHTML += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.supplements = [];
+
+            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('menuOpt', false, this)">SEUL</div>
+                <div class="option-btn" onclick="selectOption('menuOpt', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+            </div>`;
+            state.builderSelections.menuOpt = false;
+        }
+
+        function buildBowlBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('size', 'normal', this)">NORMAL</div>
+                <div class="option-btn" onclick="selectOption('size', 'xl', this)" data-price="5">XL <span class="option-price">+5€</span></div>
+            </div>`;
+            state.builderSelections.size = { id: 'normal', price: 0 };
+            state.builderSelections.basePrice = product.price;
+
+            if (product.id === 'bowl_dynamite') {
+                content.innerHTML += `<div class="step-title">Viande</div><div class="options-grid">`;
+                VIANDES.forEach((v, i) => {
+                    content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
+                });
+                content.innerHTML += '</div>';
+                state.builderSelections.meat = VIANDES[0];
+            }
+        }
+
+        function buildPoutineBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid">`;
+            product.sizes.forEach((size, i) => {
+                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
+                    ${size.name} <span class="option-price">${size.price.toFixed(2)}€</span>
+                </div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.size = product.sizes[0];
+
+            content.innerHTML += `<div class="step-title">Base</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('base', 'frites', this)">FRITES</div>
+                <div class="option-btn" onclick="selectOption('base', 'riz', this)">RIZ</div>
+            </div>`;
+            state.builderSelections.base = 'frites';
+        }
+
+        function buildAssietteBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">Type</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('type', '1viande', this)" data-price="11">1 VIANDE <span class="option-price">11€</span></div>
+                <div class="option-btn" onclick="selectOption('type', '3viandes', this)" data-price="14.5">3 VIANDES <span class="option-price">14.50€</span></div>
+            </div>`;
+            state.builderSelections.type = { id: '1viande', price: 11 };
+
+            content.innerHTML += `<div class="step-title">Viande</div><div class="options-grid">`;
+            VIANDES.forEach((v, i) => {
+                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
+            });
+            content.innerHTML += '</div>';
+            state.builderSelections.meat = VIANDES[0];
+
+            content.innerHTML += `<div class="step-title">Options</div><div class="options-grid">
+                <div class="option-btn" onclick="toggleOption('naanFromage', this)" data-price="1">Naan Fromage <span class="option-price">+1€</span></div>
+                <div class="option-btn" onclick="toggleOption('boisson', this)" data-price="1">Boisson <span class="option-price">+1€</span></div>
+            </div>`;
+            state.builderSelections.naanFromage = false;
+            state.builderSelections.boisson = false;
+        }
+
+        function buildBoxBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">Type de viande</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('meat', 'steak', this)">🥩 STEAK</div>
+                <div class="option-btn" onclick="selectOption('meat', 'poulet', this)">🍗 POULET</div>
+            </div>`;
+            state.builderSelections.meat = 'steak';
+            state.builderSelections.basePrice = product.price;
+        }
+
+        function buildBurgerBuilder(content, product) {
+            content.innerHTML += `<div class="step-title">En menu ?</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL <span class="option-price">${product.price.toFixed(2)}€</span></div>
+                <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+            </div>`;
+            state.builderSelections.menu = false;
+            state.builderSelections.basePrice = product.price;
+        }
+
+        function selectOption(type, value, element) {
+            element.parentElement.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const product = state.currentProduct;
+
+            if (type === 'size') {
+                if (product.sizes) {
+                    state.builderSelections.size = product.sizes.find(s => s.id === value) || { id: value, price: parseFloat(element.dataset.price) || 0 };
+                } else {
+                    state.builderSelections.size = { id: value, price: parseFloat(element.dataset.price) || 0 };
+                }
+
+                // Mettre à jour les prix des gratins affichés en direct dynamiquement
+                if (state.currentProduct && state.currentProduct.type === 'tacos') {
+                    const dynamicGratinPrice = (value === 'L' || value === 'XL') ? 2.50 : 2.00;
+                    document.querySelectorAll('.gratin-price-display').forEach(span => {
+                        span.textContent = `+${dynamicGratinPrice.toFixed(2)}€`;
+                    });
+                }
+
+            } else if (type === 'formula') {
+                if (value === 'classique') state.builderSelections.formula = { id: 'classique', price: 7.9, meatCount: 1 };
+                else if (value === 'mega') state.builderSelections.formula = { id: 'mega', price: 11, meatCount: 2 };
+                else state.builderSelections.formula = { id: value, price: parseFloat(element.dataset.price) || 0 };
+            } else if (type === 'type') {
+                state.builderSelections.type = value === '1viande' ? { id: '1viande', price: 11 } : { id: '3viandes', price: 14.5 };
+            } else if (type === 'gratin') {
+                state.builderSelections.gratin = value === 'none' ? null : GRATINS.find(g => g.id === value);
+            } else if (type === 'sauce') {
+                state.builderSelections.sauce = SAUCES.find(s => s.id === value);
+            } else if (type === 'bread') {
+                state.builderSelections.bread = PAINS.find(p => p.id === value);
+            } else if (type === 'meat') {
+                state.builderSelections.meat = VIANDES.find(v => v.id === value) || value;
+            } else if (type === 'menu' || type === 'menuOpt') {
+                state.builderSelections[type] = value;
+            } else if (type === 'base') {
+                state.builderSelections.base = value;
+            }
+
+            updateBuilderPrice();
+        }
+
+        function toggleMeat(meatId, element) {
+            const maxMeats = state.builderSelections.size?.meatCount || 1;
+
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                state.builderSelections.meats = state.builderSelections.meats.filter(m => m.id !== meatId);
+            } else if (state.builderSelections.meats.length < maxMeats) {
+                element.classList.add('selected');
+                state.builderSelections.meats.push(VIANDES.find(v => v.id === meatId));
+            }
+            updateBuilderPrice();
+        }
+
+        function toggleSauce(sauceId, element) {
+            const maxSauces = 3;
+
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                state.builderSelections.sauces = state.builderSelections.sauces.filter(s => s.id !== sauceId);
+            } else if (state.builderSelections.sauces.length < maxSauces) {
+                element.classList.add('selected');
+                state.builderSelections.sauces.push(SAUCES.find(s => s.id === sauceId));
+            }
+            updateBuilderPrice();
+        }
+
+        function toggleSupplement(suppId, element) {
+            const supp = SUPPLEMENTS.find(s => s.id === suppId);
+            if (!supp) return;
+
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                state.builderSelections.supplements = state.builderSelections.supplements.filter(s => s.id !== suppId);
+            } else {
+                element.classList.add('selected');
+                if (!state.builderSelections.supplements) state.builderSelections.supplements = [];
+                state.builderSelections.supplements.push(supp);
+            }
+            updateBuilderPrice();
+        }
+
+        function toggleOption(optionId, element) {
+            element.classList.toggle('selected');
+            state.builderSelections[optionId] = !state.builderSelections[optionId];
+            updateBuilderPrice();
+        }
+
+        function updateBuilderPrice() {
+            let price = 0;
+            const sel = state.builderSelections;
+            const product = state.currentProduct;
+
+            if (product.type === 'tacos') {
+                price = sel.size?.price || 0;
+
+                // Gratin price depends on size
+                if (sel.gratin && sel.gratin.id !== 'none') {
+                    if (sel.size?.id === 'L' || sel.size?.id === 'XL') {
+                        price += 2.50;
+                    } else {
+                        price += 2.00; // S or M
+                    }
+                }
+
+                if (sel.menu) price += 2;
+            } else if (product.type === 'naan') {
+                price = (sel.basePrice || product.price) + (sel.formula?.price || 0);
+            } else if (product.type === 'sandwich') {
+                price = sel.formula?.price || 7.9;
+                if (sel.menuOpt) price += 2;
+            } else if (product.type === 'bowl') {
+                price = sel.basePrice || product.price;
+                if (sel.size?.id === 'xl') price += 5;
+            } else if (product.type === 'poutine') {
+                price = sel.size?.price || product.sizes[0].price;
+            } else if (product.type === 'assiette') {
+                price = sel.type?.price || 11;
+                if (sel.naanFromage) price += 1;
+                if (sel.boisson) price += 1;
+            } else if (product.type === 'box') {
+                price = sel.basePrice || product.price;
+            } else if (product.menuUpgrade) {
+                price = sel.basePrice || product.price;
+                if (sel.menu) price += 2;
+            }
+
+            // Add Supplements
+            if (sel.supplements && sel.supplements.length > 0) {
+                sel.supplements.forEach(supp => {
+                    price += supp.price;
+                });
+            }
+
+            document.getElementById('builder-price').textContent = price.toFixed(2) + '€';
+            state.builderSelections.totalPrice = price;
+        }
+
+        function closeBuilder() {
+            document.getElementById('builder-modal').classList.remove('active');
+        }
+
+        function addToCartFromBuilder() {
+            const product = state.currentProduct;
+            const sel = state.builderSelections;
+            let details = [];
+
+            if (product.type === 'tacos') {
+                details.push(sel.size?.name || 'M');
+                if (sel.meats?.length) details.push(sel.meats.map(m => m.name).join(', '));
+                if (sel.gratin && sel.gratin.id !== 'none') details.push('Gratin ' + sel.gratin.name);
+                if (sel.sauces?.length) details.push(sel.sauces.map(s => s.name).join(', '));
+                if (sel.supplements?.length) details.push('+ ' + sel.supplements.map(s => s.name).join(', + '));
+                if (sel.menu) details.push('MENU');
+            } else if (product.type === 'naan') {
+                if (sel.formula?.id === 'menu') details.push('MENU');
+                else if (sel.formula?.id === 'mega') details.push('MÉGA XL');
+            } else if (product.type === 'sandwich') {
+                details.push(sel.formula?.id === 'mega' ? 'Méga XL' : 'Classique');
+                if (sel.bread) details.push(sel.bread.name);
+                if (sel.meat?.name) details.push(sel.meat.name);
+                if (sel.sauces?.length) details.push(sel.sauces.map(s => s.name).join(', '));
+                if (sel.supplements?.length) details.push('+ ' + sel.supplements.map(s => s.name).join(', + '));
+                if (sel.menuOpt) details.push('MENU');
+            } else if (product.type === 'bowl') {
+                if (sel.size?.id === 'xl') details.push('XL');
+                if (sel.meat?.name) details.push(sel.meat.name);
+            } else if (product.type === 'poutine') {
+                details.push(sel.size?.name || 'M');
+                details.push(sel.base === 'riz' ? 'Riz' : 'Frites');
+            } else if (product.type === 'assiette') {
+                details.push(sel.type?.id === '3viandes' ? '3 Viandes' : '1 Viande');
+                if (sel.meat?.name) details.push(sel.meat.name);
+                if (sel.naanFromage) details.push('Naan Fromage');
+                if (sel.boisson) details.push('Boisson');
+            } else if (product.type === 'box') {
+                details.push(sel.meat === 'poulet' ? 'Poulet' : 'Steak');
+            } else if (product.menuUpgrade && sel.menu) {
+                details.push('MENU');
+            }
+
+            state.cart.push({
+                id: Date.now(),
+                product: product,
+                name: product.name,
+                price: sel.totalPrice || product.price,
+                quantity: 1,
+                details: details.join(' • '),
+                image: product.image
+            });
+
+            updateCartCount();
+            closeBuilder();
+            showToast(`${product.name} ajouté !`);
+        }
+
+        // ============ PANIER ============
+        function updateCartCount() {
+            const count = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = count;
+        }
+
+        function showCart() {
+            document.getElementById('products-view').style.display = 'none';
+            document.getElementById('cart-view').classList.add('active');
+            renderCart();
+        }
+
+        function hideCart() {
+            document.getElementById('cart-view').classList.remove('active');
+            document.getElementById('products-view').style.display = 'block';
+        }
+
+        function renderCart() {
+            const content = document.getElementById('cart-items');
+
+            if (state.cart.length === 0) {
+                content.innerHTML = `<div class="empty-cart"><h3>Votre panier est vide</h3></div>`;
+                document.getElementById('btn-validate').disabled = true;
+            } else {
+                let html = '';
+                state.cart.forEach(item => {
+                    html += `<div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}" onerror="this.src='../AssetsTv3/chickenzz_logo.jpg'">
+                        <div class="cart-item-info">
+                            <h4>${item.name}</h4>
+                            <p class="details">${item.details}</p>
+                        </div>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
+                            <span style="font-size: clamp(16px, 2vw, 24px); font-weight: 700; min-width: 30px; text-align: center;">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                        </div>
+                        <div class="cart-item-price">${(item.price * item.quantity).toFixed(2)}€</div>
+                        <button class="delete-btn" onclick="removeFromCart(${item.id})">✕</button>
+                    </div>`;
+                });
+                content.innerHTML = html;
+                document.getElementById('btn-validate').disabled = false;
+            }
+
+            const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('cart-total').textContent = total.toFixed(2) + '€';
+        }
+
+        function updateQty(itemId, delta) {
+            const item = state.cart.find(i => i.id === itemId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) removeFromCart(itemId);
+                else { renderCart(); updateCartCount(); }
+            }
+        }
+
+        function removeFromCart(itemId) {
+            state.cart = state.cart.filter(i => i.id !== itemId);
+            renderCart();
+            updateCartCount();
+        }
+
+        // ============ VALIDATION & RESET ============
+        function validateOrder() {
+            document.getElementById('confirm-name').textContent = state.prenom.toUpperCase() + " !";
+            document.getElementById('screen-confirm').classList.add('active');
+
+            setTimeout(() => {
+                generateTickets();
+                window.print();
+                document.getElementById('screen-confirm').classList.remove('active');
+                document.getElementById('thank-name').textContent = state.prenom.toUpperCase();
+                document.getElementById('screen-thanks').classList.add('active');
+
+                // Le reset sera aussi géré par le idleTimer (déjà en place) ou le bouton manuel
+            }, 500);
+        }
+
+        function generateTickets() {
+            const ticketDiv = document.getElementById('ticket-print');
+            const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const mode = state.mode === 'sur_place' ? 'SUR PLACE' : 'À EMPORTER';
+            const date = new Date().toLocaleString('fr-FR');
+
+            let clientTicket = `<div style="margin-bottom: 50px;">
+                <div style="text-align: center; font-weight: bold;">================================</div>
+                <div style="text-align: center; font-weight: bold; font-size: 18px;">CHICKENZZ</div>
+                <div style="text-align: center; font-weight: bold;">================================</div>
+                <div style="text-align: center; font-size: 20px; margin: 10px 0;">CLIENT(E) : ${state.prenom.toUpperCase()}</div>
+                <div style="text-align: center;">${mode}</div>
+                <div style="border-top: 1px dashed black; margin: 10px 0;"></div>`;
+
+            state.cart.forEach(item => {
+                clientTicket += `<div style="display: flex; justify-content: space-between;">
+                    <span>${item.quantity}x ${item.name}</span><span>${(item.price * item.quantity).toFixed(2)}€</span>
+                </div>`;
+            });
+
+            clientTicket += `<div style="border-top: 1px dashed black; margin: 10px 0;"></div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px;">
+                    <span>TOTAL:</span><span>${total.toFixed(2)}€</span>
+                </div>
+                <div style="text-align: center; font-weight: bold;">================================</div>
+                <div style="text-align: center; margin-top: 10px;">Bon appétit !</div>
+            </div>`;
+
+            let kitchenTicket = `<div>
+                <div style="text-align: center; font-weight: bold;">================================</div>
+                <div style="text-align: center; font-weight: bold; font-size: 18px;">CUISINE - ${state.prenom.toUpperCase()}</div>
+                <div style="text-align: center; font-weight: bold;">================================</div>
+                <div style="text-align: center;">${mode}</div>
+                <div style="text-align: center; font-size: 12px;">${date}</div>
+                <div style="border-top: 1px dashed black; margin: 10px 0;"></div>`;
+
+            state.cart.forEach(item => {
+                kitchenTicket += `<div style="font-weight: bold; margin-top: 10px;">${item.quantity}x ${item.name.toUpperCase()}</div>`;
+                if (item.details) {
+                    item.details.split(' • ').forEach(d => {
+                        kitchenTicket += `<div style="margin-left: 15px;">→ ${d}</div>`;
+                    });
+                }
+            });
+
+            kitchenTicket += `<div style="border-top: 1px dashed black; margin: 10px 0;"></div></div>`;
+
+            ticketDiv.innerHTML = clientTicket + kitchenTicket;
+        }
+
+        function resetKiosk() {
+            document.getElementById('screen-thanks').classList.remove('active');
+
+            state.prenom = '';
+            state.mode = '';
+            state.cart = [];
+
+            document.getElementById('prenom-input').value = '';
+            updateSuivantBtn();
+            updateCartCount();
+
+            showIntroScreen('screen-prenom');
+        }
+
+        // ============ ABANDON & TIMEOUT ============
+        function showCancelModal() {
+            document.getElementById('cancel-modal').classList.add('active');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancel-modal').classList.remove('active');
+        }
+
+        let idleTimer;
+        const IDLE_TIMEOUT = 120000; // 2 minutes d'inactivité
+
+        function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            // Ne s'active que si on n'est pas sur l'écran d'accueil
+            if (!document.getElementById('screen-prenom').classList.contains('active')) {
+                idleTimer = setTimeout(() => {
+                    closeCancelModal();
+                    resetKiosk();
+                }, IDLE_TIMEOUT);
+            }
+        }
+
+        // Relancer le timer d'inactivité à chaque interaction utilisateur
+        ['touchstart', 'click', 'input', 'scroll'].forEach(evt => {
+            document.addEventListener(evt, resetIdleTimer);
+        });
+
+        // ============ INIT ============
+        document.addEventListener('DOMContentLoaded', () => {
+            initKeyboard();
+            resetIdleTimer();
+        });
+    </script>
+</body>
+
+</html>
