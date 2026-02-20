@@ -1806,71 +1806,218 @@
             }, 500);
         }
 
-        function printTicket(textContent) {
-            const printWindow = window.open('', 'PRINT_TICKET', 'width=400,height=800');
+        function printTicket(htmlContent) {
+            const printWindow = window.open('', 'PRINT_TICKET', 'width=350,height=900');
 
             if (!printWindow) {
                 showToast('Erreur: popup bloqué');
                 return;
             }
 
-            // Style ultra simple pour imprimante thermique
+            // CSS optimisé pour Star mCPrint3 - Style Uber Eats
             const ticketStyles = `
                 @page {
                     size: 80mm auto;
                     margin: 0;
                 }
-                @media print {
-                    html, body {
-                        width: 80mm;
-                        margin: 0;
-                        padding: 0;
-                    }
-                }
                 * {
                     margin: 0;
                     padding: 0;
                     box-sizing: border-box;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    color-adjust: exact !important;
                 }
-                body {
-                    font-family: monospace;
-                    font-size: 12px;
-                    line-height: 1.2;
+                html, body {
+                    width: 80mm;
+                    font-family: 'Arial', 'Helvetica', sans-serif;
+                    font-size: 12pt;
+                    line-height: 1.3;
                     color: #000;
                     background: #fff;
-                    padding: 2mm;
-                    width: 80mm;
-                }
-                pre {
-                    font-family: monospace;
-                    font-size: 12px;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                    margin: 0;
                 }
                 .ticket {
+                    width: 76mm;
+                    padding: 2mm;
                     page-break-after: always;
-                    margin-bottom: 5mm;
                 }
                 .ticket:last-child {
                     page-break-after: auto;
                 }
-                .big {
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-                .huge {
-                    font-size: 24px;
-                    font-weight: bold;
-                }
-                .center {
+
+                /* Header */
+                .header {
                     text-align: center;
+                    padding: 3mm 0;
+                    border-bottom: 2px solid #000;
+                }
+                .logo {
+                    font-size: 24pt;
+                    font-weight: 900;
+                    letter-spacing: 2px;
+                }
+                .address {
+                    font-size: 9pt;
+                    margin-top: 2mm;
+                    line-height: 1.4;
+                }
+
+                /* Bande noire - Style Uber Eats */
+                .black-band {
+                    background: #000 !important;
+                    color: #fff !important;
+                    padding: 4mm 3mm;
+                    margin: 3mm 0;
+                    text-align: center;
+                }
+                .order-num {
+                    font-size: 32pt;
+                    font-weight: 900;
+                    letter-spacing: 2px;
+                }
+                .client-name {
+                    font-size: 20pt;
+                    font-weight: 700;
+                    margin-top: 2mm;
+                    text-transform: uppercase;
+                }
+                .order-type {
+                    font-size: 14pt;
+                    font-weight: 700;
+                    margin-top: 2mm;
+                    padding: 2mm 4mm;
+                    border: 2px solid #fff;
+                    display: inline-block;
+                }
+
+                /* Date/heure */
+                .datetime {
+                    text-align: center;
+                    font-size: 11pt;
+                    padding: 2mm 0;
+                    border-bottom: 1px dashed #000;
+                }
+
+                /* Articles */
+                .items {
+                    padding: 3mm 0;
+                }
+                .item {
+                    margin-bottom: 3mm;
+                    padding-bottom: 2mm;
+                    border-bottom: 1px dotted #ccc;
+                }
+                .item:last-child {
+                    border-bottom: none;
+                }
+                .item-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                }
+                .item-name {
+                    font-size: 13pt;
+                    font-weight: 700;
+                    flex: 1;
+                }
+                .item-price {
+                    font-size: 13pt;
+                    font-weight: 700;
+                    text-align: right;
+                    min-width: 50px;
+                }
+                .item-details {
+                    font-size: 10pt;
+                    color: #333;
+                    padding-left: 3mm;
+                    margin-top: 1mm;
+                    font-style: italic;
+                }
+
+                /* Totaux */
+                .totals {
+                    border-top: 2px solid #000;
+                    padding-top: 3mm;
+                    margin-top: 2mm;
+                }
+                .total-row {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 11pt;
+                    padding: 1mm 0;
+                }
+                .total-final {
+                    font-size: 16pt;
+                    font-weight: 900;
+                    border-top: 1px solid #000;
+                    margin-top: 2mm;
+                    padding-top: 2mm;
+                }
+
+                /* Footer */
+                .footer {
+                    text-align: center;
+                    padding: 3mm 0;
+                    border-top: 2px solid #000;
+                    margin-top: 3mm;
+                }
+                .merci {
+                    font-size: 14pt;
+                    font-weight: 700;
+                }
+                .legal {
+                    font-size: 8pt;
+                    color: #666;
+                    margin-top: 2mm;
+                }
+
+                /* ========== TICKET CUISINE ========== */
+                .kitchen .black-band {
+                    padding: 5mm 3mm;
+                }
+                .kitchen .order-num {
+                    font-size: 40pt;
+                }
+                .kitchen .client-name {
+                    font-size: 26pt;
+                }
+                .kitchen .order-type {
+                    font-size: 18pt;
+                }
+                .kitchen-item {
+                    border: 2px solid #000;
+                    padding: 3mm;
+                    margin-bottom: 3mm;
+                }
+                .kitchen-item-header {
+                    font-size: 18pt;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    border-bottom: 1px dashed #000;
+                    padding-bottom: 2mm;
+                    margin-bottom: 2mm;
+                }
+                .kitchen-item-detail {
+                    font-size: 14pt;
+                    padding: 1mm 0 1mm 3mm;
+                }
+                .kitchen-time {
+                    text-align: center;
+                    font-size: 12pt;
+                    font-weight: 700;
+                    padding: 3mm;
+                    border-top: 2px solid #000;
+                    margin-top: 3mm;
+                }
+
+                /* Espacement fin de ticket */
+                .cut-space {
+                    height: 15mm;
                 }
             `;
 
             const ticketPage = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ticket</title><style>' +
-                ticketStyles + '</style></head><body>' + textContent +
-                '<div style="height:15mm;"></div></body></html>';
+                ticketStyles + '</style></head><body>' + htmlContent + '</body></html>';
 
             printWindow.document.write(ticketPage);
             printWindow.document.close();
@@ -1883,108 +2030,96 @@
             };
         }
 
-        // Génère une ligne formatée avec padding
-        function formatLine(left, right, width = 42) {
-            const spaces = width - left.length - right.length;
-            return left + ' '.repeat(Math.max(1, spaces)) + right;
-        }
-
-        // Centre un texte sur la largeur du ticket
-        function centerText(text, width = 42) {
-            const spaces = Math.floor((width - text.length) / 2);
-            return ' '.repeat(Math.max(0, spaces)) + text;
-        }
-
         function generateTicketHTML() {
             const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const tva = total * 0.10;
             const ht = total - tva;
-            const mode = state.mode === 'sur_place' ? 'SUR PLACE' : 'A EMPORTER';
+            const mode = state.mode === 'sur_place' ? 'SUR PLACE' : 'À EMPORTER';
             const now = new Date();
             const date = now.toLocaleDateString('fr-FR');
             const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-            const orderNum = String(now.getHours() * 100 + now.getMinutes()).padStart(4, '0');
-
-            const LINE = '==========================================';
-            const DASH = '------------------------------------------';
+            const orderNum = Math.floor(Math.random() * 900 + 100); // 3 chiffres aléatoires
 
             // ========== TICKET CLIENT ==========
-            let client = '';
-            client += LINE + '\n';
-            client += centerText('CHICKENZZ') + '\n';
-            client += LINE + '\n';
-            client += centerText('123 Rue du Restaurant') + '\n';
-            client += centerText('75000 Paris') + '\n';
-            client += centerText('Tel: 01 23 45 67 89') + '\n';
-            client += LINE + '\n';
-            client += '\n';
-            client += centerText('*** COMMANDE ***') + '\n';
-            client += centerText('#' + orderNum) + '\n';
-            client += centerText(state.prenom.toUpperCase()) + '\n';
-            client += centerText('[ ' + mode + ' ]') + '\n';
-            client += '\n';
-            client += centerText(date + ' - ' + time) + '\n';
-            client += DASH + '\n';
-            client += '\n';
+            let html = '<div class="ticket">';
 
+            // Header
+            html += '<div class="header">';
+            html += '<div class="logo">CHICKENZZ</div>';
+            html += '<div class="address">123 Rue du Restaurant<br>75000 Paris<br>01 23 45 67 89</div>';
+            html += '</div>';
+
+            // Bande noire avec numéro + nom
+            html += '<div class="black-band">';
+            html += '<div class="order-num">#' + orderNum + '</div>';
+            html += '<div class="client-name">' + state.prenom.toUpperCase() + '</div>';
+            html += '<div class="order-type">' + mode + '</div>';
+            html += '</div>';
+
+            // Date/heure
+            html += '<div class="datetime">' + date + ' à ' + time + '</div>';
+
+            // Articles
+            html += '<div class="items">';
             state.cart.forEach(item => {
-                const itemTotal = (item.price * item.quantity).toFixed(2) + 'E';
-                const itemName = item.quantity + 'x ' + item.name;
-                client += formatLine(itemName, itemTotal) + '\n';
+                html += '<div class="item">';
+                html += '<div class="item-row">';
+                html += '<span class="item-name">' + item.quantity + 'x ' + item.name + '</span>';
+                html += '<span class="item-price">' + (item.price * item.quantity).toFixed(2) + '€</span>';
+                html += '</div>';
                 if (item.details) {
-                    client += '   ' + item.details + '\n';
+                    html += '<div class="item-details">' + item.details + '</div>';
                 }
+                html += '</div>';
             });
+            html += '</div>';
 
-            client += '\n';
-            client += LINE + '\n';
-            client += formatLine('Sous-total HT', ht.toFixed(2) + 'E') + '\n';
-            client += formatLine('TVA (10%)', tva.toFixed(2) + 'E') + '\n';
-            client += DASH + '\n';
-            client += formatLine('TOTAL TTC', total.toFixed(2) + 'E') + '\n';
-            client += LINE + '\n';
-            client += '\n';
-            client += centerText('Merci ' + state.prenom.toUpperCase() + ' !') + '\n';
-            client += centerText('Presentez ce ticket en caisse') + '\n';
-            client += '\n';
-            client += centerText('SIRET: 123 456 789 00012') + '\n';
-            client += centerText('TVA FR12345678901') + '\n';
-            client += '\n\n\n';
+            // Totaux
+            html += '<div class="totals">';
+            html += '<div class="total-row"><span>Sous-total HT</span><span>' + ht.toFixed(2) + '€</span></div>';
+            html += '<div class="total-row"><span>TVA 10%</span><span>' + tva.toFixed(2) + '€</span></div>';
+            html += '<div class="total-row total-final"><span>TOTAL</span><span>' + total.toFixed(2) + '€</span></div>';
+            html += '</div>';
+
+            // Footer
+            html += '<div class="footer">';
+            html += '<div class="merci">Merci ' + state.prenom + ' !</div>';
+            html += '<div>Présentez ce ticket en caisse</div>';
+            html += '<div class="legal">SIRET: 123 456 789 00012 • TVA FR12345678901</div>';
+            html += '</div>';
+
+            html += '<div class="cut-space"></div>';
+            html += '</div>';
 
             // ========== TICKET CUISINE ==========
-            let kitchen = '';
-            kitchen += LINE + '\n';
-            kitchen += centerText('*** CUISINE ***') + '\n';
-            kitchen += LINE + '\n';
-            kitchen += '\n';
-            kitchen += centerText('#' + orderNum) + '\n';
-            kitchen += '\n';
-            kitchen += centerText(state.prenom.toUpperCase()) + '\n';
-            kitchen += '\n';
-            kitchen += centerText('[ ' + mode + ' ]') + '\n';
-            kitchen += '\n';
-            kitchen += LINE + '\n';
+            html += '<div class="ticket kitchen">';
 
+            // Bande noire ÉNORME
+            html += '<div class="black-band">';
+            html += '<div class="order-num">#' + orderNum + '</div>';
+            html += '<div class="client-name">' + state.prenom.toUpperCase() + '</div>';
+            html += '<div class="order-type">' + mode + '</div>';
+            html += '</div>';
+
+            // Articles en gros
             state.cart.forEach(item => {
-                kitchen += '\n';
-                kitchen += item.quantity + 'x ' + item.name.toUpperCase() + '\n';
-                kitchen += DASH + '\n';
+                html += '<div class="kitchen-item">';
+                html += '<div class="kitchen-item-header">' + item.quantity + 'x ' + item.name.toUpperCase() + '</div>';
                 if (item.details) {
                     item.details.split(' • ').forEach(d => {
-                        kitchen += '  -> ' + d + '\n';
+                        html += '<div class="kitchen-item-detail">→ ' + d + '</div>';
                     });
                 }
+                html += '</div>';
             });
 
-            kitchen += '\n';
-            kitchen += LINE + '\n';
-            kitchen += centerText('Commande a ' + time) + '\n';
-            kitchen += LINE + '\n';
-            kitchen += '\n\n\n\n\n';
+            // Heure
+            html += '<div class="kitchen-time">Commande reçue à ' + time + '</div>';
 
-            // Retourne les 2 tickets dans des balises pre
-            return '<div class="ticket"><pre>' + client + '</pre></div>' +
-                   '<div class="ticket"><pre>' + kitchen + '</pre></div>';
+            html += '<div class="cut-space"></div>';
+            html += '</div>';
+
+            return html;
         }
 
         function resetKiosk() {
@@ -2059,64 +2194,66 @@
             const date = now.toLocaleDateString('fr-FR');
             const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-            const LINE = '==========================================';
-            const DASH = '------------------------------------------';
+            let html = '';
 
-            // Ticket client test
-            let client = '';
-            client += LINE + '\n';
-            client += centerText('CHICKENZZ') + '\n';
-            client += LINE + '\n';
-            client += centerText('*** TEST IMPRESSION ***') + '\n';
-            client += '\n';
-            client += centerText('#0000') + '\n';
-            client += centerText('TEST') + '\n';
-            client += centerText('[ SUR PLACE ]') + '\n';
-            client += '\n';
-            client += centerText(date + ' - ' + time) + '\n';
-            client += DASH + '\n';
-            client += '\n';
-            client += formatLine('1x Tacos XL', '14.90E') + '\n';
-            client += '   Tikka, Steak, Gratin Cheddar\n';
-            client += formatLine('1x Naan Royal Menu', '11.50E') + '\n';
-            client += '\n';
-            client += LINE + '\n';
-            client += formatLine('TOTAL', '26.40E') + '\n';
-            client += LINE + '\n';
-            client += '\n';
-            client += centerText('Test reussi !') + '\n';
-            client += '\n\n\n';
+            // ========== TICKET CLIENT TEST ==========
+            html += '<div class="ticket">';
+            html += '<div class="header">';
+            html += '<div class="logo">CHICKENZZ</div>';
+            html += '<div class="address">TEST IMPRESSION</div>';
+            html += '</div>';
 
-            // Ticket cuisine test
-            let kitchen = '';
-            kitchen += LINE + '\n';
-            kitchen += centerText('*** CUISINE ***') + '\n';
-            kitchen += LINE + '\n';
-            kitchen += '\n';
-            kitchen += centerText('#0000') + '\n';
-            kitchen += centerText('TEST') + '\n';
-            kitchen += centerText('[ SUR PLACE ]') + '\n';
-            kitchen += '\n';
-            kitchen += LINE + '\n';
-            kitchen += '\n';
-            kitchen += '1x TACOS XL\n';
-            kitchen += DASH + '\n';
-            kitchen += '  -> Tikka, Steak\n';
-            kitchen += '  -> Gratin Cheddar\n';
-            kitchen += '  -> Algerienne\n';
-            kitchen += '\n';
-            kitchen += '1x NAAN ROYAL MENU\n';
-            kitchen += DASH + '\n';
-            kitchen += '\n';
-            kitchen += LINE + '\n';
-            kitchen += centerText('Test a ' + time) + '\n';
-            kitchen += LINE + '\n';
-            kitchen += '\n\n\n\n\n';
+            html += '<div class="black-band">';
+            html += '<div class="order-num">#000</div>';
+            html += '<div class="client-name">TEST</div>';
+            html += '<div class="order-type">SUR PLACE</div>';
+            html += '</div>';
 
-            const testHTML = '<div class="ticket"><pre>' + client + '</pre></div>' +
-                           '<div class="ticket"><pre>' + kitchen + '</pre></div>';
+            html += '<div class="datetime">' + date + ' à ' + time + '</div>';
 
-            printTicket(testHTML);
+            html += '<div class="items">';
+            html += '<div class="item">';
+            html += '<div class="item-row"><span class="item-name">1x Tacos XL</span><span class="item-price">14.90€</span></div>';
+            html += '<div class="item-details">Tikka, Steak • Gratin Cheddar • Algérienne</div>';
+            html += '</div>';
+            html += '<div class="item">';
+            html += '<div class="item-row"><span class="item-name">1x Naan Royal Menu</span><span class="item-price">11.50€</span></div>';
+            html += '</div>';
+            html += '</div>';
+
+            html += '<div class="totals">';
+            html += '<div class="total-row total-final"><span>TOTAL</span><span>26.40€</span></div>';
+            html += '</div>';
+
+            html += '<div class="footer"><div class="merci">Test réussi !</div></div>';
+            html += '<div class="cut-space"></div>';
+            html += '</div>';
+
+            // ========== TICKET CUISINE TEST ==========
+            html += '<div class="ticket kitchen">';
+
+            html += '<div class="black-band">';
+            html += '<div class="order-num">#000</div>';
+            html += '<div class="client-name">TEST</div>';
+            html += '<div class="order-type">SUR PLACE</div>';
+            html += '</div>';
+
+            html += '<div class="kitchen-item">';
+            html += '<div class="kitchen-item-header">1x TACOS XL</div>';
+            html += '<div class="kitchen-item-detail">→ Tikka, Steak</div>';
+            html += '<div class="kitchen-item-detail">→ Gratin Cheddar</div>';
+            html += '<div class="kitchen-item-detail">→ Algérienne</div>';
+            html += '</div>';
+
+            html += '<div class="kitchen-item">';
+            html += '<div class="kitchen-item-header">1x NAAN ROYAL MENU</div>';
+            html += '</div>';
+
+            html += '<div class="kitchen-time">Test à ' + time + '</div>';
+            html += '<div class="cut-space"></div>';
+            html += '</div>';
+
+            printTicket(html);
         }
 
         function adminCloseKiosk() {
