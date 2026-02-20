@@ -384,24 +384,6 @@
             justify-content: space-between;
         }
 
-        .product-card.full-width {
-            grid-column: 1 / -1;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-around;
-            background: linear-gradient(45deg, var(--darker), rgba(255, 192, 0, 0.1));
-            border-color: var(--yellow);
-        }
-
-        .product-card.full-width img {
-            height: clamp(80px, 12vw, 150px);
-            margin-bottom: 0;
-        }
-
-        .product-card.full-width h4 {
-            font-size: clamp(28px, 4vw, 42px);
-        }
-
         .product-card:active {
             border-color: var(--yellow);
         }
@@ -670,14 +652,23 @@
 
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: clamp(12px, 2vw, 25px);
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(10px, 1.5vw, 20px);
             margin-bottom: 3vh;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
             margin-left: auto;
             margin-right: auto;
             padding: 0 2vw;
+        }
+
+        .options-grid.grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .options-grid.grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 600px;
         }
 
         .option-btn {
@@ -1180,17 +1171,18 @@
 
             products.forEach(product => {
                 const card = document.createElement('div');
-                card.className = `product-card ${product.isFullWidth ? 'full-width' : ''}`;
+                card.className = 'product-card';
                 card.onclick = () => handleProductClick(product);
 
                 const priceDisplay = product.sizes ?
                     `${product.sizes[0].price.toFixed(2)}€` :
                     `${product.price.toFixed(2)}€`;
 
+                const displayName = product.displayName || product.name;
                 card.innerHTML = `
                     ${product.hasBuilder ? '<div class="badge">COMPOSER</div>' : ''}
-                    <img src="${product.image}" alt="${product.name}" onerror="this.src='../AssetsTv3/chickenzz_logo.jpg'">
-                    <h4>${product.name}</h4>
+                    <img src="${product.image}" alt="${displayName}" onerror="this.src='../AssetsTv3/chickenzz_logo.jpg'">
+                    <h4>${displayName}</h4>
                     <p class="desc">${product.description || ''}</p>
                     <div class="price">${priceDisplay}</div>
                 `;
@@ -1317,14 +1309,14 @@
             content.innerHTML += html + '</div>';
             state.builderSelections.size = product.sizes[0];
 
-            content.innerHTML += `<div class="step-title">2. Choisissez vos viandes</div><div class="options-grid grid-dense">`;
+            content.innerHTML += `<div class="step-title">2. Choisissez vos viandes</div><div class="options-grid">`;
             VIANDES.forEach(v => {
                 content.innerHTML += `<div class="option-btn" onclick="toggleMeat('${v.id}', this)">${v.name}</div>`;
             });
             content.innerHTML += '</div>';
             state.builderSelections.meats = [];
 
-            content.innerHTML += `<div class="step-title">3. Voulez-vous gratiner le tacos ? (optionnel)</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">3. Gratiner ? (optionnel)</div><div class="options-grid grid-3">
                 <div class="option-btn selected" onclick="selectOption('gratin', 'none', this)">Sans gratin</div>`;
 
             let initialGratinPrice = (product.sizes[0].id === 'L' || product.sizes[0].id === 'XL') ? 2.50 : 2.00;
@@ -1334,21 +1326,21 @@
             content.innerHTML += '</div>';
             state.builderSelections.gratin = null;
 
-            content.innerHTML += `<div class="step-title">4. Choix des Sauces (3 max)</div><div class="options-grid">`;
+            content.innerHTML += `<div class="step-title">4. Sauces (3 max)</div><div class="options-grid">`;
             SAUCES.forEach((s) => {
                 content.innerHTML += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
             });
             content.innerHTML += '</div>';
             state.builderSelections.sauces = [];
 
-            content.innerHTML += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid grid-dense">`;
+            content.innerHTML += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid">`;
             SUPPLEMENTS.forEach(supp => {
                 content.innerHTML += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
             });
             content.innerHTML += '</div>';
             state.builderSelections.supplements = [];
 
-            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid grid-2">
                 <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL</div>
                 <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
             </div>`;
@@ -1356,7 +1348,7 @@
         }
 
         function buildNaanBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Choisissez la formule</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">Choisissez la formule</div><div class="options-grid grid-3">
                 <div class="option-btn selected" onclick="selectOption('formula', 'seul', this)" data-price="0">SEUL</div>
                 <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2€</span></div>
                 <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3.50€</span></div>
@@ -1366,7 +1358,7 @@
         }
 
         function buildSandwichBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">1. Formule</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">1. Formule</div><div class="options-grid grid-2">
                 <div class="option-btn selected" onclick="selectOption('formula', 'classique', this)" data-price="7.9">CLASSIQUE <span class="option-price">7.90€</span></div>
                 <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="11">MÉGA XL <span class="option-price">11€</span></div>
             </div>`;
@@ -1386,7 +1378,7 @@
             content.innerHTML += '</div>';
             state.builderSelections.meat = VIANDES[0];
 
-            content.innerHTML += `<div class="step-title">4. Choix des Sauces (3 max)</div><div class="options-grid">`;
+            content.innerHTML += `<div class="step-title">4. Sauces (3 max)</div><div class="options-grid">`;
             SAUCES.forEach((s) => {
                 content.innerHTML += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
             });
@@ -1400,7 +1392,7 @@
             content.innerHTML += '</div>';
             state.builderSelections.supplements = [];
 
-            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid grid-2">
                 <div class="option-btn selected" onclick="selectOption('menuOpt', false, this)">SEUL</div>
                 <div class="option-btn" onclick="selectOption('menuOpt', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
             </div>`;
@@ -1408,7 +1400,7 @@
         }
 
         function buildBowlBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid grid-2">
                 <div class="option-btn selected" onclick="selectOption('size', 'normal', this)">NORMAL</div>
                 <div class="option-btn" onclick="selectOption('size', 'xl', this)" data-price="5">XL <span class="option-price">+5€</span></div>
             </div>`;
@@ -1426,7 +1418,7 @@
         }
 
         function buildPoutineBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid">`;
+            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid grid-2">`;
             product.sizes.forEach((size, i) => {
                 content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
                     ${size.name} <span class="option-price">${size.price.toFixed(2)}€</span>
@@ -1435,7 +1427,7 @@
             content.innerHTML += '</div>';
             state.builderSelections.size = product.sizes[0];
 
-            content.innerHTML += `<div class="step-title">Base</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">Base</div><div class="options-grid grid-2">
                 <div class="option-btn selected" onclick="selectOption('base', 'frites', this)">FRITES</div>
                 <div class="option-btn" onclick="selectOption('base', 'riz', this)">RIZ</div>
             </div>`;
@@ -1443,7 +1435,7 @@
         }
 
         function buildAssietteBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Type</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">Type</div><div class="options-grid grid-2">
                 <div class="option-btn selected" onclick="selectOption('type', '1viande', this)" data-price="11">1 VIANDE <span class="option-price">11€</span></div>
                 <div class="option-btn" onclick="selectOption('type', '3viandes', this)" data-price="14.5">3 VIANDES <span class="option-price">14.50€</span></div>
             </div>`;
@@ -1456,7 +1448,7 @@
             content.innerHTML += '</div>';
             state.builderSelections.meat = VIANDES[0];
 
-            content.innerHTML += `<div class="step-title">Options</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">Options</div><div class="options-grid grid-2">
                 <div class="option-btn" onclick="toggleOption('naanFromage', this)" data-price="1">Naan Fromage <span class="option-price">+1€</span></div>
                 <div class="option-btn" onclick="toggleOption('boisson', this)" data-price="1">Boisson <span class="option-price">+1€</span></div>
             </div>`;
@@ -1465,16 +1457,16 @@
         }
 
         function buildBoxBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Type de viande</div><div class="options-grid">
-                <div class="option-btn selected" onclick="selectOption('meat', 'steak', this)">🥩 STEAK</div>
-                <div class="option-btn" onclick="selectOption('meat', 'poulet', this)">🍗 POULET</div>
+            content.innerHTML += `<div class="step-title">Type de viande</div><div class="options-grid grid-2">
+                <div class="option-btn selected" onclick="selectOption('meat', 'steak', this)">STEAK</div>
+                <div class="option-btn" onclick="selectOption('meat', 'poulet', this)">POULET</div>
             </div>`;
             state.builderSelections.meat = 'steak';
             state.builderSelections.basePrice = product.price;
         }
 
         function buildBurgerBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">En menu ?</div><div class="options-grid">
+            content.innerHTML += `<div class="step-title">En menu ?</div><div class="options-grid grid-2">
                 <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL <span class="option-price">${product.price.toFixed(2)}€</span></div>
                 <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
             </div>`;
@@ -1631,9 +1623,13 @@
             const product = state.currentProduct;
             const sel = state.builderSelections;
             let details = [];
+            let cartName = product.name;
 
             if (product.type === 'tacos') {
-                details.push(sel.size?.name || 'M');
+                // Pour les tacos custom, afficher "Tacos XL" etc.
+                if (product.isCustom) {
+                    cartName = `Tacos ${sel.size?.name || 'M'}`;
+                }
                 if (sel.meats?.length) details.push(sel.meats.map(m => m.name).join(', '));
                 if (sel.gratin && sel.gratin.id !== 'none') details.push('Gratin ' + sel.gratin.name);
                 if (sel.sauces?.length) details.push(sel.sauces.map(s => s.name).join(', '));
@@ -1669,7 +1665,7 @@
             state.cart.push({
                 id: Date.now(),
                 product: product,
-                name: product.name,
+                name: cartName,
                 price: sel.totalPrice || product.price,
                 quantity: 1,
                 details: details.join(' • '),
@@ -1678,7 +1674,7 @@
 
             updateCartCount();
             closeBuilder();
-            showToast(`${product.name} ajouté !`);
+            showToast(`${cartName} ajouté !`);
         }
 
         // ============ PANIER ============

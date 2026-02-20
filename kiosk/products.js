@@ -152,12 +152,13 @@ const PRODUCTS = [
     {
         id: 'tacos_custom',
         category: 'tacos',
-        name: 'Compose ton propre Tacos !',
+        name: 'Tacos',
+        displayName: 'Compose ton Tacos',
         description: 'Choisis ta taille, tes viandes et tes sauces',
         image: '../AssetsTv4/tacos.png',
         type: 'tacos',
         hasBuilder: true,
-        isFullWidth: true,
+        isCustom: true,
         sizes: [
             { id: 'S', name: 'S', price: 6.90, meatCount: 1 },
             { id: 'M', name: 'M', price: 7.90, meatCount: 2 },
@@ -206,6 +207,17 @@ const PRODUCTS = [
         price: 9.50,
         type: 'naan',
         hasBuilder: true
+    },
+    {
+        id: 'naan_sandwich_link',
+        category: 'naans',
+        name: 'Compose ton Sandwich',
+        description: 'Pain, viande, sauce au choix',
+        image: '../AssetsTv2/sandwich deco pain rond.png',
+        price: 7.90,
+        type: 'sandwich',
+        hasBuilder: true,
+        isLink: true
     },
 
     // ==================== SANDWICHS ====================
