@@ -1852,10 +1852,38 @@
             document.addEventListener(evt, resetIdleTimer);
         });
 
+        // ============ FERMETURE SECRÈTE ============
+        let secretClicks = 0;
+        let secretTimer = null;
+
+        function handleSecretClick() {
+            secretClicks++;
+            clearTimeout(secretTimer);
+
+            if (secretClicks >= 5) {
+                // 5 clics rapides = fermer
+                if (confirm('Fermer la borne ?')) {
+                    window.close();
+                    // Si window.close() ne marche pas (sécurité navigateur)
+                    window.location.href = 'about:blank';
+                }
+                secretClicks = 0;
+            } else {
+                secretTimer = setTimeout(() => {
+                    secretClicks = 0;
+                }, 1500); // Reset après 1.5s
+            }
+        }
+
         // ============ INIT ============
         document.addEventListener('DOMContentLoaded', () => {
             initKeyboard();
             resetIdleTimer();
+
+            // Ajouter le listener sur tous les logos
+            document.querySelectorAll('.logo-big, .sidebar-header img').forEach(logo => {
+                logo.addEventListener('click', handleSecretClick);
+            });
         });
     </script>
 </body>
