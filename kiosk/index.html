@@ -863,29 +863,12 @@
 
         /* ============ IMPRESSION ============ */
         @media print {
-            body * {
-                visibility: hidden !important;
-            }
-
-            #ticket-print {
-                display: block !important;
-                visibility: visible !important;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 80mm;
-                font-family: 'Courier New', monospace;
-                font-size: 12px;
-                color: black;
-                background: white;
-            }
-
-            #ticket-print * {
-                visibility: visible !important;
+            body>*:not(#print-frame) {
+                display: none !important;
             }
         }
 
-        #ticket-print {
+        #print-frame {
             display: none;
         }
     </style>
@@ -1043,8 +1026,8 @@
     <!-- Toast de notification -->
     <div id="toast">Ajouté au panier !</div>
 
-    <!-- Zone d'impression cachée -->
-    <div id="ticket-print"></div>
+    <!-- Iframe caché pour l'impression -->
+    <iframe id="print-frame" name="print-frame" style="position:absolute;width:0;height:0;border:none;"></iframe>
 
     <!-- ============ MODAL ADMIN (5 clics secrets) ============ -->
     <div class="modal" id="admin-modal" style="justify-content: center; align-items: center; z-index: 5000;">
@@ -1828,64 +1811,95 @@
             document.getElementById('screen-confirm').classList.add('active');
 
             setTimeout(() => {
-                generateTickets();
-                window.print();
+                const ticketHTML = generateTicketHTML();
+                printTicket(ticketHTML);
                 document.getElementById('screen-confirm').classList.remove('active');
                 document.getElementById('thank-name').textContent = state.prenom.toUpperCase();
                 document.getElementById('screen-thanks').classList.add('active');
-
-                // Le reset sera aussi géré par le idleTimer (déjà en place) ou le bouton manuel
             }, 500);
         }
 
-        function generateTickets() {
-            const ticketDiv = document.getElementById('ticket-print');
+        function printTicket(htmlContent) {
+            const frame = document.getElementById('print-frame');
+            const doc = frame.contentWindow || frame.contentDocument;
+            const printDoc = doc.document || doc;
+
+            printDoc.open();
+            printDoc.write(`<!DOCTYPE html>
+            <html><head><style>
+                body {
+                    font-family: 'Courier New', monospace;
+                    font-size: 12px;
+                    color: black;
+                    background: white;
+                    width: 80mm;
+                    margin: 0;
+                    padding: 5px;
+                }
+                .ticket-section { margin-bottom: 40px; }
+                .center { text-align: center; }
+                .bold { font-weight: bold; }
+                .big { font-size: 18px; }
+                .medium { font-size: 16px; }
+                .small { font-size: 12px; }
+                .separator { border-top: 1px dashed black; margin: 8px 0; }
+                .line { display: flex; justify-content: space-between; }
+                .indent { margin-left: 15px; }
+                .mt { margin-top: 10px; }
+            </style></head><body>${htmlContent}</body></html>`);
+            printDoc.close();
+
+            // Attendre que le contenu soit chargé avant d'imprimer
+            setTimeout(() => {
+                frame.contentWindow.focus();
+                frame.contentWindow.print();
+            }, 300);
+        }
+
+        function generateTicketHTML() {
             const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const mode = state.mode === 'sur_place' ? 'SUR PLACE' : 'À EMPORTER';
             const date = new Date().toLocaleString('fr-FR');
 
-            let clientTicket = `<div style="margin-bottom: 50px;">
-                <div style="text-align: center; font-weight: bold;">================================</div>
-                <div style="text-align: center; font-weight: bold; font-size: 18px;">CHICKENZZ</div>
-                <div style="text-align: center; font-weight: bold;">================================</div>
-                <div style="text-align: center; font-size: 20px; margin: 10px 0;">CLIENT(E) : ${state.prenom.toUpperCase()}</div>
-                <div style="text-align: center;">${mode}</div>
-                <div style="border-top: 1px dashed black; margin: 10px 0;"></div>`;
+            // Ticket Client
+            let html = `<div class="ticket-section">
+                <div class="center bold">================================</div>
+                <div class="center bold big">CHICKENZZ</div>
+                <div class="center bold">================================</div>
+                <div class="center big mt">CLIENT(E) : ${state.prenom.toUpperCase()}</div>
+                <div class="center">${mode}</div>
+                <div class="separator"></div>`;
 
             state.cart.forEach(item => {
-                clientTicket += `<div style="display: flex; justify-content: space-between;">
-                    <span>${item.quantity}x ${item.name}</span><span>${(item.price * item.quantity).toFixed(2)}€</span>
-                </div>`;
+                html += `<div class="line"><span>${item.quantity}x ${item.name}</span><span>${(item.price * item.quantity).toFixed(2)}€</span></div>`;
             });
 
-            clientTicket += `<div style="border-top: 1px dashed black; margin: 10px 0;"></div>
-                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px;">
-                    <span>TOTAL:</span><span>${total.toFixed(2)}€</span>
-                </div>
-                <div style="text-align: center; font-weight: bold;">================================</div>
-                <div style="text-align: center; margin-top: 10px;">Bon appétit !</div>
+            html += `<div class="separator"></div>
+                <div class="line bold medium"><span>TOTAL:</span><span>${total.toFixed(2)}€</span></div>
+                <div class="center bold">================================</div>
+                <div class="center mt">Bon appétit !</div>
             </div>`;
 
-            let kitchenTicket = `<div>
-                <div style="text-align: center; font-weight: bold;">================================</div>
-                <div style="text-align: center; font-weight: bold; font-size: 18px;">CUISINE - ${state.prenom.toUpperCase()}</div>
-                <div style="text-align: center; font-weight: bold;">================================</div>
-                <div style="text-align: center;">${mode}</div>
-                <div style="text-align: center; font-size: 12px;">${date}</div>
-                <div style="border-top: 1px dashed black; margin: 10px 0;"></div>`;
+            // Ticket Cuisine
+            html += `<div class="ticket-section">
+                <div class="center bold">================================</div>
+                <div class="center bold big">CUISINE - ${state.prenom.toUpperCase()}</div>
+                <div class="center bold">================================</div>
+                <div class="center">${mode}</div>
+                <div class="center small">${date}</div>
+                <div class="separator"></div>`;
 
             state.cart.forEach(item => {
-                kitchenTicket += `<div style="font-weight: bold; margin-top: 10px;">${item.quantity}x ${item.name.toUpperCase()}</div>`;
+                html += `<div class="bold mt">${item.quantity}x ${item.name.toUpperCase()}</div>`;
                 if (item.details) {
                     item.details.split(' • ').forEach(d => {
-                        kitchenTicket += `<div style="margin-left: 15px;">→ ${d}</div>`;
+                        html += `<div class="indent">→ ${d}</div>`;
                     });
                 }
             });
 
-            kitchenTicket += `<div style="border-top: 1px dashed black; margin: 10px 0;"></div></div>`;
-
-            ticketDiv.innerHTML = clientTicket + kitchenTicket;
+            html += `<div class="separator"></div></div>`;
+            return html;
         }
 
         function resetKiosk() {
@@ -1953,22 +1967,21 @@
         }
 
         function adminTestPrint() {
-            const ticketDiv = document.getElementById('ticket-print');
             const date = new Date().toLocaleString('fr-FR');
-            ticketDiv.innerHTML = `<div>
-                <div style="text-align:center;font-weight:bold;">================================</div>
-                <div style="text-align:center;font-weight:bold;font-size:18px;">CHICKENZZ</div>
-                <div style="text-align:center;font-weight:bold;">================================</div>
-                <div style="text-align:center;font-size:16px;margin:10px 0;">TEST D'IMPRESSION</div>
-                <div style="border-top:1px dashed black;margin:10px 0;"></div>
+            const testHTML = `<div>
+                <div class="center bold">================================</div>
+                <div class="center bold big">CHICKENZZ</div>
+                <div class="center bold">================================</div>
+                <div class="center big mt">TEST D'IMPRESSION</div>
+                <div class="separator"></div>
                 <div>Date : ${date}</div>
                 <div>Imprimante OK ✓</div>
-                <div style="border-top:1px dashed black;margin:10px 0;"></div>
-                <div style="text-align:center;">Si vous lisez ceci,</div>
-                <div style="text-align:center;font-weight:bold;">l'impression fonctionne !</div>
-                <div style="text-align:center;font-weight:bold;">================================</div>
+                <div class="separator"></div>
+                <div class="center">Si vous lisez ceci,</div>
+                <div class="center bold">l'impression fonctionne !</div>
+                <div class="center bold">================================</div>
             </div>`;
-            window.print();
+            printTicket(testHTML);
         }
 
         function adminChoosePrinter() {
