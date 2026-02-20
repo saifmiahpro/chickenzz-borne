@@ -61,20 +61,20 @@
         }
 
         .intro-screen .logo-big {
-            width: min(250px, 35vw);
+            width: min(350px, 45vw);
             margin-bottom: 5vh;
         }
 
         .intro-screen h1 {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(24px, 5vw, 48px);
+            font-size: clamp(32px, 6vw, 60px);
             color: var(--yellow);
             text-align: center;
             margin-bottom: 3vh;
         }
 
         .intro-screen h2 {
-            font-size: clamp(18px, 3vw, 32px);
+            font-size: clamp(22px, 4vw, 40px);
             color: var(--text-dim);
             text-align: center;
             margin-bottom: 4vh;
@@ -86,12 +86,12 @@
             border: 3px solid var(--border);
             border-radius: 15px;
             padding: 2.5vh 4vw;
-            font-size: clamp(24px, 4vw, 42px);
+            font-size: clamp(32px, 5vw, 52px);
             font-family: 'Anton', sans-serif;
             color: var(--text);
             text-align: center;
             width: 100%;
-            max-width: min(600px, 85vw);
+            max-width: min(700px, 90vw);
             margin-bottom: 3vh;
             letter-spacing: 3px;
         }
@@ -110,8 +110,8 @@
             background: var(--glass);
             border: 2px solid var(--border);
             border-radius: 8px;
-            padding: clamp(10px, 1.8vh, 22px) clamp(5px, 0.5vw, 10px);
-            font-size: clamp(16px, 2.2vw, 28px);
+            padding: clamp(14px, 2.2vh, 28px) clamp(5px, 0.5vw, 10px);
+            font-size: clamp(20px, 2.8vw, 34px);
             font-weight: 700;
             cursor: pointer;
             text-align: center;
@@ -162,7 +162,7 @@
 
         .mode-card h2 {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(22px, 3.5vw, 38px);
+            font-size: clamp(28px, 4.5vw, 48px);
         }
 
         /* Bouton principal */
@@ -170,8 +170,8 @@
             background: var(--yellow);
             color: var(--dark);
             border: none;
-            padding: clamp(15px, 2.5vh, 28px) clamp(40px, 6vw, 80px);
-            font-size: clamp(20px, 3vw, 32px);
+            padding: clamp(18px, 3vh, 35px) clamp(50px, 8vw, 100px);
+            font-size: clamp(24px, 4vw, 40px);
             font-family: 'Anton', sans-serif;
             border-radius: 50px;
             cursor: pointer;
@@ -340,7 +340,7 @@
 
         .main-header h1 {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(22px, 3vw, 36px);
+            font-size: clamp(28px, 4vw, 44px);
             color: var(--yellow);
         }
 
@@ -388,16 +388,37 @@
             border-color: var(--yellow);
         }
 
+        .product-card.full-width {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            background: linear-gradient(135deg, var(--darker), rgba(255, 192, 0, 0.08));
+            border-color: var(--yellow);
+            border-width: 3px;
+        }
+
+        .product-card.full-width img {
+            height: clamp(100px, 14vw, 180px);
+            width: auto;
+            margin-bottom: 0;
+        }
+
+        .product-card.full-width h4 {
+            font-size: clamp(28px, 4vw, 44px);
+        }
+
         .product-card img {
             width: 100%;
-            height: clamp(100px, 15vh, 180px);
+            height: clamp(120px, 18vh, 220px);
             object-fit: contain;
             margin-bottom: 1vh;
         }
 
         .product-card h4 {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(16px, 2vw, 24px);
+            font-size: clamp(20px, 2.5vw, 30px);
             color: var(--text);
             margin-bottom: 0.5vh;
         }
@@ -411,7 +432,7 @@
 
         .product-card .price {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(18px, 2.5vw, 28px);
+            font-size: clamp(22px, 3vw, 34px);
             color: var(--yellow);
         }
 
@@ -643,7 +664,7 @@
 
         .step-title {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(24px, 3.5vw, 36px);
+            font-size: clamp(28px, 4.5vw, 48px);
             margin-bottom: 4vh;
             color: var(--yellow);
             text-align: center;
@@ -651,15 +672,11 @@
         }
 
         .options-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: clamp(10px, 1.5vw, 18px);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(10px, 1.5vw, 20px);
             margin-bottom: 3vh;
             width: 100%;
-            max-width: 1100px;
-            margin-left: auto;
-            margin-right: auto;
             padding: 0 2vw;
         }
 
@@ -667,25 +684,27 @@
             background: var(--glass);
             border: 3px solid var(--border);
             border-radius: 15px;
-            padding: clamp(12px, 1.8vh, 22px) clamp(15px, 2vw, 25px);
+            padding: clamp(14px, 2vh, 25px) clamp(8px, 1vw, 15px);
             text-align: center;
             cursor: pointer;
-            font-size: clamp(14px, 1.8vw, 20px);
+            font-size: clamp(16px, 2.2vw, 26px);
             font-weight: 600;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             transition: transform 0.1s, border-color 0.2s, background 0.2s;
-            min-width: clamp(100px, 15vw, 160px);
-            flex: 0 1 auto;
         }
 
-        /* Gros boutons (2-3 options) */
+        /* Gros boutons (2-3 options comme taille, menu, formule) */
+        .options-grid.big {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: clamp(15px, 2vw, 30px);
+        }
+
         .options-grid.big .option-btn {
-            min-width: clamp(150px, 25vw, 280px);
-            padding: clamp(18px, 2.5vh, 35px) clamp(25px, 4vw, 50px);
-            font-size: clamp(18px, 2.5vw, 28px);
+            padding: clamp(20px, 3vh, 40px) clamp(15px, 2vw, 30px);
+            font-size: clamp(22px, 3vw, 34px);
         }
 
         .option-btn:active {
@@ -700,13 +719,13 @@
         .option-btn .option-price {
             display: block;
             color: var(--yellow);
-            font-size: clamp(14px, 1.6vw, 18px);
+            font-size: clamp(14px, 1.8vw, 22px);
             margin-top: 0.8vh;
             font-family: 'Anton', sans-serif;
         }
 
         .options-grid.big .option-btn .option-price {
-            font-size: clamp(16px, 2vw, 22px);
+            font-size: clamp(18px, 2.5vw, 28px);
         }
 
         /* ============ TOAST ============ */
@@ -845,15 +864,12 @@
         /* ============ IMPRESSION ============ */
         @media print {
             body * {
-                visibility: hidden;
-            }
-
-            #ticket-print,
-            #ticket-print * {
-                visibility: visible;
+                visibility: hidden !important;
             }
 
             #ticket-print {
+                display: block !important;
+                visibility: visible !important;
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -862,6 +878,10 @@
                 font-size: 12px;
                 color: black;
                 background: white;
+            }
+
+            #ticket-print * {
+                visibility: visible !important;
             }
         }
 
@@ -1026,6 +1046,34 @@
     <!-- Zone d'impression cachée -->
     <div id="ticket-print"></div>
 
+    <!-- ============ MODAL ADMIN (5 clics secrets) ============ -->
+    <div class="modal" id="admin-modal" style="justify-content: center; align-items: center; z-index: 5000;">
+        <div
+            style="background: var(--darker); border: 2px solid var(--yellow); border-radius: 20px; padding: 4vh 4vw; text-align: center; max-width: 600px; width: 90%;">
+            <h2
+                style="font-family: 'Anton', sans-serif; font-size: clamp(28px, 4vw, 42px); color: var(--yellow); margin-bottom: 3vh;">
+                ⚙️ MENU ADMIN</h2>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <button onclick="adminTestPrint()"
+                    style="background: var(--glass); border: 2px solid var(--border); border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(18px, 2.5vw, 26px); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    🖨️ IMPRIMER UN TICKET TEST
+                </button>
+                <button onclick="adminChoosePrinter()"
+                    style="background: var(--glass); border: 2px solid var(--border); border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(18px, 2.5vw, 26px); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    🔧 CHOISIR IMPRIMANTE
+                </button>
+                <button onclick="adminCloseKiosk()"
+                    style="background: rgba(255,51,51,0.1); border: 2px solid #ff3333; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(18px, 2.5vw, 26px); color: #ff3333; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    ✕ FERMER LA BORNE
+                </button>
+                <button onclick="closeAdminModal()"
+                    style="background: transparent; border: 2px solid var(--border); border-radius: 15px; padding: 15px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2vw, 22px); color: var(--text-dim); cursor: pointer; margin-top: 10px;">
+                    ← RETOUR
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="products.js"></script>
     <script>
         // ============ ÉTAT ============
@@ -1174,7 +1222,7 @@
 
             products.forEach(product => {
                 const card = document.createElement('div');
-                card.className = 'product-card';
+                card.className = `product-card${product.isCustom ? ' full-width' : ''}`;
                 card.onclick = () => handleProductClick(product);
 
                 const priceDisplay = product.sizes ?
@@ -1302,56 +1350,64 @@
         }
 
         function buildTacosBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">1. Choisissez la taille</div>`;
-            let html = '<div class="options-grid big">';
+            let html = '';
+
+            // Step 1: Taille
+            html += `<div class="step-title">1. Choisissez la taille</div><div class="options-grid big">`;
             product.sizes.forEach((size, i) => {
                 html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
                     ${size.name} <span class="option-price">${size.price.toFixed(2)}€ (${size.meatCount} viande${size.meatCount > 1 ? 's' : ''})</span>
                 </div>`;
             });
-            content.innerHTML += html + '</div>';
-            state.builderSelections.size = product.sizes[0];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">2. Choisissez vos viandes</div><div class="options-grid">`;
+            // Step 2: Viandes
+            html += `<div class="step-title">2. Choisissez vos viandes</div><div class="options-grid">`;
             VIANDES.forEach(v => {
-                content.innerHTML += `<div class="option-btn" onclick="toggleMeat('${v.id}', this)">${v.name}</div>`;
+                html += `<div class="option-btn" onclick="toggleMeat('${v.id}', this)">${v.name}</div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.meats = [];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">3. Gratiner ? (optionnel)</div><div class="options-grid">
-                <div class="option-btn selected" onclick="selectOption('gratin', 'none', this)">Sans gratin</div>`;
-
+            // Step 3: Gratin
             let initialGratinPrice = (product.sizes[0].id === 'L' || product.sizes[0].id === 'XL') ? 2.50 : 2.00;
+            html += `<div class="step-title">3. Gratiner ? (optionnel)</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('gratin', 'none', this)">Sans gratin</div>`;
             GRATINS.forEach(g => {
-                content.innerHTML += `<div class="option-btn" onclick="selectOption('gratin', '${g.id}', this)">${g.name} <span class="option-price gratin-price-display">+${initialGratinPrice.toFixed(2)}€</span></div>`;
+                html += `<div class="option-btn" onclick="selectOption('gratin', '${g.id}', this)">${g.name} <span class="option-price gratin-price-display">+${initialGratinPrice.toFixed(2)}€</span></div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.gratin = null;
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">4. Sauces (3 max)</div><div class="options-grid">`;
-            SAUCES.forEach((s) => {
-                content.innerHTML += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
+            // Step 4: Sauces
+            html += `<div class="step-title">4. Sauces (3 max)</div><div class="options-grid">`;
+            SAUCES.forEach(s => {
+                html += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.sauces = [];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid">`;
+            // Step 5: Suppléments
+            html += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid">`;
             SUPPLEMENTS.forEach(supp => {
-                content.innerHTML += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
+                html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.supplements = [];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid big">
+            // Step 6: Menu
+            html += `<div class="step-title">6. En menu ?</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL</div>
                 <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
             </div>`;
+
+            content.innerHTML = html;
+            state.builderSelections.size = product.sizes[0];
+            state.builderSelections.meats = [];
+            state.builderSelections.gratin = null;
+            state.builderSelections.sauces = [];
+            state.builderSelections.supplements = [];
             state.builderSelections.menu = false;
         }
 
         function buildNaanBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Choisissez la formule</div><div class="options-grid big">
+            content.innerHTML = `<div class="step-title">Choisissez la formule</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('formula', 'seul', this)" data-price="0">SEUL</div>
                 <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2€</span></div>
                 <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3.50€</span></div>
@@ -1361,106 +1417,128 @@
         }
 
         function buildSandwichBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">1. Formule</div><div class="options-grid big">
+            let html = '';
+
+            // Step 1: Formule
+            html += `<div class="step-title">1. Formule</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('formula', 'classique', this)" data-price="7.9">CLASSIQUE <span class="option-price">7.90€</span></div>
                 <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="11">MÉGA XL <span class="option-price">11€</span></div>
             </div>`;
-            state.builderSelections.formula = { id: 'classique', price: 7.9, meatCount: 1 };
 
-            content.innerHTML += `<div class="step-title">2. Pain</div><div class="options-grid big">`;
+            // Step 2: Pain
+            html += `<div class="step-title">2. Pain</div><div class="options-grid big">`;
             PAINS.forEach((p, i) => {
-                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('bread', '${p.id}', this)">${p.name}</div>`;
+                html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('bread', '${p.id}', this)">${p.name}</div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.bread = PAINS[0];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">3. Viande</div><div class="options-grid">`;
+            // Step 3: Viande
+            html += `<div class="step-title">3. Viande</div><div class="options-grid">`;
             VIANDES.forEach((v, i) => {
-                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
+                html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.meat = VIANDES[0];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">4. Sauces (3 max)</div><div class="options-grid">`;
-            SAUCES.forEach((s) => {
-                content.innerHTML += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
+            // Step 4: Sauces
+            html += `<div class="step-title">4. Sauces (3 max)</div><div class="options-grid">`;
+            SAUCES.forEach(s => {
+                html += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.sauces = [];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid">`;
+            // Step 5: Suppléments
+            html += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid">`;
             SUPPLEMENTS.forEach(supp => {
-                content.innerHTML += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
+                html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.supplements = [];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">6. En menu ?</div><div class="options-grid big">
+            // Step 6: Menu
+            html += `<div class="step-title">6. En menu ?</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('menuOpt', false, this)">SEUL</div>
                 <div class="option-btn" onclick="selectOption('menuOpt', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
             </div>`;
+
+            content.innerHTML = html;
+            state.builderSelections.formula = { id: 'classique', price: 7.9, meatCount: 1 };
+            state.builderSelections.bread = PAINS[0];
+            state.builderSelections.meat = VIANDES[0];
+            state.builderSelections.sauces = [];
+            state.builderSelections.supplements = [];
             state.builderSelections.menuOpt = false;
         }
 
         function buildBowlBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid big">
+            let html = '';
+
+            html += `<div class="step-title">Taille</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('size', 'normal', this)">NORMAL</div>
                 <div class="option-btn" onclick="selectOption('size', 'xl', this)" data-price="5">XL <span class="option-price">+5€</span></div>
             </div>`;
-            state.builderSelections.size = { id: 'normal', price: 0 };
-            state.builderSelections.basePrice = product.price;
 
             if (product.id === 'bowl_dynamite') {
-                content.innerHTML += `<div class="step-title">Viande</div><div class="options-grid">`;
+                html += `<div class="step-title">Viande</div><div class="options-grid">`;
                 VIANDES.forEach((v, i) => {
-                    content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
+                    html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
                 });
-                content.innerHTML += '</div>';
-                state.builderSelections.meat = VIANDES[0];
+                html += '</div>';
             }
+
+            content.innerHTML = html;
+            state.builderSelections.size = { id: 'normal', price: 0 };
+            state.builderSelections.basePrice = product.price;
+            if (product.id === 'bowl_dynamite') state.builderSelections.meat = VIANDES[0];
         }
 
         function buildPoutineBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Taille</div><div class="options-grid big">`;
+            let html = '';
+
+            html += `<div class="step-title">Taille</div><div class="options-grid big">`;
             product.sizes.forEach((size, i) => {
-                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
+                html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
                     ${size.name} <span class="option-price">${size.price.toFixed(2)}€</span>
                 </div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.size = product.sizes[0];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">Base</div><div class="options-grid big">
+            html += `<div class="step-title">Base</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('base', 'frites', this)">FRITES</div>
                 <div class="option-btn" onclick="selectOption('base', 'riz', this)">RIZ</div>
             </div>`;
+
+            content.innerHTML = html;
+            state.builderSelections.size = product.sizes[0];
             state.builderSelections.base = 'frites';
         }
 
         function buildAssietteBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Type</div><div class="options-grid big">
+            let html = '';
+
+            html += `<div class="step-title">Type</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('type', '1viande', this)" data-price="11">1 VIANDE <span class="option-price">11€</span></div>
                 <div class="option-btn" onclick="selectOption('type', '3viandes', this)" data-price="14.5">3 VIANDES <span class="option-price">14.50€</span></div>
             </div>`;
-            state.builderSelections.type = { id: '1viande', price: 11 };
 
-            content.innerHTML += `<div class="step-title">Viande</div><div class="options-grid">`;
+            html += `<div class="step-title">Viande</div><div class="options-grid">`;
             VIANDES.forEach((v, i) => {
-                content.innerHTML += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
+                html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
             });
-            content.innerHTML += '</div>';
-            state.builderSelections.meat = VIANDES[0];
+            html += '</div>';
 
-            content.innerHTML += `<div class="step-title">Options</div><div class="options-grid big">
+            html += `<div class="step-title">Options</div><div class="options-grid big">
                 <div class="option-btn" onclick="toggleOption('naanFromage', this)" data-price="1">Naan Fromage <span class="option-price">+1€</span></div>
                 <div class="option-btn" onclick="toggleOption('boisson', this)" data-price="1">Boisson <span class="option-price">+1€</span></div>
             </div>`;
+
+            content.innerHTML = html;
+            state.builderSelections.type = { id: '1viande', price: 11 };
+            state.builderSelections.meat = VIANDES[0];
             state.builderSelections.naanFromage = false;
             state.builderSelections.boisson = false;
         }
 
         function buildBoxBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">Type de viande</div><div class="options-grid big">
+            content.innerHTML = `<div class="step-title">Type de viande</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('meat', 'steak', this)">STEAK</div>
                 <div class="option-btn" onclick="selectOption('meat', 'poulet', this)">POULET</div>
             </div>`;
@@ -1469,7 +1547,7 @@
         }
 
         function buildBurgerBuilder(content, product) {
-            content.innerHTML += `<div class="step-title">En menu ?</div><div class="options-grid big">
+            content.innerHTML = `<div class="step-title">En menu ?</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL <span class="option-price">${product.price.toFixed(2)}€</span></div>
                 <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
             </div>`;
@@ -1852,7 +1930,7 @@
             document.addEventListener(evt, resetIdleTimer);
         });
 
-        // ============ FERMETURE SECRÈTE ============
+        // ============ MENU ADMIN SECRET ============
         let secretClicks = 0;
         let secretTimer = null;
 
@@ -1861,17 +1939,54 @@
             clearTimeout(secretTimer);
 
             if (secretClicks >= 5) {
-                // 5 clics rapides = fermer
-                if (confirm('Fermer la borne ?')) {
-                    window.close();
-                    // Si window.close() ne marche pas (sécurité navigateur)
-                    window.location.href = 'about:blank';
-                }
+                document.getElementById('admin-modal').classList.add('active');
                 secretClicks = 0;
             } else {
                 secretTimer = setTimeout(() => {
                     secretClicks = 0;
-                }, 1500); // Reset après 1.5s
+                }, 1500);
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.remove('active');
+        }
+
+        function adminTestPrint() {
+            const ticketDiv = document.getElementById('ticket-print');
+            const date = new Date().toLocaleString('fr-FR');
+            ticketDiv.innerHTML = `<div>
+                <div style="text-align:center;font-weight:bold;">================================</div>
+                <div style="text-align:center;font-weight:bold;font-size:18px;">CHICKENZZ</div>
+                <div style="text-align:center;font-weight:bold;">================================</div>
+                <div style="text-align:center;font-size:16px;margin:10px 0;">TEST D'IMPRESSION</div>
+                <div style="border-top:1px dashed black;margin:10px 0;"></div>
+                <div>Date : ${date}</div>
+                <div>Imprimante OK ✓</div>
+                <div style="border-top:1px dashed black;margin:10px 0;"></div>
+                <div style="text-align:center;">Si vous lisez ceci,</div>
+                <div style="text-align:center;font-weight:bold;">l'impression fonctionne !</div>
+                <div style="text-align:center;font-weight:bold;">================================</div>
+            </div>`;
+            window.print();
+        }
+
+        function adminChoosePrinter() {
+            // Ouvre la boîte de dialogue système d'impression
+            // où on peut choisir le périphérique
+            const ticketDiv = document.getElementById('ticket-print');
+            ticketDiv.innerHTML = `<div style="text-align:center;">
+                <div style="font-weight:bold;">Choisissez votre imprimante dans la boîte de dialogue</div>
+            </div>`;
+            // En mode non-kiosk, window.print() ouvre le sélecteur d'imprimante
+            window.print();
+        }
+
+        function adminCloseKiosk() {
+            if (confirm('Êtes-vous sûr de vouloir fermer la borne ?')) {
+                closeAdminModal();
+                window.close();
+                window.location.href = 'about:blank';
             }
         }
 
