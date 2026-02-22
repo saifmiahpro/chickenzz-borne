@@ -87,6 +87,8 @@ const PRODUCTS = [
         image: '../AssetsTv4/SPICY.png',
         type: 'tacos',
         hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Kefta, Tikka • Cheddar • Chili-Thaï',
         sizes: [
             { id: 'M', name: 'M', price: 9.90, meatCount: 2 },
             { id: 'L', name: 'L', price: 12.90, meatCount: 3 },
@@ -101,6 +103,8 @@ const PRODUCTS = [
         image: '../AssetsTv4/CRISPY.png',
         type: 'tacos',
         hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Tenders • Oignon Frit, Miel',
         sizes: [
             { id: 'M', name: 'M', price: 9.90, meatCount: 2 },
             { id: 'L', name: 'L', price: 12.90, meatCount: 3 },
@@ -115,6 +119,8 @@ const PRODUCTS = [
         image: '../AssetsTv4/CHEF.png',
         type: 'tacos',
         hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Cordon Bleu, Tenders • Boursin, Miami',
         sizes: [
             { id: 'M', name: 'M', price: 9.90, meatCount: 2 },
             { id: 'L', name: 'L', price: 12.90, meatCount: 3 },
@@ -129,6 +135,8 @@ const PRODUCTS = [
         image: '../AssetsTv4/CHEVRE.png',
         type: 'tacos',
         hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Tenders, Steak • Chèvre • Œuf',
         sizes: [
             { id: 'M', name: 'M', price: 9.90, meatCount: 2 },
             { id: 'L', name: 'L', price: 12.90, meatCount: 3 },
@@ -143,6 +151,8 @@ const PRODUCTS = [
         image: '../AssetsTv4/ORIENTAL.png',
         type: 'tacos',
         hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Kebab, Tenders • Algérienne • Raclette',
         sizes: [
             { id: 'M', name: 'M', price: 9.90, meatCount: 2 },
             { id: 'L', name: 'L', price: 12.90, meatCount: 3 },
@@ -176,7 +186,9 @@ const PRODUCTS = [
         image: '../AssetsTv2/naan_royal_real_png.png',
         price: 9.50,
         type: 'naan',
-        hasBuilder: true
+        hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Poulet Tikka, Tenders • Cheddar, Oignons Frits'
     },
     {
         id: 'naan_cheesy',
@@ -186,7 +198,9 @@ const PRODUCTS = [
         image: '../AssetsTv2/naan_cheesy_real_png.png',
         price: 10.00,
         type: 'naan',
-        hasBuilder: true
+        hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Steak, Cordon Bleu • Sauce Fromage • Raclette'
     },
     {
         id: 'naan_spicy',
@@ -196,7 +210,9 @@ const PRODUCTS = [
         image: '../AssetsTv2/naan_spicy_real_png.png',
         price: 9.50,
         type: 'naan',
-        hasBuilder: true
+        hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Tikka, Kefta • Algérienne'
     },
     {
         id: 'naan_mexicain',
@@ -206,7 +222,9 @@ const PRODUCTS = [
         image: '../AssetsTv2/naan_mexicain_real_png.png',
         price: 9.50,
         type: 'naan',
-        hasBuilder: true
+        hasBuilder: true,
+        isSpecial: true,
+        defaultIngredients: 'Poulet Tikka, Tenders • Chili-Thaï'
     },
     {
         id: 'naan_sandwich_link',
@@ -217,7 +235,7 @@ const PRODUCTS = [
         price: 7.90,
         type: 'sandwich',
         hasBuilder: true,
-        isLink: true
+        isCustom: true
     },
 
     // ==================== SANDWICHS ====================

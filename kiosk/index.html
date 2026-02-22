@@ -245,11 +245,11 @@
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: clamp(12px, 1.5vh, 18px) clamp(15px, 1.5vw, 25px);
+            gap: 15px;
+            padding: clamp(15px, 2vh, 22px) clamp(18px, 2vw, 30px);
             cursor: pointer;
             border-left: 4px solid transparent;
-            font-size: clamp(14px, 1.8vw, 20px);
+            font-size: clamp(18px, 2.2vw, 26px);
             font-weight: 600;
         }
 
@@ -264,8 +264,8 @@
         }
 
         .nav-item img {
-            width: clamp(30px, 4vw, 45px);
-            height: clamp(30px, 4vw, 45px);
+            width: clamp(40px, 5vw, 60px);
+            height: clamp(40px, 5vw, 60px);
             object-fit: contain;
         }
 
@@ -418,13 +418,13 @@
 
         .product-card h4 {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(20px, 2.5vw, 30px);
+            font-size: clamp(24px, 3vw, 36px);
             color: var(--text);
             margin-bottom: 0.5vh;
         }
 
         .product-card .desc {
-            font-size: clamp(12px, 1.4vw, 16px);
+            font-size: clamp(14px, 1.8vw, 20px);
             color: var(--text-dim);
             margin-bottom: 1vh;
             flex: 1;
@@ -432,7 +432,7 @@
 
         .product-card .price {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(22px, 3vw, 34px);
+            font-size: clamp(26px, 3.5vw, 40px);
             color: var(--yellow);
         }
 
@@ -488,12 +488,12 @@
 
         .cart-item-info h4 {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(16px, 2vw, 24px);
+            font-size: clamp(20px, 2.5vw, 30px);
             margin-bottom: 0.5vh;
         }
 
         .cart-item-info .details {
-            font-size: clamp(12px, 1.4vw, 16px);
+            font-size: clamp(14px, 1.8vw, 20px);
             color: var(--text-dim);
         }
 
@@ -539,6 +539,22 @@
             border: none;
             font-size: clamp(16px, 2vw, 24px);
             cursor: pointer;
+        }
+
+        .edit-btn {
+            background: var(--yellow);
+            color: var(--dark);
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: clamp(12px, 1.4vw, 16px);
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .edit-btn:active {
+            opacity: 0.8;
         }
 
         .cart-footer {
@@ -671,6 +687,15 @@
             letter-spacing: 1px;
         }
 
+        .builder-subtitle {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(18px, 2.5vw, 28px);
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 2vh;
+            opacity: 0.9;
+        }
+
         .options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -684,10 +709,10 @@
             background: var(--glass);
             border: 3px solid var(--border);
             border-radius: 15px;
-            padding: clamp(14px, 2vh, 25px) clamp(8px, 1vw, 15px);
+            padding: clamp(18px, 2.5vh, 30px) clamp(10px, 1.5vw, 20px);
             text-align: center;
             cursor: pointer;
-            font-size: clamp(16px, 2.2vw, 26px);
+            font-size: clamp(18px, 2.5vw, 30px);
             font-weight: 600;
             display: flex;
             flex-direction: column;
@@ -1299,8 +1324,14 @@
             prevBtn.style.visibility = stepNum === 1 ? 'hidden' : 'visible';
 
             if (stepNum === state.builderTotalSteps) {
-                nextBtn.textContent = 'AJOUTER';
-                nextBtn.onclick = addToCartFromBuilder;
+                // Mode édition ou ajout ?
+                if (state.editingCartItemId) {
+                    nextBtn.textContent = 'MODIFIER';
+                    nextBtn.onclick = updateCartItemFromBuilder;
+                } else {
+                    nextBtn.textContent = 'COMPLÉTER MA COMMANDE';
+                    nextBtn.onclick = addToCartFromBuilder;
+                }
             } else {
                 nextBtn.textContent = 'SUIVANT';
                 nextBtn.onclick = nextBuilderStep;
@@ -1322,6 +1353,31 @@
         function buildTacosBuilder(content, product) {
             let html = '';
 
+            // TACOS SPÉCIAL : seulement Taille + Menu
+            if (product.isSpecial) {
+                // Step 1: Taille
+                html += `<div class="step-title">Choisissez la taille</div><div class="options-grid big">`;
+                product.sizes.forEach((size, i) => {
+                    html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
+                        ${size.name} <span class="option-price">${size.price.toFixed(2)}€</span>
+                    </div>`;
+                });
+                html += '</div>';
+
+                // Step 2: Menu
+                html += `<div class="step-title">En menu ? (Frites + Boisson)</div><div class="options-grid big">
+                    <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL</div>
+                    <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+                </div>`;
+
+                content.innerHTML = html;
+                state.builderSelections.size = product.sizes[0];
+                state.builderSelections.menu = false;
+                state.builderSelections.isSpecial = true;
+                return;
+            }
+
+            // TACOS CUSTOM : composition complète
             // Step 1: Taille
             html += `<div class="step-title">1. Choisissez la taille</div><div class="options-grid big">`;
             product.sizes.forEach((size, i) => {
@@ -1331,38 +1387,36 @@
             });
             html += '</div>';
 
-            // Step 2: Viandes
-            html += `<div class="step-title">2. Choisissez vos viandes</div><div class="options-grid">`;
+            // Step 2: Viandes + Sauces (combinés)
+            html += `<div class="step-title">2. Viandes & Sauces</div>`;
+            html += `<div class="builder-subtitle">Viandes (selon taille)</div><div class="options-grid">`;
             VIANDES.forEach(v => {
                 html += `<div class="option-btn" onclick="toggleMeat('${v.id}', this)">${v.name}</div>`;
             });
             html += '</div>';
-
-            // Step 3: Gratin
-            let initialGratinPrice = (product.sizes[0].id === 'L' || product.sizes[0].id === 'XL') ? 2.50 : 2.00;
-            html += `<div class="step-title">3. Gratiner ? (optionnel)</div><div class="options-grid">
-                <div class="option-btn selected" onclick="selectOption('gratin', 'none', this)">Sans gratin</div>`;
-            GRATINS.forEach(g => {
-                html += `<div class="option-btn" onclick="selectOption('gratin', '${g.id}', this)">${g.name} <span class="option-price gratin-price-display">+${initialGratinPrice.toFixed(2)}€</span></div>`;
-            });
-            html += '</div>';
-
-            // Step 4: Sauces
-            html += `<div class="step-title">4. Sauces (3 max)</div><div class="options-grid">`;
+            html += `<div class="builder-subtitle" style="margin-top:15px;">Sauces (3 max)</div><div class="options-grid">`;
             SAUCES.forEach(s => {
                 html += `<div class="option-btn" onclick="toggleSauce('${s.id}', this)">${s.name}</div>`;
             });
             html += '</div>';
 
-            // Step 5: Suppléments
-            html += `<div class="step-title">5. Suppléments (optionnels)</div><div class="options-grid">`;
+            // Step 3: Gratin + Suppléments (combinés)
+            let initialGratinPrice = (product.sizes[0].id === 'L' || product.sizes[0].id === 'XL') ? 2.50 : 2.00;
+            html += `<div class="step-title">3. Extras (optionnels)</div>`;
+            html += `<div class="builder-subtitle">Gratiner ?</div><div class="options-grid">
+                <div class="option-btn selected" onclick="selectOption('gratin', 'none', this)">Sans gratin</div>`;
+            GRATINS.forEach(g => {
+                html += `<div class="option-btn" onclick="selectOption('gratin', '${g.id}', this)">${g.name} <span class="option-price gratin-price-display">+${initialGratinPrice.toFixed(2)}€</span></div>`;
+            });
+            html += '</div>';
+            html += `<div class="builder-subtitle" style="margin-top:15px;">Suppléments</div><div class="options-grid">`;
             SUPPLEMENTS.forEach(supp => {
                 html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
             });
             html += '</div>';
 
-            // Step 6: Menu
-            html += `<div class="step-title">6. En menu ?</div><div class="options-grid big">
+            // Step 4: Menu
+            html += `<div class="step-title">4. En menu ? (Frites + Boisson)</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL</div>
                 <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
             </div>`;
@@ -1377,6 +1431,20 @@
         }
 
         function buildNaanBuilder(content, product) {
+            // NAAN SPÉCIAL : seulement formule (seul/menu/mega)
+            if (product.isSpecial) {
+                content.innerHTML = `<div class="step-title">En menu ? (Frites + Boisson)</div><div class="options-grid big">
+                    <div class="option-btn selected" onclick="selectOption('formula', 'seul', this)" data-price="0">SEUL</div>
+                    <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+                    <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3.50€</span></div>
+                </div>`;
+                state.builderSelections.formula = { id: 'seul', price: 0 };
+                state.builderSelections.basePrice = product.price;
+                state.builderSelections.isSpecial = true;
+                return;
+            }
+
+            // NAAN CUSTOM (compose ton sandwich via naan)
             content.innerHTML = `<div class="step-title">Choisissez la formule</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('formula', 'seul', this)" data-price="0">SEUL</div>
                 <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2€</span></div>
@@ -1668,6 +1736,7 @@
 
         function closeBuilder() {
             document.getElementById('builder-modal').classList.remove('active');
+            state.editingCartItemId = null; // Reset le mode édition
         }
 
         function addToCartFromBuilder() {
@@ -1677,25 +1746,46 @@
             let cartName = product.name;
 
             if (product.type === 'tacos') {
-                // Pour les tacos custom, afficher "Tacos XL" etc.
-                if (product.isCustom) {
+                // Nom : "Tacos Spicy XL" ou "Tacos M"
+                if (product.isSpecial) {
+                    cartName = `${product.name} ${sel.size?.name || 'M'}`;
+                    // Ingrédients par défaut du produit
+                    if (product.defaultIngredients) {
+                        details.push(product.defaultIngredients);
+                    }
+                } else {
                     cartName = `Tacos ${sel.size?.name || 'M'}`;
+                    // Ordre: Viandes + Sauces ensemble, puis Gratins à la fin
+                    let viandesSauces = [];
+                    if (sel.meats?.length) viandesSauces.push(sel.meats.map(m => m.name).join(', '));
+                    if (sel.sauces?.length) viandesSauces.push(sel.sauces.map(s => s.name).join(', '));
+                    if (viandesSauces.length) details.push(viandesSauces.join(' • '));
+                    if (sel.gratin && sel.gratin.id !== 'none') details.push('Gratin ' + sel.gratin.name);
+                    if (sel.supplements?.length) details.push('+ ' + sel.supplements.map(s => s.name).join(', '));
                 }
-                if (sel.meats?.length) details.push(sel.meats.map(m => m.name).join(', '));
-                if (sel.gratin && sel.gratin.id !== 'none') details.push('Gratin ' + sel.gratin.name);
-                if (sel.sauces?.length) details.push(sel.sauces.map(s => s.name).join(', '));
-                if (sel.supplements?.length) details.push('+ ' + sel.supplements.map(s => s.name).join(', + '));
-                if (sel.menu) details.push('MENU');
+                if (sel.menu) details.push('MENU (Frites + Boisson)');
             } else if (product.type === 'naan') {
-                if (sel.formula?.id === 'menu') details.push('MENU');
+                // Naan spécial ou custom
+                if (product.isSpecial) {
+                    if (product.defaultIngredients) {
+                        details.push(product.defaultIngredients);
+                    }
+                }
+                if (sel.formula?.id === 'menu') details.push('MENU (Frites + Boisson)');
                 else if (sel.formula?.id === 'mega') details.push('MÉGA XL');
             } else if (product.type === 'sandwich') {
-                details.push(sel.formula?.id === 'mega' ? 'Méga XL' : 'Classique');
-                if (sel.bread) details.push(sel.bread.name);
-                if (sel.meat?.name) details.push(sel.meat.name);
-                if (sel.sauces?.length) details.push(sel.sauces.map(s => s.name).join(', '));
-                if (sel.supplements?.length) details.push('+ ' + sel.supplements.map(s => s.name).join(', + '));
-                if (sel.menuOpt) details.push('MENU');
+                // Nom correct avec le pain choisi
+                if (sel.bread) {
+                    cartName = sel.bread.name;
+                }
+                if (sel.formula?.id === 'mega') details.push('Méga XL');
+                // Ordre: Viande + Sauces ensemble
+                let viandesSauces = [];
+                if (sel.meat?.name) viandesSauces.push(sel.meat.name);
+                if (sel.sauces?.length) viandesSauces.push(sel.sauces.map(s => s.name).join(', '));
+                if (viandesSauces.length) details.push(viandesSauces.join(' • '));
+                if (sel.supplements?.length) details.push('+ ' + sel.supplements.map(s => s.name).join(', '));
+                if (sel.menuOpt) details.push('MENU (Frites + Boisson)');
             } else if (product.type === 'bowl') {
                 if (sel.size?.id === 'xl') details.push('XL');
                 if (sel.meat?.name) details.push(sel.meat.name);
@@ -1710,9 +1800,10 @@
             } else if (product.type === 'box') {
                 details.push(sel.meat === 'poulet' ? 'Poulet' : 'Steak');
             } else if (product.menuUpgrade && sel.menu) {
-                details.push('MENU');
+                details.push('MENU (Frites + Boisson)');
             }
 
+            // Sauvegarder les sélections pour pouvoir modifier plus tard
             state.cart.push({
                 id: Date.now(),
                 product: product,
@@ -1720,6 +1811,7 @@
                 price: sel.totalPrice || product.price,
                 quantity: 1,
                 details: details.join(' • '),
+                selections: JSON.parse(JSON.stringify(sel)),
                 image: product.image
             });
 
@@ -1754,11 +1846,13 @@
             } else {
                 let html = '';
                 state.cart.forEach(item => {
+                    const hasBuilder = item.product && item.product.hasBuilder;
                     html += `<div class="cart-item">
                         <img src="${item.image}" alt="${item.name}" onerror="this.src='../AssetsTv3/chickenzz_logo.jpg'">
                         <div class="cart-item-info">
                             <h4>${item.name}</h4>
                             <p class="details">${item.details}</p>
+                            ${hasBuilder ? `<button class="edit-btn" onclick="editCartItem(${item.id})">✎ Modifier</button>` : ''}
                         </div>
                         <div class="cart-item-qty">
                             <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
@@ -1790,6 +1884,48 @@
             state.cart = state.cart.filter(i => i.id !== itemId);
             renderCart();
             updateCartCount();
+        }
+
+        function editCartItem(itemId) {
+            const item = state.cart.find(i => i.id === itemId);
+            if (!item || !item.product) return;
+
+            // Stocker l'ID de l'item en cours d'édition
+            state.editingCartItemId = itemId;
+
+            // Fermer le panier et ouvrir le builder
+            hideCart();
+            state.currentProduct = item.product;
+            state.builderSelections = item.selections ? JSON.parse(JSON.stringify(item.selections)) : {};
+
+            document.getElementById('builder-title').textContent = 'Modifier: ' + item.product.name;
+
+            const content = document.getElementById('builder-content');
+            content.innerHTML = '';
+
+            if (item.product.type === 'tacos') buildTacosBuilder(content, item.product);
+            else if (item.product.type === 'naan') buildNaanBuilder(content, item.product);
+            else if (item.product.type === 'sandwich') buildSandwichBuilder(content, item.product);
+            else if (item.product.type === 'bowl') buildBowlBuilder(content, item.product);
+            else if (item.product.type === 'poutine') buildPoutineBuilder(content, item.product);
+            else if (item.product.type === 'assiette') buildAssietteBuilder(content, item.product);
+            else if (item.product.type === 'box') buildBoxBuilder(content, item.product);
+            else if (item.product.menuUpgrade) buildBurgerBuilder(content, item.product);
+
+            processBuilderSteps();
+            updateBuilderPrice();
+            document.getElementById('builder-modal').classList.add('active');
+        }
+
+        function updateCartItemFromBuilder() {
+            const itemId = state.editingCartItemId;
+            const item = state.cart.find(i => i.id === itemId);
+            if (!item) return;
+
+            // Supprimer l'ancien et ajouter le nouveau
+            removeFromCart(itemId);
+            state.editingCartItemId = null;
+            addToCartFromBuilder();
         }
 
         // ============ VALIDATION & RESET ============
