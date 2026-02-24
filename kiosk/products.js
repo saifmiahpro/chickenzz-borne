@@ -30,6 +30,29 @@ const SAUCES = [
     { id: 'miami', name: 'Miami' }
 ];
 
+const BOISSONS_33 = [
+    { id: 'oasis_tropical', name: 'Oasis Tropical' },
+    { id: 'oasis_pcf', name: 'Oasis Pomme Cassis Framboise' },
+    { id: 'oasis_ff', name: 'Oasis Fraise Framboise' },
+    { id: 'dada_peche', name: 'Dada Pêche' },
+    { id: 'dada_melon', name: 'Dada Melon' },
+    { id: 'dada_litchi', name: 'Dada Litchi' },
+    { id: 'dada_cerise', name: 'Dada Cerise' },
+    { id: 'dada_fraise', name: 'Dada Fraise' },
+    { id: '7up', name: '7Up' },
+    { id: '7up_mojito', name: '7Up Mojito' },
+    { id: 'sprite', name: 'Sprite' },
+    { id: 'orangina', name: 'Orangina' },
+    { id: 'fanta_orange', name: 'Fanta Orange' },
+    { id: 'fanta_citron', name: 'Fanta Citron' },
+    { id: 'fanta_dragon', name: 'Fanta Fruit du Dragon' },
+    { id: 'hawaii', name: 'Hawaii' },
+    { id: 'schweppes_agrum', name: 'Schweppes Agrum' },
+    { id: 'pepsi', name: 'Pepsi' },
+    { id: 'pepsi_max', name: 'Pepsi Max' },
+    { id: 'eau', name: 'Eau' }
+];
+
 const PAINS = [
     { id: 'naan_nature', name: 'Naan Nature' },
     { id: 'naan_fromage', name: 'Naan Fromage' },
@@ -49,8 +72,6 @@ const GRATINS = [
 ];
 
 const SUPPLEMENTS = [
-    { id: 'supp_viande', name: 'Viande Supplémentaire', price: 2.00 },
-    { id: 'supp_tenders', name: '1 Tender', price: 1.50 },
     { id: 'supp_cheddar', name: 'Cheddar', price: 1.00 },
     { id: 'supp_raclette', name: 'Raclette', price: 1.50 },
     { id: 'supp_chevre', name: 'Chèvre', price: 1.50 },
@@ -59,17 +80,30 @@ const SUPPLEMENTS = [
     { id: 'supp_bacon', name: 'Bacon', price: 1.50 }
 ];
 
+// Viandes supplémentaires (choix de viande à +1.50€)
+const VIANDES_SUPP = VIANDES.map(v => ({ ...v, price: 1.50 }));
+
+// Éléments qu'on peut retirer
+const RETRAITS = [
+    { id: 'sans_salade', name: 'Sans Salade' },
+    { id: 'sans_tomate', name: 'Sans Tomate' },
+    { id: 'sans_oignon', name: 'Sans Oignon' },
+    { id: 'sans_sauce_fromagere', name: 'Sans Sauce Fromagère' },
+    { id: 'sans_crudites', name: 'Sans Crudités' }
+];
+
 // Catégories
 const CATEGORIES = [
     { id: 'tacos', name: 'Tacos', image: '../AssetsTv4/tacos.png' },
     { id: 'naans', name: 'Naans', image: '../AssetsTv2/naan_royal_real_png.png' },
     { id: 'sandwichs', name: 'Sandwichs', image: '../AssetsTv2/sandwich deco pain rond.png' },
+    { id: 'buckets', name: 'Buckets', image: '../VALIDATED_TVS/TV1/AssetsTv1/Bucket 1.png' },
     { id: 'assiettes', name: 'Assiettes', image: '../AssetsTv3/assiette 1 viande.png' },
     { id: 'bowls', name: 'Bowls', image: '../AssetsTv3/classique bowl.png' },
     { id: 'boxes', name: 'Boxes', image: '../AssetsTv3/SINGLE BOX.png' },
     { id: 'burgers', name: 'Burgers', image: '../AssetsTv3/smash_burger_real.png' },
     { id: 'poutines', name: 'Poutines', image: '../AssetsTv5/poutine.png' },
-    { id: 'tex_mex', name: 'Tex Mex', image: '../AssetsTv3/chicken_cheese.png' },
+    { id: 'tex_mex', name: 'Tex Mex', image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png' },
     { id: 'salades', name: 'Salades', image: '../AssetsTv5/salade.png' },
     { id: 'desserts', name: 'Desserts', image: '../AssetsTv5/panini nutella.png' },
     { id: 'boissons', name: 'Boissons', image: '../AssetsTv3/frite boisson.png' },
@@ -79,6 +113,25 @@ const CATEGORIES = [
 // Produits
 const PRODUCTS = [
     // ==================== TACOS ====================
+    // COMPOSE EN PREMIER
+    {
+        id: 'tacos_custom',
+        category: 'tacos',
+        name: 'Tacos',
+        displayName: 'Compose ton Tacos',
+        description: 'Choisis ta taille, tes viandes et tes sauces',
+        image: '../AssetsTv4/tacos.png',
+        type: 'tacos',
+        hasBuilder: true,
+        isCustom: true,
+        sizes: [
+            { id: 'S', name: 'S', price: 6.90, meatCount: 1 },
+            { id: 'M', name: 'M', price: 7.90, meatCount: 2 },
+            { id: 'L', name: 'L', price: 9.90, meatCount: 3 },
+            { id: 'XL', name: 'XL', price: 14.90, meatCount: 4 }
+        ]
+    },
+    // TACOS SPÉCIAUX
     {
         id: 'tacos_spicy',
         category: 'tacos',
@@ -159,25 +212,21 @@ const PRODUCTS = [
             { id: 'XL', name: 'XL', price: 15.90, meatCount: 4 }
         ]
     },
-    {
-        id: 'tacos_custom',
-        category: 'tacos',
-        name: 'Tacos',
-        displayName: 'Compose ton Tacos',
-        description: 'Choisis ta taille, tes viandes et tes sauces',
-        image: '../AssetsTv4/tacos.png',
-        type: 'tacos',
-        hasBuilder: true,
-        isCustom: true,
-        sizes: [
-            { id: 'S', name: 'S', price: 6.90, meatCount: 1 },
-            { id: 'M', name: 'M', price: 7.90, meatCount: 2 },
-            { id: 'L', name: 'L', price: 9.90, meatCount: 3 },
-            { id: 'XL', name: 'XL', price: 14.90, meatCount: 4 }
-        ]
-    },
 
     // ==================== NAANS ====================
+    // COMPOSE EN PREMIER
+    {
+        id: 'naan_sandwich_link',
+        category: 'naans',
+        name: 'Compose ton Sandwich',
+        description: 'Pain, viande, sauce au choix',
+        image: '../AssetsTv2/sandwich deco pain rond.png',
+        price: 7.90,
+        type: 'sandwich',
+        hasBuilder: true,
+        isCustom: true
+    },
+    // NAANS SPÉCIAUX
     {
         id: 'naan_royal',
         category: 'naans',
@@ -226,17 +275,6 @@ const PRODUCTS = [
         isSpecial: true,
         defaultIngredients: 'Poulet Tikka, Tenders • Chili-Thaï'
     },
-    {
-        id: 'naan_sandwich_link',
-        category: 'naans',
-        name: 'Compose ton Sandwich',
-        description: 'Pain, viande, sauce au choix',
-        image: '../AssetsTv2/sandwich deco pain rond.png',
-        price: 7.90,
-        type: 'sandwich',
-        hasBuilder: true,
-        isCustom: true
-    },
 
     // ==================== SANDWICHS ====================
     {
@@ -248,6 +286,55 @@ const PRODUCTS = [
         price: 7.90,
         type: 'sandwich',
         hasBuilder: true
+    },
+
+    // ==================== BUCKETS ====================
+    {
+        id: 'bucket_1',
+        category: 'buckets',
+        name: 'Bucket 1',
+        description: '3 Wings + 2 Tenders + Frites + Boisson',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/Bucket 1.png',
+        price: 7.90,
+        type: 'bucket',
+        hasBuilder: true,
+        includesFrites: true,
+        includesBoisson: true
+    },
+    {
+        id: 'bucket_2',
+        category: 'buckets',
+        name: 'Bucket 2',
+        description: '5 Wings + 3 Tenders + Frites + Boisson',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/bucket 2.png',
+        price: 9.90,
+        type: 'bucket',
+        hasBuilder: true,
+        includesFrites: true,
+        includesBoisson: true
+    },
+    {
+        id: 'bucket_3',
+        category: 'buckets',
+        name: 'Bucket 3',
+        description: '7 Wings + 5 Tenders + 4 Mozza + 2 Frites + 2 Boissons',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/bucket 3.png',
+        price: 18.90,
+        type: 'bucket',
+        hasBuilder: true,
+        includesFrites: true,
+        includesBoisson: true
+    },
+    {
+        id: 'bucket_4',
+        category: 'buckets',
+        name: 'Bucket 4',
+        description: '8 Tenders + 8 Wings + 6 Mozza + 10 Rings + 3 Frites',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/bucket 4.png',
+        price: 28.90,
+        type: 'bucket',
+        hasBuilder: true,
+        includesFrites: true
     },
 
     // ==================== ASSIETTES ====================
@@ -468,11 +555,75 @@ const PRODUCTS = [
         price: 5.00
     },
     {
+        id: 'jalapenos_5',
+        category: 'tex_mex',
+        name: 'Jalapenos x5',
+        description: 'Jalapeños frits au fromage',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 5.50
+    },
+    {
+        id: 'oignons_7',
+        category: 'tex_mex',
+        name: 'Oignons Rings x7',
+        description: 'Onion rings croustillants',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 5.50
+    },
+    {
+        id: 'nems_5',
+        category: 'tex_mex',
+        name: 'Nems x5',
+        description: 'Nems croustillants',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 6.00
+    },
+    {
+        id: 'mozza_6',
+        category: 'tex_mex',
+        name: 'Mozza Sticks x6',
+        description: 'Bâtonnets de mozzarella',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 5.00
+    },
+    {
+        id: 'camembert_6',
+        category: 'tex_mex',
+        name: 'Camembert x6',
+        description: 'Camembert pané',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 5.00
+    },
+    {
+        id: 'chevre_5',
+        category: 'tex_mex',
+        name: 'Chèvre x5',
+        description: 'Fromage de chèvre pané',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 6.00
+    },
+    {
+        id: 'king_prawn',
+        category: 'tex_mex',
+        name: 'King Prawn',
+        description: 'Crevettes panées',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 6.50
+    },
+    {
+        id: 'samoussas',
+        category: 'tex_mex',
+        name: 'Samoussas',
+        description: 'Samoussas croustillants',
+        image: '../AssetsTv3/chicken_cheese.png',
+        price: 4.50
+    },
+    {
         id: 'korean_wings',
         category: 'tex_mex',
         name: 'Korean Wings',
         description: 'Wings sauce coréenne',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png',
         price: 6.90
     },
     {
@@ -480,7 +631,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Korean Tenders',
         description: 'Tenders sauce coréenne',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_tenders.png',
         price: 6.90
     },
 
@@ -541,49 +692,19 @@ const PRODUCTS = [
         name: 'Tarte Daim',
         description: 'Croustillant',
         image: '../AssetsTv2/tatre daim.png',
-        price: 3.90
+        price: 2.50
     },
 
     // ==================== BOISSONS ====================
     {
-        id: 'pepsi_33',
+        id: 'boisson_33',
         category: 'boissons',
-        name: 'Pepsi 33cl',
-        description: '',
+        name: 'Boisson 33cl',
+        description: 'Au choix',
         image: '../AssetsTv3/frite boisson.png',
-        price: 2.00
-    },
-    {
-        id: 'pepsi_max_33',
-        category: 'boissons',
-        name: 'Pepsi Max 33cl',
-        description: '',
-        image: '../AssetsTv3/frite boisson.png',
-        price: 2.00
-    },
-    {
-        id: 'oasis_33',
-        category: 'boissons',
-        name: 'Oasis 33cl',
-        description: '',
-        image: '../AssetsTv3/frite boisson.png',
-        price: 2.00
-    },
-    {
-        id: 'ice_tea_33',
-        category: 'boissons',
-        name: 'Ice Tea 33cl',
-        description: '',
-        image: '../AssetsTv3/frite boisson.png',
-        price: 2.00
-    },
-    {
-        id: 'eau_33',
-        category: 'boissons',
-        name: 'Eau 33cl',
-        description: '',
-        image: '../AssetsTv3/frite boisson.png',
-        price: 1.50
+        price: 1.70,
+        type: 'boisson_seule',
+        hasBuilder: true
     },
     {
         id: 'pepsi_150',
@@ -617,7 +738,9 @@ const PRODUCTS = [
         name: 'Menu Nuggets',
         description: 'Nuggets + Frites + Boisson',
         image: '../AssetsTv3/chicken_cheese.png',
-        price: 6.90
+        price: 6.90,
+        type: 'enfant',
+        hasBuilder: true
     },
     {
         id: 'enfant_tenders',
@@ -625,6 +748,8 @@ const PRODUCTS = [
         name: 'Menu Tenders',
         description: 'Tenders + Frites + Boisson',
         image: '../AssetsTv3/chicken_cheese.png',
-        price: 6.90
+        price: 6.90,
+        type: 'enfant',
+        hasBuilder: true
     }
 ];

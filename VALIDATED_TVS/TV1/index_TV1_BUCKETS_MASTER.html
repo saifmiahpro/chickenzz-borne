@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHICKENZZ - TV1 BUCKETS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --yellow: #FFC000;
+            --dark: #080808;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #screen {
+            width: 1920px;
+            height: 1080px;
+            background: #0a0a0a;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            display: grid;
+            grid-template-columns: 600px 1fr;
+            grid-template-rows: 80px 1fr 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* === LEFT SIDEBAR (FULL HEIGHT) === */
+        .sidebar {
+            grid-row: 1 / 4;
+            background: linear-gradient(135deg, rgba(255, 192, 0, 0.04) 0%, transparent 100%);
+            border-right: 5px solid var(--yellow);
+            padding: 25px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-title {
+            font-family: 'Anton';
+            font-size: 75px;
+            color: #fff;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title span {
+            color: var(--yellow);
+        }
+
+        /* Tex Mex Grid - 2 colonnes compactes */
+        .tex-mex-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            flex: 1;
+        }
+
+        .tex-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tex-item .name {
+            font-family: 'Barlow Condensed';
+            font-weight: 700;
+            font-size: 20px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .tex-item .price {
+            font-family: 'Anton';
+            font-size: 24px;
+            color: var(--yellow);
+        }
+
+        /* === TOP BAR (Right side) === */
+        .top-bar {
+            background: linear-gradient(180deg, #000 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 40px;
+            gap: 40px;
+        }
+
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fff;
+        }
+
+        .top-brand h1 {
+            font-family: 'Anton';
+            font-size: 32px;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .top-brand h1 span {
+            color: var(--yellow);
+        }
+
+        .top-brand p {
+            font-family: 'Oswald';
+            font-size: 12px;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        .top-halal {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 192, 0, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 192, 0, 0.3);
+        }
+
+        .top-halal .ar {
+            font-size: 24px;
+            color: var(--yellow);
+        }
+
+        .top-halal .text {
+            font-family: 'Anton';
+            font-size: 18px;
+            color: #fff;
+        }
+
+        /* === RIGHT: ANIMATED BUCKETS === */
+        .stage {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            padding: 25px 35px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* Vue Globale: 4 Buckets */
+        .global-title {
+            font-family: 'Anton';
+            font-size: 55px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .global-title span {
+            color: var(--yellow);
+        }
+
+        .bucket-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .bucket-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            padding: 15px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bucket-card img {
+            width: 160px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.7));
+        }
+
+        .bucket-card .info {
+            flex: 1;
+        }
+
+        .bucket-card .name {
+            font-family: 'Anton';
+            font-size: 34px;
+            color: #fff;
+        }
+
+        .bucket-card .desc {
+            font-family: 'Barlow Condensed';
+            font-size: 17px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .bucket-card .price {
+            font-family: 'Anton';
+            font-size: 50px;
+            color: var(--yellow);
+        }
+
+        /* Vue Solo: Bucket Hero */
+        .solo-layout {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .solo-info {
+            flex: 1;
+        }
+
+        .solo-info .name {
+            font-family: 'Anton';
+            font-size: 130px;
+            color: #fff;
+            line-height: 0.85;
+            margin-bottom: 20px;
+        }
+
+        .solo-info .list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .solo-info .item {
+            font-family: 'Barlow Condensed';
+            font-weight: 700;
+            font-size: 42px;
+            color: #ddd;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .solo-info .item::before {
+            content: '✓';
+            color: var(--yellow);
+            font-size: 36px;
+        }
+
+        .solo-info .price {
+            font-family: 'Anton';
+            font-size: 110px;
+            color: var(--yellow);
+        }
+
+        .solo-image {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .solo-image img {
+            max-height: 550px;
+            object-fit: contain;
+            filter: drop-shadow(0 50px 80px rgba(0, 0, 0, 0.9));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* === BOTTOM RIGHT: Frites + Menu === */
+        .bottom-right {
+            background: linear-gradient(180deg, transparent 0%, #000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 35px;
+            gap: 40px;
+        }
+
+        .extra-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 18px 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .extra-card img {
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .extra-card .info h4 {
+            font-family: 'Oswald';
+            font-size: 22px;
+            color: #fff;
+        }
+
+        .extra-card .info p {
+            font-family: 'Barlow Condensed';
+            font-size: 18px;
+            color: #aaa;
+        }
+
+        .extra-card .info strong {
+            font-family: 'Anton';
+            font-size: 28px;
+            color: var(--yellow);
+        }
+
+        .menu-box {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--yellow);
+            padding: 20px 35px;
+            border-radius: 15px;
+        }
+
+        .menu-box img {
+            height: 80px;
+        }
+
+        .menu-box .info h4 {
+            font-family: 'Anton';
+            font-size: 32px;
+            color: #000;
+        }
+
+        .menu-box .info p {
+            font-family: 'Barlow Condensed';
+            font-size: 18px;
+            color: #333;
+        }
+
+        .menu-box .info strong {
+            font-family: 'Anton';
+            font-size: 36px;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="screen">
+
+        <!-- LEFT SIDEBAR: TEX MEX -->
+        <div class="sidebar">
+            <div class="sidebar-title">TEX <span>MEX</span></div>
+            <div class="tex-mex-grid">
+                <div class="tex-item"><span class="name">Wings X5</span><span class="price">5€</span></div>
+                <div class="tex-item"><span class="name">Tenders X5</span><span class="price">6€</span></div>
+                <div class="tex-item"><span class="name">Nuggets X6</span><span class="price">5€</span></div>
+                <div class="tex-item"><span class="name">Jalapenos X5</span><span class="price">5.50€</span></div>
+                <div class="tex-item"><span class="name">Oignons X7</span><span class="price">5.50€</span></div>
+                <div class="tex-item"><span class="name">Nems X5</span><span class="price">6€</span></div>
+                <div class="tex-item"><span class="name">Mozza X6</span><span class="price">5€</span></div>
+                <div class="tex-item"><span class="name">Camembert X6</span><span class="price">5€</span></div>
+                <div class="tex-item"><span class="name">Chèvre X5</span><span class="price">6€</span></div>
+                <div class="tex-item"><span class="name">King Prawn</span><span class="price">6.50€</span></div>
+                <div class="tex-item"><span class="name">Samoussas</span><span class="price">4.50€</span></div>
+            </div>
+        </div>
+
+        <!-- TOP BAR (Right side) -->
+        <div class="top-bar">
+            <div class="top-left">
+                <img src="assets/logo_new.jpg" alt="Chickenzz" class="top-logo">
+                <div class="top-brand">
+                    <h1>FRIED <span>CHICKENZZ</span></h1>
+                    <p>BEST IN TOWN</p>
+                </div>
+            </div>
+            <div class="top-halal">
+                <span class="ar">حلال</span>
+                <span class="text">100% HALAL</span>
+            </div>
+        </div>
+
+        <!-- RIGHT: ANIMATED BUCKETS -->
+        <div class="stage">
+
+            <!-- Global: 4 Buckets -->
+            <div class="slide active" id="slide-global">
+                <div class="global-title">NOS <span>BUCKETS</span></div>
+                <div class="bucket-grid">
+                    <div class="bucket-card">
+                        <img src="AssetsTv1/Bucket 1.png" alt="Bucket 1">
+                        <div class="info">
+                            <div class="name">BUCKET 1</div>
+                            <div class="desc">3 Wings • 2 Tenders • Frites • Boisson</div>
+                        </div>
+                        <div class="price">7.90€</div>
+                    </div>
+                    <div class="bucket-card">
+                        <img src="AssetsTv1/bucket 2.png" alt="Bucket 2">
+                        <div class="info">
+                            <div class="name">BUCKET 2</div>
+                            <div class="desc">5 Wings • 3 Tenders • Frites • Boisson</div>
+                        </div>
+                        <div class="price">9.90€</div>
+                    </div>
+                    <div class="bucket-card">
+                        <img src="AssetsTv1/bucket 3.png" alt="Bucket 3">
+                        <div class="info">
+                            <div class="name">BUCKET 3</div>
+                            <div class="desc">7 Wings • 5 Tenders • 4 Mozza • 2 Frites</div>
+                        </div>
+                        <div class="price">18.90€</div>
+                    </div>
+                    <div class="bucket-card">
+                        <img src="AssetsTv1/bucket 4.png" alt="Bucket 4">
+                        <div class="info">
+                            <div class="name">BUCKET 4</div>
+                            <div class="desc">8 Tenders • 8 Wings • 6 Mozza • 10 Rings</div>
+                        </div>
+                        <div class="price">28.90€</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solo: BUCKET 1 -->
+            <div class="slide" id="slide-1">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 1</div>
+                        <div class="list">
+                            <div class="item">3 Wings</div>
+                            <div class="item">2 Tenders</div>
+                            <div class="item">Frites</div>
+                            <div class="item">Boisson</div>
+                        </div>
+                        <div class="price">7.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="AssetsTv1/Bucket 1.png"></div>
+                </div>
+            </div>
+
+            <!-- Solo: BUCKET 2 -->
+            <div class="slide" id="slide-2">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 2</div>
+                        <div class="list">
+                            <div class="item">5 Wings</div>
+                            <div class="item">3 Tenders</div>
+                            <div class="item">Frites</div>
+                            <div class="item">Boisson</div>
+                        </div>
+                        <div class="price">9.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="AssetsTv1/bucket 2.png"></div>
+                </div>
+            </div>
+
+            <!-- Solo: BUCKET 3 -->
+            <div class="slide" id="slide-3">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 3</div>
+                        <div class="list">
+                            <div class="item">7 Wings</div>
+                            <div class="item">5 Tenders</div>
+                            <div class="item">4 Mozza Sticks</div>
+                            <div class="item">2 Frites • 2 Boissons</div>
+                        </div>
+                        <div class="price">18.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="AssetsTv1/bucket 3.png"></div>
+                </div>
+            </div>
+
+            <!-- Solo: BUCKET 4 -->
+            <div class="slide" id="slide-4">
+                <div class="solo-layout">
+                    <div class="solo-info">
+                        <div class="name">BUCKET 4</div>
+                        <div class="list">
+                            <div class="item">8 Tenders</div>
+                            <div class="item">8 Wings</div>
+                            <div class="item">6 Mozza</div>
+                            <div class="item">10 Rings • 3 Frites</div>
+                        </div>
+                        <div class="price">28.90€</div>
+                    </div>
+                    <div class="solo-image"><img src="AssetsTv1/bucket 4.png"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM RIGHT: Frites + Potatoes + Menu -->
+        <div class="bottom-right">
+            <div class="extra-card">
+                <img src="assets/Frites PNG.png" alt="Frites">
+                <div class="info">
+                    <h4>FRITES</h4>
+                    <p>M <strong>2.50€</strong> • XL <strong>3.50€</strong></p>
+                </div>
+            </div>
+            <div class="extra-card">
+                <img src="assets/potatos.png" alt="Potatoes">
+                <div class="info">
+                    <h4>POTATOES</h4>
+                    <p>M <strong>3.50€</strong> • XL <strong>4.50€</strong></p>
+                </div>
+            </div>
+            <div class="menu-box">
+                <img src="AssetsTv1/frite boisson.png" alt="Menu">
+                <div class="info">
+                    <h4>MENU</h4>
+                    <p>Frites + Boisson 33cl</p>
+                    <strong>+2.00€</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function scale() {
+            const s = document.getElementById('screen');
+            const r = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            s.style.transform = `scale(${r})`;
+            s.style.transformOrigin = 'center center';
+        }
+        window.onresize = scale;
+        window.onload = scale;
+
+        // Animation: Global -> Bucket1 -> Global -> Bucket2 -> Global -> Bucket3 -> Global -> Bucket4
+        const seq = [
+            'slide-global', 'slide-1',
+            'slide-global', 'slide-2',
+            'slide-global', 'slide-3',
+            'slide-global', 'slide-4'
+        ];
+        let i = 0;
+        setInterval(() => {
+            document.getElementById(seq[i]).classList.remove('active');
+            i = (i + 1) % seq.length;
+            document.getElementById(seq[i]).classList.add('active');
+        }, 5000);
+    </script>
+
+</body>
+
+</html>
