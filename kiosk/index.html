@@ -332,8 +332,8 @@
         #products-view {
             display: flex;
             flex-direction: column;
-            height: 100%;
-            overflow: hidden;
+            flex: 1;
+            min-height: 0;
         }
 
         .main-header {
@@ -2152,8 +2152,13 @@
                 price = sel.formula?.price || 7.9;
                 if (sel.menuOpt) price += 2;
             } else if (product.type === 'bowl') {
-                price = sel.basePrice || product.price;
-                if (sel.size?.id === 'xl') price += 5;
+                // Produits avec sizes (comme Crousty Bowl promo)
+                if (product.sizes && sel.size?.price !== undefined) {
+                    price = sel.size.price;
+                } else {
+                    price = sel.basePrice || product.price;
+                    if (sel.size?.id === 'xl') price += 5;
+                }
             } else if (product.type === 'poutine') {
                 price = sel.size?.price || product.sizes[0].price;
             } else if (product.type === 'assiette') {
