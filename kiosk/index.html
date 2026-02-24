@@ -886,6 +886,91 @@
             }
         }
 
+        /* ============ ÉCRAN DE VEILLE ============ */
+        .screensaver {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 10000;
+            display: none;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .screensaver.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .screensaver-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .screensaver-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 5vh;
+        }
+
+        .screensaver-logo {
+            width: min(300px, 50vw);
+            margin-bottom: 5vh;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .screensaver-cta {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(40px, 8vw, 80px);
+            color: var(--yellow);
+            text-shadow: 0 0 30px rgba(255, 192, 0, 0.5);
+            animation: pulse-glow 2s ease-in-out infinite;
+            letter-spacing: 3px;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow: 0 0 30px rgba(255, 192, 0, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                text-shadow: 0 0 60px rgba(255, 192, 0, 0.8), 0 0 100px rgba(255, 192, 0, 0.4);
+            }
+        }
+
+        .screensaver-touch {
+            font-size: clamp(18px, 3vw, 28px);
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5vh;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
         /* ============ IMPRESSION ============ */
         @media print {
             body {
@@ -896,6 +981,29 @@
 </head>
 
 <body>
+    <!-- ============ ÉCRAN DE VEILLE ============ -->
+    <div id="screensaver" class="screensaver" onclick="hideScreensaver()">
+        <!-- Option 1: Vidéo YouTube (ne marche pas toujours en mode file://) -->
+        <iframe id="screensaver-youtube" class="screensaver-video"
+            src=""
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            style="display: none;">
+        </iframe>
+        <!-- Option 2: Vidéo locale (drag & drop dans kiosk/videos/) -->
+        <video id="screensaver-local" class="screensaver-video"
+            autoplay muted loop playsinline
+            style="display: none;">
+            <source src="videos/screensaver.mp4" type="video/mp4">
+        </video>
+        <div class="screensaver-content">
+            <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz" class="screensaver-logo">
+            <div class="screensaver-cta">COMMANDEZ ICI</div>
+            <div class="screensaver-touch">Touchez l'écran pour commander</div>
+        </div>
+    </div>
+
     <!-- ============ ÉCRAN 1: PRÉNOM ============ -->
     <div id="screen-prenom" class="intro-screen active">
         <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz" class="logo-big">
@@ -1107,8 +1215,15 @@
             document.querySelectorAll('.intro-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.getElementById('app-layout').classList.remove('active');
-            document.getElementById('screen-confirm').classList.remove('active'); // Ensure confirm screen is hidden
-            document.getElementById('screen-thanks').classList.remove('active'); // Ensure thanks screen is hidden
+            document.getElementById('screen-confirm').classList.remove('active');
+            document.getElementById('screen-thanks').classList.remove('active');
+
+            // Gérer le screensaver selon l'écran
+            if (id === 'screen-prenom') {
+                resetScreensaverTimer();
+            } else {
+                clearTimeout(screensaverTimer);
+            }
         }
 
         function showAppLayout() {
@@ -1175,6 +1290,9 @@
             initNavigation();
             showAppLayout();
             selectCategory(CATEGORIES[0].id);
+
+            // Arrêter le timer du screensaver (on n'est plus sur l'écran prénom)
+            clearTimeout(screensaverTimer);
         }
 
         // ============ NAVIGATION SIDEBAR ============
@@ -2630,6 +2748,9 @@
             updateCartCount();
 
             showIntroScreen('screen-prenom');
+
+            // Relancer le timer du screensaver
+            resetScreensaverTimer();
         }
 
         // ============ ABANDON & TIMEOUT ============
@@ -2756,15 +2877,78 @@
             window.location.href = 'about:blank';
         }
 
+        // ============ ÉCRAN DE VEILLE ============
+        let screensaverTimer = null;
+        const SCREENSAVER_TIMEOUT = 60000; // 1 minute d'inactivité sur l'écran prénom
+
+        // URL de la vidéo YouTube (format embed avec autoplay et mute)
+        const YOUTUBE_VIDEO_URL = 'https://www.youtube.com/embed/LDiEvqi-cmU?autoplay=1&mute=1&loop=1&playlist=LDiEvqi-cmU&controls=0&showinfo=0&rel=0&modestbranding=1';
+
+        // Mode vidéo: 'local' ou 'youtube'
+        // 'local' = utilise videos/screensaver.mp4 (recommandé pour mode file://)
+        // 'youtube' = utilise l'iframe YouTube
+        const VIDEO_MODE = 'local'; // Change en 'youtube' si tu veux utiliser YouTube
+
+        function showScreensaver() {
+            const screensaver = document.getElementById('screensaver');
+            const youtube = document.getElementById('screensaver-youtube');
+            const local = document.getElementById('screensaver-local');
+
+            if (VIDEO_MODE === 'youtube') {
+                youtube.src = YOUTUBE_VIDEO_URL;
+                youtube.style.display = 'block';
+                local.style.display = 'none';
+            } else {
+                // Mode local - la vidéo est déjà dans le HTML
+                local.style.display = 'block';
+                local.play();
+                youtube.style.display = 'none';
+            }
+
+            screensaver.classList.add('active');
+        }
+
+        function hideScreensaver() {
+            const screensaver = document.getElementById('screensaver');
+            const youtube = document.getElementById('screensaver-youtube');
+            const local = document.getElementById('screensaver-local');
+
+            screensaver.classList.remove('active');
+
+            // Arrêter les vidéos
+            youtube.src = '';
+            local.pause();
+            local.currentTime = 0;
+
+            // Relancer le timer
+            resetScreensaverTimer();
+        }
+
+        function resetScreensaverTimer() {
+            clearTimeout(screensaverTimer);
+
+            // Ne s'active que si on est sur l'écran prénom
+            if (document.getElementById('screen-prenom').classList.contains('active')) {
+                screensaverTimer = setTimeout(() => {
+                    showScreensaver();
+                }, SCREENSAVER_TIMEOUT);
+            }
+        }
+
         // ============ INIT ============
         document.addEventListener('DOMContentLoaded', () => {
             initKeyboard();
             resetIdleTimer();
+            resetScreensaverTimer();
 
             // Ajouter le listener sur tous les logos
             document.querySelectorAll('.logo-big, .sidebar-header img').forEach(logo => {
                 logo.addEventListener('click', handleSecretClick);
             });
+
+            // Relancer le timer du screensaver à chaque interaction sur l'écran prénom
+            document.getElementById('screen-prenom').addEventListener('click', resetScreensaverTimer);
+            document.getElementById('screen-prenom').addEventListener('touchstart', resetScreensaverTimer);
         });
     </script>
 </body>

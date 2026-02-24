@@ -94,6 +94,7 @@ const RETRAITS = [
 
 // Catégories
 const CATEGORIES = [
+    { id: 'offres', name: 'Nos Offres', image: '../AssetsTv3/chickenzz_logo.jpg', isHighlight: true },
     { id: 'tacos', name: 'Tacos', image: '../AssetsTv4/tacos.png' },
     { id: 'naans', name: 'Naans', image: '../AssetsTv2/naan_royal_real_png.png' },
     { id: 'sandwichs', name: 'Sandwichs', image: '../AssetsTv2/sandwich deco pain rond.png' },
@@ -112,6 +113,61 @@ const CATEGORIES = [
 
 // Produits
 const PRODUCTS = [
+    // ==================== NOS OFFRES ====================
+    {
+        id: 'offre_crousty_bowl',
+        category: 'offres',
+        name: 'Crousty Bowl',
+        description: 'Tenders, Sweet Chili, Oignons Frits',
+        image: '../AssetsTv3/classique bowl.png',
+        type: 'bowl',
+        hasBuilder: true,
+        isPromo: true,
+        promoLabel: '-30%',
+        sizes: [
+            { id: 'M', name: 'M', price: 6.90, originalPrice: 9.90 },
+            { id: 'XL', name: 'XL', price: 10.40, originalPrice: 14.90 }
+        ]
+    },
+    {
+        id: 'offre_bucket_1',
+        category: 'offres',
+        name: 'Bucket 1',
+        description: '3 Wings + 2 Tenders + Frites + Boisson',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/Bucket 1.png',
+        price: 7.90,
+        type: 'bucket',
+        hasBuilder: true,
+        isPromo: true,
+        promoLabel: 'BON PLAN',
+        includesFrites: true,
+        includesBoisson: true
+    },
+    {
+        id: 'offre_single_box',
+        category: 'offres',
+        name: 'Single Box',
+        description: '1 Burger + 2 Wings/Tenders + Frites Cheddar + Sauce',
+        image: '../AssetsTv3/SINGLE BOX.png',
+        price: 9.90,
+        type: 'box',
+        hasBuilder: true,
+        isPromo: true,
+        promoLabel: 'BON PLAN'
+    },
+    {
+        id: 'offre_mega_box',
+        category: 'offres',
+        name: 'Mega Box',
+        description: '1 Burger + 2 Wings + 2 Tenders + Frites Cheddar + Sauce',
+        image: '../AssetsTv3/MEGA BOX.png',
+        price: 11.90,
+        type: 'box',
+        hasBuilder: true,
+        isPromo: true,
+        promoLabel: 'BON PLAN'
+    },
+
     // ==================== TACOS ====================
     // COMPOSE EN PREMIER
     {
@@ -340,12 +396,14 @@ const PRODUCTS = [
         id: 'korean_bucket',
         category: 'buckets',
         name: 'Korean Bucket',
-        description: '10 Korean Wings + 10 Korean Tenders + 3 Sauces',
+        description: '4 Wings + 4 Tenders + Frites + Boisson 33cl',
         image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_bucket_combo.jpg',
-        price: 22.90,
+        price: 13.90,
         type: 'bucket',
         hasBuilder: true,
-        isKorean: true
+        isKorean: true,
+        includesFrites: true,
+        includesBoisson: true
     },
 
     // ==================== ASSIETTES ====================
@@ -630,20 +688,36 @@ const PRODUCTS = [
         price: 4.50
     },
     {
-        id: 'korean_wings',
+        id: 'korean_wings_5',
         category: 'tex_mex',
-        name: 'Korean Wings',
-        description: 'Wings sauce coréenne',
+        name: 'Korean Wings x5',
+        description: '5 Wings sauce coréenne',
         image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png',
         price: 6.90
     },
     {
-        id: 'korean_tenders',
+        id: 'korean_wings_10',
         category: 'tex_mex',
-        name: 'Korean Tenders',
-        description: 'Tenders sauce coréenne',
+        name: 'Korean Wings x10',
+        description: '10 Wings sauce coréenne',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png',
+        price: 12.90
+    },
+    {
+        id: 'korean_tenders_4',
+        category: 'tex_mex',
+        name: 'Korean Tenders x4',
+        description: '4 Tenders sauce coréenne',
         image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_tenders.png',
         price: 6.90
+    },
+    {
+        id: 'korean_tenders_6',
+        category: 'tex_mex',
+        name: 'Korean Tenders x6',
+        description: '6 Tenders sauce coréenne',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_tenders.png',
+        price: 8.90
     },
 
     // ==================== SALADES ====================
