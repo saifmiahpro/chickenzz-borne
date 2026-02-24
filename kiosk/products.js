@@ -336,6 +336,17 @@ const PRODUCTS = [
         hasBuilder: true,
         includesFrites: true
     },
+    {
+        id: 'korean_bucket',
+        category: 'buckets',
+        name: 'Korean Bucket',
+        description: '10 Korean Wings + 10 Korean Tenders + 3 Sauces',
+        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_bucket_combo.jpg',
+        price: 22.90,
+        type: 'bucket',
+        hasBuilder: true,
+        isKorean: true
+    },
 
     // ==================== ASSIETTES ====================
     {
