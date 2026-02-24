@@ -329,6 +329,13 @@
             overflow: hidden;
         }
 
+        #products-view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
         .main-header {
             padding: 2vh 2vw;
             background: var(--darker);
@@ -1006,7 +1013,7 @@
 
     <!-- ============ ÉCRAN 1: PRÉNOM ============ -->
     <div id="screen-prenom" class="intro-screen active">
-        <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz" class="logo-big">
+        <img src="videos/chickenzz_logo.png" alt="Chickenzz" class="logo-big">
         <h1>ENTREZ VOTRE PRÉNOM</h1>
         <input type="text" class="prenom-input" id="prenom-input" readonly placeholder="VOTRE PRÉNOM">
         <div class="keyboard" id="keyboard"></div>
@@ -1015,7 +1022,7 @@
 
     <!-- ============ ÉCRAN 2: MODE ============ -->
     <div id="screen-mode" class="intro-screen">
-        <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz" class="logo-big">
+        <img src="videos/chickenzz_logo.png" alt="Chickenzz" class="logo-big">
         <h1>BONJOUR <span id="display-prenom"></span> !</h1>
         <h2>Où souhaitez-vous manger ?</h2>
         <div class="mode-cards">
@@ -1344,9 +1351,17 @@
                     `${product.sizes[0].price.toFixed(2)}€` :
                     `${product.price.toFixed(2)}€`;
 
+                // Badge: promo ou composer
+                let badgeHtml = '';
+                if (product.isPromo && product.promoLabel) {
+                    badgeHtml = `<div class="badge" style="background:#ff3333;">${product.promoLabel}</div>`;
+                } else if (product.hasBuilder) {
+                    badgeHtml = '<div class="badge">COMPOSER</div>';
+                }
+
                 const displayName = product.displayName || product.name;
                 card.innerHTML = `
-                    ${product.hasBuilder ? '<div class="badge">COMPOSER</div>' : ''}
+                    ${badgeHtml}
                     <img src="${product.image}" alt="${displayName}" onerror="this.src='../AssetsTv3/chickenzz_logo.jpg'">
                     <h4>${displayName}</h4>
                     <p class="desc">${product.description || ''}</p>
@@ -1729,23 +1744,37 @@
         function buildBowlBuilder(content, product) {
             let html = '';
 
-            html += `<div class="step-title">Taille</div><div class="options-grid big">
-                <div class="option-btn selected" onclick="selectOption('size', 'normal', this)">NORMAL</div>
-                <div class="option-btn" onclick="selectOption('size', 'xl', this)" data-price="5">XL <span class="option-price">+5€</span></div>
-            </div>`;
+            // Gestion des produits avec sizes (promo) ou sans
+            if (product.sizes) {
+                html += `<div class="step-title">Taille</div><div class="options-grid big">`;
+                product.sizes.forEach((size, i) => {
+                    const promoDisplay = size.originalPrice ? `<span style="text-decoration:line-through;opacity:0.5;margin-right:8px;">${size.originalPrice.toFixed(2)}€</span>` : '';
+                    html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
+                        ${size.name} <span class="option-price">${promoDisplay}${size.price.toFixed(2)}€</span>
+                    </div>`;
+                });
+                html += '</div>';
+                state.builderSelections.size = product.sizes[0];
+                state.builderSelections.basePrice = 0;
+            } else {
+                html += `<div class="step-title">Taille</div><div class="options-grid big">
+                    <div class="option-btn selected" onclick="selectOption('size', 'normal', this)">NORMAL</div>
+                    <div class="option-btn" onclick="selectOption('size', 'xl', this)" data-price="5">XL <span class="option-price">+5€</span></div>
+                </div>`;
+                state.builderSelections.size = { id: 'normal', price: 0 };
+                state.builderSelections.basePrice = product.price;
+            }
 
-            if (product.id === 'bowl_dynamite') {
+            if (product.id === 'bowl_dynamite' || product.id === 'offre_crousty_bowl') {
                 html += `<div class="step-title">Viande</div><div class="options-grid">`;
                 VIANDES.forEach((v, i) => {
                     html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('meat', '${v.id}', this)">${v.name}</div>`;
                 });
                 html += '</div>';
+                state.builderSelections.meat = VIANDES[0];
             }
 
             content.innerHTML = html;
-            state.builderSelections.size = { id: 'normal', price: 0 };
-            state.builderSelections.basePrice = product.price;
-            if (product.id === 'bowl_dynamite') state.builderSelections.meat = VIANDES[0];
         }
 
         function buildPoutineBuilder(content, product) {

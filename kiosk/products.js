@@ -445,9 +445,14 @@ const PRODUCTS = [
         name: 'Crousty Bowl',
         description: 'Tenders, Sweet Chili, Oignons Frits',
         image: '../AssetsTv3/classique bowl.png',
-        price: 9.90,
         type: 'bowl',
-        hasBuilder: true
+        hasBuilder: true,
+        isPromo: true,
+        promoLabel: '-30%',
+        sizes: [
+            { id: 'M', name: 'M', price: 6.90, originalPrice: 9.90 },
+            { id: 'XL', name: 'XL', price: 10.40, originalPrice: 14.90 }
+        ]
     },
     {
         id: 'bowl_hot',
