@@ -1345,7 +1345,7 @@
 
             products.forEach(product => {
                 const card = document.createElement('div');
-                card.className = `product-card${product.isCustom ? ' full-width' : ''}`;
+                card.className = 'product-card';
                 card.onclick = () => handleProductClick(product);
 
                 const priceDisplay = product.sizes ?
@@ -1747,11 +1747,13 @@
 
             // Gestion des produits avec sizes (promo) ou sans
             if (product.sizes) {
-                html += `<div class="step-title">Taille</div><div class="options-grid big">`;
+                html += `<div class="step-title">Taille ${product.isPromo ? '<span style="background:#ff3333;color:white;padding:2px 8px;border-radius:10px;font-size:0.6em;margin-left:10px;">PROMO</span>' : ''}</div><div class="options-grid big">`;
                 product.sizes.forEach((size, i) => {
-                    const promoDisplay = size.originalPrice ? `<span style="text-decoration:line-through;opacity:0.5;margin-right:8px;">${size.originalPrice.toFixed(2)}€</span>` : '';
+                    const promoDisplay = size.originalPrice
+                        ? `<div style="font-size:0.7em;text-decoration:line-through;color:#ff3333;">${size.originalPrice.toFixed(2)}€</div>`
+                        : '';
                     html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
-                        ${size.name} <span class="option-price">${promoDisplay}${size.price.toFixed(2)}€</span>
+                        ${size.name} ${promoDisplay}<span class="option-price" style="color:#00cc66;font-size:1.2em;">${size.price.toFixed(2)}€</span>
                     </div>`;
                 });
                 html += '</div>';
