@@ -83,13 +83,16 @@ const SUPPLEMENTS = [
 // Viandes supplémentaires (choix de viande à +1.50€)
 const VIANDES_SUPP = VIANDES.map(v => ({ ...v, price: 1.50 }));
 
-// Éléments qu'on peut retirer
-const RETRAITS = [
+// Éléments qu'on peut retirer - SANDWICHS (salade, tomate, oignon)
+const RETRAITS_SANDWICH = [
     { id: 'sans_salade', name: 'Sans Salade' },
     { id: 'sans_tomate', name: 'Sans Tomate' },
-    { id: 'sans_oignon', name: 'Sans Oignon' },
-    { id: 'sans_sauce_fromagere', name: 'Sans Sauce Fromagère' },
-    { id: 'sans_crudites', name: 'Sans Crudités' }
+    { id: 'sans_oignon', name: 'Sans Oignon' }
+];
+
+// Éléments qu'on peut retirer - TACOS (uniquement sauce fromagère)
+const RETRAITS_TACOS = [
+    { id: 'sans_sauce_fromagere', name: 'Sans Sauce Fromagère' }
 ];
 
 // Catégories
@@ -108,7 +111,7 @@ const CATEGORIES = [
     { id: 'salades', name: 'Salades', image: '../AssetsTv5/salade.png' },
     { id: 'desserts', name: 'Desserts', image: '../AssetsTv5/panini nutella.png' },
     { id: 'boissons', name: 'Boissons', image: '../AssetsTv3/frite boisson.png' },
-    { id: 'enfant', name: 'Menu Enfant', image: '../AssetsTv3/chicken_cheese.png' }
+    { id: 'enfant', name: 'Menu Enfant', image: '../AssetsTv3/chickenzz_logo.jpg' }
 ];
 
 // Produits
@@ -609,7 +612,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Wings x5',
         description: '5 ailes de poulet croustillantes',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 5.00
     },
     {
@@ -617,7 +620,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Tenders x5',
         description: '5 tenders croustillants',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 6.00
     },
     {
@@ -625,7 +628,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Nuggets x6',
         description: '6 nuggets croustillants',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 5.00
     },
     {
@@ -633,7 +636,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Jalapenos x5',
         description: 'Jalapeños frits au fromage',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 5.50
     },
     {
@@ -641,7 +644,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Oignons Rings x7',
         description: 'Onion rings croustillants',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 5.50
     },
     {
@@ -649,7 +652,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Nems x5',
         description: 'Nems croustillants',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 6.00
     },
     {
@@ -657,7 +660,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Mozza Sticks x6',
         description: 'Bâtonnets de mozzarella',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 5.00
     },
     {
@@ -665,7 +668,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Camembert x6',
         description: 'Camembert pané',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 5.00
     },
     {
@@ -673,23 +676,15 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Chèvre x5',
         description: 'Fromage de chèvre pané',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 6.00
-    },
-    {
-        id: 'king_prawn',
-        category: 'tex_mex',
-        name: 'King Prawn',
-        description: 'Crevettes panées',
-        image: '../AssetsTv3/chicken_cheese.png',
-        price: 6.50
     },
     {
         id: 'samoussas',
         category: 'tex_mex',
         name: 'Samoussas',
         description: 'Samoussas croustillants',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 4.50
     },
     {
@@ -827,7 +822,7 @@ const PRODUCTS = [
         category: 'enfant',
         name: 'Menu Nuggets',
         description: 'Nuggets + Frites + Boisson',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 6.90,
         type: 'enfant',
         hasBuilder: true
@@ -837,7 +832,7 @@ const PRODUCTS = [
         category: 'enfant',
         name: 'Menu Tenders',
         description: 'Tenders + Frites + Boisson',
-        image: '../AssetsTv3/chicken_cheese.png',
+        image: '../AssetsTv3/chickenzz_logo.jpg',
         price: 6.90,
         type: 'enfant',
         hasBuilder: true
