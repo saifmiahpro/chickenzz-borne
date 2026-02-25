@@ -187,7 +187,8 @@
         .app-layout {
             display: none;
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            max-height: 100vh;
         }
 
         .app-layout.active {
@@ -2471,7 +2472,7 @@
                 return;
             }
 
-            // CSS optimisé pour Star mCPrint3 - Style Uber Eats
+            // CSS optimisé pour Star mCPrint3 - COMPACT pour économie papier
             const ticketStyles = `
                 @page {
                     size: 80mm auto;
@@ -2488,182 +2489,168 @@
                 html, body {
                     width: 80mm;
                     font-family: 'Arial', 'Helvetica', sans-serif;
-                    font-size: 12pt;
-                    line-height: 1.3;
+                    font-size: 9pt;
+                    line-height: 1.2;
                     color: #000;
                     background: #fff;
                 }
                 .ticket {
                     width: 76mm;
-                    padding: 2mm;
+                    padding: 1mm;
                     page-break-after: always;
                 }
                 .ticket:last-child {
                     page-break-after: auto;
                 }
 
-                /* Header */
+                /* Header - COMPACT */
                 .header {
                     text-align: center;
-                    padding: 3mm 0;
-                    border-bottom: 2px solid #000;
+                    padding: 1mm 0;
+                    border-bottom: 1px solid #000;
                 }
                 .logo {
-                    font-size: 24pt;
+                    font-size: 14pt;
                     font-weight: 900;
-                    letter-spacing: 2px;
                 }
                 .address {
-                    font-size: 9pt;
-                    margin-top: 2mm;
-                    line-height: 1.4;
+                    font-size: 7pt;
+                    line-height: 1.2;
                 }
 
-                /* Bande noire - Style Uber Eats (taille réduite) */
+                /* Bande noire - COMPACT */
                 .black-band {
                     background: #000 !important;
                     color: #fff !important;
-                    padding: 2mm 2mm;
-                    margin: 2mm 0;
+                    padding: 1mm;
+                    margin: 1mm 0;
                     text-align: center;
                 }
                 .client-name {
-                    font-size: 16pt;
+                    font-size: 12pt;
                     font-weight: 700;
                     text-transform: uppercase;
                 }
                 .order-type {
-                    font-size: 11pt;
+                    font-size: 8pt;
                     font-weight: 700;
-                    margin-top: 1mm;
-                    padding: 1mm 3mm;
-                    border: 1px solid #fff;
-                    display: inline-block;
                 }
 
                 /* Date/heure */
                 .datetime {
                     text-align: center;
-                    font-size: 11pt;
-                    padding: 2mm 0;
+                    font-size: 8pt;
+                    padding: 1mm 0;
                     border-bottom: 1px dashed #000;
                 }
 
-                /* Articles */
+                /* Articles - COMPACT */
                 .items {
-                    padding: 3mm 0;
+                    padding: 1mm 0;
                 }
                 .item {
-                    margin-bottom: 3mm;
-                    padding-bottom: 2mm;
+                    margin-bottom: 1mm;
+                    padding-bottom: 1mm;
                     border-bottom: 1px dotted #ccc;
                 }
                 .item:last-child {
                     border-bottom: none;
+                    margin-bottom: 0;
                 }
                 .item-row {
                     display: flex;
                     justify-content: space-between;
-                    align-items: flex-start;
                 }
                 .item-name {
-                    font-size: 13pt;
+                    font-size: 9pt;
                     font-weight: 700;
                     flex: 1;
                 }
                 .item-price {
-                    font-size: 13pt;
+                    font-size: 9pt;
                     font-weight: 700;
                     text-align: right;
-                    min-width: 50px;
                 }
                 .item-details {
-                    font-size: 10pt;
+                    font-size: 7pt;
                     color: #333;
-                    padding-left: 3mm;
-                    margin-top: 1mm;
-                    font-style: italic;
+                    padding-left: 2mm;
                 }
 
-                /* Totaux */
+                /* Totaux - COMPACT */
                 .totals {
-                    border-top: 2px solid #000;
-                    padding-top: 3mm;
-                    margin-top: 2mm;
+                    border-top: 1px solid #000;
+                    padding-top: 1mm;
+                    margin-top: 1mm;
                 }
                 .total-row {
                     display: flex;
                     justify-content: space-between;
-                    font-size: 11pt;
-                    padding: 1mm 0;
+                    font-size: 8pt;
                 }
                 .total-final {
-                    font-size: 16pt;
+                    font-size: 11pt;
                     font-weight: 900;
                     border-top: 1px solid #000;
-                    margin-top: 2mm;
-                    padding-top: 2mm;
+                    margin-top: 1mm;
+                    padding-top: 1mm;
                 }
 
-                /* Footer */
+                /* Footer - COMPACT */
                 .footer {
                     text-align: center;
-                    padding: 3mm 0;
-                    border-top: 2px solid #000;
-                    margin-top: 3mm;
+                    padding: 1mm 0;
+                    border-top: 1px solid #000;
+                    margin-top: 1mm;
                 }
                 .merci {
-                    font-size: 14pt;
+                    font-size: 10pt;
                     font-weight: 700;
                 }
                 .legal {
-                    font-size: 8pt;
+                    font-size: 6pt;
                     color: #666;
-                    margin-top: 2mm;
                 }
 
-                /* ========== TICKET CUISINE ========== */
+                /* ========== TICKET CUISINE - COMPACT ========== */
                 .kitchen .black-band {
-                    padding: 5mm 3mm;
-                }
-                .kitchen .order-num {
-                    font-size: 40pt;
+                    padding: 2mm;
                 }
                 .kitchen .client-name {
-                    font-size: 26pt;
+                    font-size: 16pt;
                 }
                 .kitchen .order-type {
-                    font-size: 18pt;
+                    font-size: 10pt;
                 }
                 .kitchen-item {
-                    border: 2px solid #000;
-                    padding: 3mm;
-                    margin-bottom: 3mm;
+                    border: 1px solid #000;
+                    padding: 1mm;
+                    margin-bottom: 1mm;
                 }
                 .kitchen-item-header {
-                    font-size: 18pt;
+                    font-size: 11pt;
                     font-weight: 900;
                     text-transform: uppercase;
                     border-bottom: 1px dashed #000;
-                    padding-bottom: 2mm;
-                    margin-bottom: 2mm;
+                    padding-bottom: 1mm;
+                    margin-bottom: 1mm;
                 }
                 .kitchen-item-detail {
-                    font-size: 14pt;
-                    padding: 1mm 0 1mm 3mm;
+                    font-size: 9pt;
+                    padding-left: 2mm;
                 }
                 .kitchen-time {
                     text-align: center;
-                    font-size: 12pt;
+                    font-size: 8pt;
                     font-weight: 700;
-                    padding: 3mm;
-                    border-top: 2px solid #000;
-                    margin-top: 3mm;
+                    padding: 1mm;
+                    border-top: 1px solid #000;
+                    margin-top: 1mm;
                 }
 
-                /* Espacement fin de ticket */
+                /* Espacement fin de ticket - RÉDUIT */
                 .cut-space {
-                    height: 15mm;
+                    height: 5mm;
                 }
             `;
 
