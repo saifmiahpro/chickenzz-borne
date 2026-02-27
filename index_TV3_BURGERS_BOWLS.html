@@ -1861,22 +1861,6 @@
             z-index: 5;
         }
 
-        /* --- EXITING: sort par la gauche --- */
-        .box-slide.exiting {
-            left: -70%;
-            width: 70%;
-            opacity: 0;
-            z-index: 1;
-        }
-
-        /* --- ENTERING: entre par la droite --- */
-        .box-slide.entering {
-            left: 100%;
-            width: 30%;
-            z-index: 5;
-            transition: none;
-        }
-
         /* === IMAGE - GRANDES, passent derrière bandeau === */
         .box-img-wrap {
             position: absolute;
@@ -1890,7 +1874,7 @@
 
         .box-slide.secondary .box-img-wrap {
             left: 50%;
-            top: 38%;
+            top: 50%;
             transform: translate(-50%, -50%);
         }
 
@@ -1904,7 +1888,7 @@
         }
 
         .box-slide.secondary .box-img {
-            height: 220px;
+            height: 300px;
         }
 
         /* === LEFT: TITRE === */
@@ -2021,14 +2005,14 @@
             font-size: 22px;
         }
 
-        /* Mini description pour secondary */
+        /* Secondary: cacher la description */
         .box-slide.secondary .box-includes {
-            margin-bottom: 5px;
+            display: none;
         }
 
-        .box-slide.secondary .box-includes span {
-            font-size: 12px;
-            color: #999;
+        /* Secondary: remonter légèrement */
+        .box-slide.secondary {
+            top: -20px;
         }
 
         /* Prix */
@@ -2411,37 +2395,17 @@
 
         setInterval(cycle, 12000);
 
-        // === BOXES CAROUSEL - slide vers la gauche ===
+        // === BOXES CAROUSEL - swap simple et fluide ===
         const boxes = [
             document.getElementById('box-single'),
             document.getElementById('box-mega')
         ];
         let mainIndex = 0;
 
-        boxes[0].className = 'box-slide main';
-        boxes[1].className = 'box-slide secondary';
-
         function slideBoxes() {
-            const currentMain = boxes[mainIndex];
-            const nextIndex = (mainIndex + 1) % boxes.length;
-            const nextMain = boxes[nextIndex];
-
-            // Current main sort par la gauche
-            currentMain.className = 'box-slide exiting';
-
-            // Secondary devient main (slide vers gauche)
-            nextMain.className = 'box-slide main';
-
-            // Après la transition, repositionner la box sortie à droite
-            setTimeout(() => {
-                currentMain.className = 'box-slide entering';
-                // Petit délai puis slide vers position secondary
-                setTimeout(() => {
-                    currentMain.className = 'box-slide secondary';
-                }, 50);
-            }, 700);
-
-            mainIndex = nextIndex;
+            mainIndex = (mainIndex + 1) % 2;
+            boxes[0].className = mainIndex === 0 ? 'box-slide main' : 'box-slide secondary';
+            boxes[1].className = mainIndex === 1 ? 'box-slide main' : 'box-slide secondary';
         }
 
         setInterval(slideBoxes, 10000);
