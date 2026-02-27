@@ -1834,6 +1834,10 @@
             flex: 1;
             display: flex;
             flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px 30px;
         }
 
         .box-slide {
@@ -1842,116 +1846,89 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            opacity: 1;
+            height: 100%;
+            transition: all 0.6s ease;
+            transform: scale(0.85);
+            opacity: 0.5;
+            filter: grayscale(30%);
         }
 
         .box-slide.active {
+            transform: scale(1);
             opacity: 1;
+            filter: grayscale(0%);
+            z-index: 10;
         }
 
-        /* === IMAGE CENTERED === */
+        /* === IMAGE === */
         .box-img-wrap {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
+            flex-shrink: 0;
         }
 
         .box-img {
-            height: 280px;
+            height: 200px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 30px rgba(255, 87, 34, 0.25));
+            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.9));
+            transition: all 0.6s ease;
         }
 
-        /* === LEFT SIDE === */
-        .box-left {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
+        .box-slide.active .box-img {
+            height: 260px;
+        }
+
+        /* === BOX INFO === */
+        .box-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 15px;
         }
 
         .box-title {
             font-family: 'Anton';
-            font-size: 42px;
-            line-height: 0.9;
+            font-size: 32px;
+            line-height: 0.95;
             text-transform: uppercase;
             color: #fff;
             text-shadow: 2px 2px 0 #000;
-            margin-bottom: 8px;
+            transition: all 0.6s ease;
         }
 
-        .box-title span {
-            color: #FF5722;
+        .box-slide.active .box-title {
+            font-size: 44px;
         }
 
-        .box-slide:nth-child(2) .box-title span {
-            color: #FFC000;
-        }
+        .box-slide:nth-child(1) .box-title { color: #FF5722; }
+        .box-slide:nth-child(2) .box-title { color: #FFC000; }
 
-        .box-choice {
-            display: flex;
-            gap: 6px;
-        }
-
-        .box-choice .tag {
-            font-family: 'Anton';
-            font-size: 14px;
-            padding: 5px 10px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-
-        .box-choice .tag.beef {
-            background: #B71C1C;
-            color: #fff;
-        }
-
-        .box-choice .tag.chicken {
-            background: #FF5722;
-            color: #fff;
-        }
-
-        /* === RIGHT SIDE === */
-        .box-right {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            text-align: right;
-            z-index: 10;
-        }
-
-        .box-includes {
-            margin-bottom: 8px;
-        }
-
-        .box-includes span {
-            display: block;
+        .box-desc {
             font-family: 'Barlow Condensed';
-            font-weight: 600;
+            font-size: 14px;
+            color: #aaa;
+            margin: 5px 0;
+            transition: all 0.6s ease;
+        }
+
+        .box-slide.active .box-desc {
             font-size: 18px;
             color: #ccc;
-            line-height: 1.3;
-        }
-
-        .box-price-wrap {
-            display: flex;
-            align-items: baseline;
-            justify-content: flex-end;
-            gap: 5px;
         }
 
         .box-price {
             font-family: 'Anton';
-            font-size: 50px;
+            font-size: 36px;
             color: #FFC000;
-            text-shadow: 3px 3px 0 #000, 0 0 20px rgba(255, 192, 0, 0.4);
-            line-height: 1;
+            text-shadow: 2px 2px 0 #000;
+            transition: all 0.6s ease;
         }
+
+        .box-slide.active .box-price {
+            font-size: 52px;
+        }
+
+        /* Hide old elements */
+        .box-left, .box-right, .box-choice { display: none; }
 
         /* === PROMO BANNER - SIMPLE & CLEAN === */
         .boxes-promo {
@@ -2113,51 +2090,27 @@
             <!-- === BOXES SECTION === -->
             <div class="boxes-section">
                 <div class="boxes-content">
-                    <!-- SLIDE 1: Single Box -->
+                    <!-- Single Box -->
                     <div class="box-slide active">
                         <div class="box-img-wrap">
                             <img src="AssetsTv3/SINGLE BOX.png" class="box-img">
                         </div>
-                        <div class="box-left">
-                            <div class="box-title"><span>SINGLE</span><br>BOX</div>
-                            <div class="box-choice">
-                                <span class="tag beef">STEAK</span>
-                                <span class="tag chicken">POULET</span>
-                            </div>
-                        </div>
-                        <div class="box-right">
-                            <div class="box-includes">
-                                <span>1 Burger</span>
-                                <span>2 Mozza Sticks</span>
-                                <span>Frites Cheddar + Sauce</span>
-                            </div>
-                            <div class="box-price-wrap">
-                                <span class="box-price">9.90€</span>
-                            </div>
+                        <div class="box-info">
+                            <div class="box-title">SINGLE BOX</div>
+                            <div class="box-desc">1 Burger + 2 Mozza Sticks + Frites Cheddar</div>
+                            <div class="box-price">9.90€</div>
                         </div>
                     </div>
 
-                    <!-- SLIDE 2: Mega Box -->
+                    <!-- Mega Box -->
                     <div class="box-slide">
                         <div class="box-img-wrap">
                             <img src="AssetsTv3/MEGA BOX.png" class="box-img">
                         </div>
-                        <div class="box-left">
-                            <div class="box-title"><span>MEGA</span><br>BOX</div>
-                            <div class="box-choice">
-                                <span class="tag beef">2 STEAKS</span>
-                                <span class="tag chicken">2 POULETS</span>
-                            </div>
-                        </div>
-                        <div class="box-right">
-                            <div class="box-includes">
-                                <span>1 Burger</span>
-                                <span>4 Mozza Sticks + Tenders dés</span>
-                                <span>Frites Cheddar + Sauce</span>
-                            </div>
-                            <div class="box-price-wrap">
-                                <span class="box-price">11.90€</span>
-                            </div>
+                        <div class="box-info">
+                            <div class="box-title">MEGA BOX</div>
+                            <div class="box-desc">1 Burger + 4 Mozza Sticks + Tenders dés + Frites</div>
+                            <div class="box-price">11.90€</div>
                         </div>
                     </div>
                 </div>
@@ -2317,7 +2270,22 @@
 
         setInterval(cycle, 12000);
 
-        // === BOXES - BOTH VISIBLE (no slider) ===
+        // === BOXES - SPOTLIGHT ANIMATION ===
+        const boxSlides = document.querySelectorAll('.box-slide');
+        let activeBox = 0;
+
+        function spotlightBox() {
+            boxSlides.forEach((slide, i) => {
+                if (i === activeBox) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            activeBox = (activeBox + 1) % boxSlides.length;
+        }
+
+        setInterval(spotlightBox, 4000);
 
         window.onresize = fitScreen;
         window.onload = () => { fitScreen(); };
