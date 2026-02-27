@@ -8,9 +8,58 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Oswald:wght@500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;700&family=Barlow+Condensed:wght@600;700;800&family=Oswald:wght@500;700&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            /* --- BOWL IMAGE CONFIGURATION (User Controls) --- */
+
+            /* 1. CLASSIC */
+            --scale-classique: 1.9;
+            --pos-x-classique: -20px;
+            --pos-y-classique: -5%;
+
+            /* 2. INDIEN */
+            --scale-indien: 2.3;
+            --pos-x-indien: -15px;
+            --pos-y-indien: -5%;
+
+            /* 3. CROUSTY */
+            --scale-crousty: 2.3;
+            --pos-x-crousty: -15px;
+            --pos-y-crousty: -5%;
+
+            /* 4. HOT */
+            --scale-hot: 2.3;
+            --pos-x-hot: -15px;
+            --pos-y-hot: -5%;
+
+            /* 5. CHEF */
+            --scale-chef: 2.3;
+            --pos-x-chef: -15px;
+            --pos-y-chef: -5%;
+
+            /* --- BURGER CONFIGURATION (MANUAL POSITIONING) --- */
+            /* ROW 1 */
+            --b1-delices-x: 0px;
+            /* Push Right to close gap */
+            --b1-delices-y: -30px;
+
+            --b2-smokey-x: 30px;
+            /* Push Left to close gap */
+            --b2-smokey-y: -30px;
+
+            /* ROW 2 */
+            --b3-smash-x: -70px;
+            --b3-smash-y: -15px;
+
+            --b4-double-x: 0px;
+            --b4-double-y: -15px;
+
+            --b5-tower-x: 70px;
+            --b5-tower-y: -15px;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -36,7 +85,7 @@
             background: #080808;
             /* Grille stricte 3 colonnes pour 1920px */
             display: grid;
-            grid-template-columns: 1050px 520px 350px;
+            grid-template-columns: 1050px 870px;
             grid-template-rows: 100%;
             padding: 0;
             gap: 0;
@@ -52,15 +101,11 @@
             display: flex;
             flex-direction: column;
             border-right: 2px solid #222;
+            overflow: hidden;
+            /* Clip the falling slides here */
         }
 
-        .burger-slider {
-            height: 400px;
-            background: linear-gradient(135deg, rgba(255, 87, 34, 0.15), transparent);
-            border-bottom: 4px solid #FF5722;
-            position: relative;
-            overflow: hidden;
-        }
+        /* Removed old .burger-slider rule to avoid conflict/duplication */
 
         .promo-badge {
             position: absolute;
@@ -76,6 +121,46 @@
             z-index: 20;
         }
 
+        /* --- SLIDER AREA & ANIMATIONS --- */
+        .burger-slider {
+            position: relative;
+            background: radial-gradient(circle at center, #2a2a2a 0%, #111 60%);
+            border-bottom: 4px solid #FF5722;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 360px;
+            min-height: 360px;
+            max-height: 360px;
+            flex-shrink: 0;
+            animation: bgPulse 10s infinite alternate, bgBreathe 20s ease-in-out infinite;
+            z-index: 50;
+        }
+
+        @keyframes bgBreathe {
+
+            0%,
+            100% {
+                background-size: 100% 100%;
+            }
+
+            50% {
+                background-size: 110% 110%;
+            }
+        }
+
+        @keyframes bgPulse {
+            0% {
+                background-size: 100% 100%;
+            }
+
+            100% {
+                background-size: 120% 120%;
+            }
+        }
+
+
         .slide {
             position: absolute;
             inset: 0;
@@ -84,13 +169,148 @@
             align-items: center;
             padding: 20px 50px;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            visibility: hidden;
+            z-index: 10;
+            transition: visibility 0s 1s;
+            /* Hide after animation */
         }
 
+        /* ACTIVE: Slide is visible and entering */
         .slide.active {
-            opacity: 1;
-            z-index: 10;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 20;
+            transition: none;
         }
+
+        /* Children Entrances (when active) */
+        .slide .slide-left,
+        .slide .slide-center img,
+        .slide .slide-price {
+            opacity: 0;
+            will-change: transform, opacity, filter;
+        }
+
+        .slide.active .slide-left {
+            animation: cinematicSlideInLeft 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.2s;
+        }
+
+        .slide.active .slide-center img {
+            animation: cinematicZoomIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+        }
+
+        .slide.active .slide-price {
+            animation: slideInPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.6s;
+        }
+
+        /* EXITING: cinematic drop down */
+        .slide.exiting {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .slide.exiting .slide-left,
+        .slide.exiting .slide-center img {
+            animation: cinematicDropOut 1.2s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
+        }
+
+        .slide.exiting .slide-price {
+            animation: fadeOutFast 0.4s ease-out forwards !important;
+        }
+
+        /* KEYFRAMES */
+        @keyframes cinematicZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5) translateX(50px);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1.2) translateX(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes cinematicSlideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes cinematicDropOut {
+            0% {
+                transform: translateY(0) rotate(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(400px) rotate(5deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeOutFast {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(120px) scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1.2);
+            }
+        }
+
+        @keyframes slideInPop {
+            from {
+                opacity: 0;
+                transform: scale(0) rotate(15deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(-5deg);
+            }
+        }
+
+        @keyframes gridItemEntrance {
+            to {
+                opacity: 1;
+                transform: translate(var(--tx, 0), var(--ty, 0)) scale(1);
+            }
+        }
+
+        /* Solid drop, enough for 400px container */
 
         .slide-left {
             width: 65%;
@@ -105,7 +325,7 @@
 
         .slide-title {
             font-family: 'Anton';
-            font-size: 75px;
+            font-size: 65px;
             line-height: 0.9;
             color: #fff;
             text-transform: uppercase;
@@ -125,149 +345,597 @@
         }
 
         .sd-item {
-            font-size: 28px;
-            color: #ccc;
+            font-size: 32px;
+            /* Increased font size */
+            color: #fff;
+            /* Brighter color */
             font-weight: 700;
             text-transform: uppercase;
             border-left: 4px solid #FF5722;
             padding-left: 10px;
         }
 
+        /* --- SLIDER LAYOUT REFACTORED --- */
         .slide-center {
-            flex: 1;
-            /* Less space needed now */
+            position: absolute;
+            right: 50px;
+            bottom: 0;
+            height: 100%;
+            width: 45%;
             display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .slide img {
-            height: 420px;
-            /* Bigger image */
-            filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.8));
-            transform: scale(1.15) translateY(10px);
-            animation: float 4s ease-in-out infinite;
-            margin-left: -100px;
-            /* Overlap with text/price */
+            align-items: flex-end;
+            justify-content: flex-end;
             z-index: 1;
         }
 
-        .slide-left {
-            width: 80%;
-            position: relative;
-            z-index: 2;
-            /* Text on top */
+        .slide img {
+            height: 100%;
+            max-height: 300px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.7));
+            margin: 0;
         }
 
-        .slide-price {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 800;
-            font-size: 110px;
-            /* Huge price */
-            color: #FFC000;
-            line-height: 0.8;
-            margin-left: -20px;
-            margin-top: 10px;
-            transform: rotate(-5deg);
-            /* Stylish tilt */
+        .slide-left {
+            width: 55%;
+            max-width: 55%;
+            z-index: 5;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: row;
+            /* HORIZONTAL - side by side */
+            align-items: center;
+            gap: 25px;
         }
+
+        /* Price positioned at BOTTOM RIGHT of slide */
+        /* Duplicate rule removed */
 
         .grid-area {
-            flex: 1;
-            padding: 20px;
+            height: 360px;
+            flex-shrink: 0;
+            padding: 10px 20px 0 20px;
             display: flex;
             flex-direction: column;
+            position: relative;
+            z-index: 100;
+            background: #080808;
         }
 
         .gh-title {
             font-family: 'Anton';
-            font-size: 30px;
-            color: #444;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #222;
+            font-size: 48px;
+            color: #FFC000;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+            animation: titleShimmer 3s ease-in-out infinite;
         }
 
         .burgers-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: repeat(3, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 10px 10px 0 10px;
             flex: 1;
+            align-content: end;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            transform: translateY(-10px);
         }
 
         .b-mini {
-            display: grid;
-            grid-template-columns: 210px 1fr;
-            /* Increased image space */
+            position: relative;
+            flex: 1;
+            /* Allow growth */
+            background: transparent;
+            /* No background to avoid moche blocks */
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            /* No background, no border - Clean look */
-            border-radius: 8px;
-            padding: 0 10px;
-            overflow: visible;
+            text-shadow: 0 4px 5px rgba(0, 0, 0, 1);
+            /* Strong shadow for readability */
+            z-index: 10;
+            /* On top of image */
+            position: relative;
+
+            /* Staggered entrance defaults */
+            opacity: 0;
+            /* --tx and --ty are now handled by Manual Config Variables */
+            transform: translate(var(--pos-x, 0), var(--pos-y, 0)) scale(0.95);
+            animation: gridItemEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        /* INVERT ROW 2 (Items 3 and 4) to create checkerboard effect */
-        .burgers-grid>.b-mini:nth-child(3),
+        /* ROW 1: Délices & Smokey (Span 3 each in 6-col grid) */
+        .burgers-grid>.b-mini:nth-child(1) {
+            grid-column: span 3;
+            z-index: 10;
+            height: 155px;
+            /* Reduced from 180px */
+            --pos-x: var(--b1-delices-x);
+            --pos-y: var(--b1-delices-y);
+            padding-left: 100px;
+            /* Keep padding for text alignment */
+            --tx: var(--b1-delices-x);
+            /* For animation */
+            --ty: var(--b1-delices-y);
+        }
+
+        .burgers-grid>.b-mini:nth-child(2) {
+            grid-column: span 3;
+            z-index: 10;
+            height: 155px;
+            /* Reduced from 180px */
+            --pos-x: var(--b2-smokey-x);
+            --pos-y: var(--b2-smokey-y);
+            padding-right: 170px;
+            /* Adjusted from 100px */
+            --tx: var(--b2-smokey-x);
+            /* For animation */
+            --ty: var(--b2-smokey-y);
+        }
+
+        /* ROW 2: Smash, Double, Tower (Span 2 each in 6-col grid) */
+        .burgers-grid>.b-mini:nth-child(3) {
+            grid-column: span 2;
+            z-index: 5;
+            margin-top: -60px;
+            /* Tighter gap */
+            height: 155px;
+            /* Reduced from 180px */
+            --pos-x: var(--b3-smash-x);
+            --pos-y: var(--b3-smash-y);
+            --tx: var(--b3-smash-x);
+            --ty: var(--b3-smash-y);
+        }
+
         .burgers-grid>.b-mini:nth-child(4) {
-            grid-template-columns: 1fr 210px;
-            /* Swap columns */
+            grid-column: span 2;
+            z-index: 5;
+            margin-top: -60px;
+            /* Tighter gap */
+            height: 155px;
+            /* Reduced from 180px */
+            --pos-x: var(--b4-double-x);
+            --pos-y: var(--b4-double-y);
+            --tx: var(--b4-double-x);
+            --ty: var(--b4-double-y);
         }
 
-        .burgers-grid>.b-mini:nth-child(3) img,
-        .burgers-grid>.b-mini:nth-child(4) img {
-            grid-column: 2;
-            /* Image on right */
-            margin-left: 0;
-            margin-right: -20px;
+        .burgers-grid>.b-mini:nth-child(5) {
+            grid-column: span 2;
+            z-index: 5;
+            margin-top: -60px;
+            /* Tighter gap */
+            height: 155px;
+            /* Reduced from 180px */
+            --pos-x: var(--b5-tower-x);
+            --pos-y: var(--b5-tower-y);
+            --tx: var(--b5-tower-x);
+            --ty: var(--b5-tower-y);
         }
 
-        .burgers-grid>.b-mini:nth-child(3) .bm-content,
-        .burgers-grid>.b-mini:nth-child(4) .bm-content {
-            grid-column: 1;
-            /* Content on left */
-            align-items: flex-end;
-            /* Align text to right to be close to image */
-            text-align: right;
-            padding-right: 15px;
+        /* ROW 3: Specialties (Span 3) */
+        .burgers-grid>.b-mini:nth-child(6) {
+            grid-column: span 3;
+            z-index: 1;
+            margin-top: -50px;
+            height: 180px;
+            --tx: -6%;
+            --ty: 0;
+            padding-left: 170px;
         }
 
+        .burgers-grid>.b-mini:nth-child(7) {
+            grid-column: span 3;
+            z-index: 1;
+            margin-top: -50px;
+            height: 180px;
+            --tx: 6%;
+            --ty: 0;
+            padding-right: 170px;
+        }
+
+        /* HUGE CONTENT FOR ALL */
         .b-mini img {
             height: 200px;
-            /* Bigger! */
-            width: 220px;
+            /* HUGE IMAGES (overflowing container) */
+            width: auto;
             object-fit: contain;
-            margin-left: -30px;
-            filter: drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.6));
-            grid-row: 1;
-            grid-column: 1;
-            transition: transform 0.3s;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
+            margin-bottom: -30px;
+            /* Tighten text to image */
+            position: relative;
+            z-index: 0;
+            /* Behind text */
+            transform: scale(1.35);
+            /* Scale up for maximum appetite appeal */
+            animation: premiumFloat 4s ease-in-out infinite;
+        }
+
+        /* --- ANIMATIONS & TRANSITIONS --- */
+        @keyframes slideInUpText {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRightImg {
+            from {
+                opacity: 0;
+                transform: translateX(50px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .slide.active-buffer .slide-left {
+            width: 55%;
+            max-width: 55%;
+            animation: slideInUpText 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .slide.active-buffer .slide-center img {
+            animation: slideInRightImg 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* --- WATERMARK LOGO --- */
+        .slide-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            right: auto;
+            transform: translate(-50%, -50%);
+            width: auto;
+            max-width: none;
+            height: 90%;
+            object-fit: contain;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            filter: grayscale(100%);
+        }
+
+        /* --- PRO MARKETING: QUICK WINS --- */
+
+        /* Active slide aggressive shadow */
+        .slide.active {
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8), 0 0 100px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Spotlight radial gradient overlay */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 70% 50%, transparent 30%, rgba(0, 0, 0, 0.7) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Pulse animation for burger images */
+        @keyframes burgerPulse {
+
+            0%,
+            100% {
+                transform: translateX(30px) scale(1);
+                filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+            }
+
+            50% {
+                transform: translateX(30px) scale(1.03);
+                filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.7));
+            }
+        }
+
+
+
+        /* Price badge base style - BOTTOM RIGHT */
+        .slide-price {
+            display: inline-block;
+            padding: 10px 25px;
+            line-height: 1;
+            border-radius: 50px;
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        /* --- FINAL THEMES (PRO MARKETING) --- */
+
+        /* 1. Kamikaze Font Setup */
+        @font-face {
+            font-family: 'Kamikaze';
+            src: url('fonts/Kamikaze.ttf') format('truetype');
+        }
+
+        /* 2. KAMIKAZE Style (Baos) - Neon Asian */
+        .slide.style-kamikaze {
+            background: radial-gradient(circle at 70% 50%, #2a0a0a 0%, #0a0a0a 100%);
+            border-bottom: 3px solid #ff2a6d;
+        }
+
+        .slide.style-kamikaze .slide-left {
+            width: 40% !important;
+            max-width: 40% !important;
+        }
+
+        .slide.style-kamikaze::before {
+            background: radial-gradient(ellipse at 70% 50%, rgba(255, 42, 109, 0.1) 20%, transparent 50%, rgba(0, 0, 0, 0.8) 100%);
+        }
+
+        .style-kamikaze .bm-name {
+            font-family: 'Anton', sans-serif !important;
+            color: #fff !important;
+            /* Consistent with other grid items */
+            font-size: 42px !important;
+            line-height: 1.1;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .style-kamikaze .slide-title {
+            font-family: 'Anton', sans-serif !important;
+            letter-spacing: 1px;
+            color: #ff2a6d !important;
+            font-size: 65px !important;
+            /* Reduced for burger visibility */
+            line-height: 0.85;
+            text-shadow: 4px 4px 0px #000, 0 0 30px rgba(255, 42, 109, 0.5);
+            transform: rotate(-3deg);
+            -webkit-text-stroke: 1px #ff2a6d;
+        }
+
+        /* Neon cyan badge */
+        .style-kamikaze .slide-price {
+            font-family: 'Anton', sans-serif !important;
+            font-size: 55px;
+            color: #fff;
+            background: linear-gradient(135deg, #05d9e8, #00b4d8);
+            border: 3px solid #05d9e8;
+            box-shadow: 0 0 20px rgba(5, 217, 232, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        /* 3. STREET Style (Burgers) - Industrial Grunge */
+        .slide.style-street {
+            background: linear-gradient(180deg, #151515 0%, #1a1a1a 100%);
+            border-bottom: 4px solid #ff9800;
+        }
+
+        .slide.style-street::before {
+            background: radial-gradient(ellipse at 65% 50%, rgba(255, 152, 0, 0.08) 20%, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
+        }
+
+        .style-street .bm-name {
+            font-family: 'Anton', sans-serif !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff !important;
+        }
+
+        .style-street .slide-title {
+            font-family: 'Anton', sans-serif !important;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            color: #fff !important;
+            font-size: 90px !important;
+            line-height: 0.85;
+            -webkit-text-stroke: 2px #ff9800;
+            text-shadow: 4px 4px 0 #000;
+        }
+
+        .style-street.slide .slide-title span {
+            color: #ff9800;
+            -webkit-text-stroke: 0;
+        }
+
+        /* Explosion badge */
+        /* Explosion badge - Modernized */
+        .style-street .slide-price {
+            font-family: 'Anton', sans-serif;
+            font-size: 60px;
+            color: #fff;
+            /* White text for better contrast */
+            background: #ff9800;
+            border: 4px solid #fff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transform: rotate(-3deg);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* 4. PREMIUM Style (Smash Tower) - Luxury Gold */
+        /* 4. PREMIUM Style (Smash Tower) - Modern Luxury */
+        /* 4. PREMIUM Style (Smash Tower) - THE GOLDEN STAGE (TRUE PLAN) */
+        .slide.style-premium {
+            /* Cinematic Background: Spotlight on a dark floor */
+            background: radial-gradient(circle at 50% 30%, #4a3b00 0%, #1a1500 40%, #000000 100%);
+            border-bottom: 4px solid #FFC000;
+            box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            /* For particles */
+        }
+
+        /* Gold Dust Particles Overlay */
+        .slide.style-premium::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image:
+                radial-gradient(#FFC000 1px, transparent 1px),
+                radial-gradient(#FFF 1px, transparent 1px);
+            background-size: 50px 50px, 30px 30px;
+            background-position: 0 0, 15px 15px;
+            opacity: 0.3;
+            animation: goldDust 10s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes goldDust {
+            0% {
+                transform: translateY(0);
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-50px);
+                opacity: 0.3;
+            }
+        }
+
+        /* Spotlight Beam Effect */
+        .slide.style-premium::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 150%;
+            background: radial-gradient(ellipse at center, rgba(255, 192, 0, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .style-premium.slide .slide-title {
+            font-family: 'Anton', sans-serif !important;
+            text-transform: uppercase;
+            color: #FFC000 !important;
+            font-size: 95px !important;
+            /* Larger for impact */
+            line-height: 0.85;
+            letter-spacing: -2px;
+            /* Tighter for solidity */
+
+            /* SOLID VIVID GOLD - NO GRADIENTS */
+            background: none;
+            -webkit-background-clip: border-box;
+            background-clip: border-box;
+            -webkit-text-fill-color: #FFC000;
+
+            /* 3D Depth Shadow - Not muddy, but deep */
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow:
+                0 1px 0 #b38600,
+                0 2px 0 #997300,
+                0 3px 0 #806000,
+                0 4px 0 #664d00,
+                0 30px 60px rgba(0, 0, 0, 1);
+
+            transform: skewY(-2deg);
+            /* Dynamic angle */
+            position: relative;
+            z-index: 10;
+        }
+
+        .style-premium.slide .slide-title span {
+            color: #FFF !important;
+            /* White contrast for "Tower" or subtitle */
+            font-family: 'Barlow Condensed', sans-serif !important;
+            font-weight: 800;
+            font-size: 0.35em;
+            letter-spacing: 15px;
+            /* Cinematic spacing */
+            text-transform: uppercase;
+            display: block;
+            margin-top: 15px;
+            margin-left: 5px;
+            -webkit-text-fill-color: #FFF;
+            text-shadow: 0 0 20px rgba(255, 192, 0, 0.8);
+            transform: skewY(0deg);
+            /* Keeping it flat relative to title */
+        }
+
+        /* Restored Visuals with Corrected Price Size */
+        .style-premium.slide .slide-price {
+            font-family: 'Anton', sans-serif !important;
+            font-size: 60px;
+            /* CORRECTED SIZE */
+            color: #FFC000;
+            background: #000;
+            border: 5px solid #FFC000;
+            border-radius: 50px;
+            padding: 5px 25px;
+            bottom: 40px;
+            right: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 192, 0, 0.4);
+            text-shadow: none;
+            transform: rotate(-3deg);
+            z-index: 20;
+        }
+
+        /* Premium burger visual - Floating & Reflection */
+        .style-premium.slide .slide-center img {
+            filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.8));
+            /* Reflection effect using box-reflect (WebKit only) */
+            -webkit-box-reflect: below -20px linear-gradient(transparent, transparent 70%, rgba(255, 255, 255, 0.2));
+            transform: scale(1.1);
+            /* Larger */
         }
 
         .bm-content {
-            grid-row: 1;
-            grid-column: 2;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            height: 100%;
+            align-items: center;
+            text-shadow: 0 4px 5px rgba(0, 0, 0, 1);
+            /* Strong shadow for readability */
+            z-index: 10;
+            /* On top of image */
+            position: relative;
         }
 
         .bm-name {
             font-family: 'Anton';
-            font-size: 38px;
-            /* Slightly bigger */
+            font-size: 36px;
+            /* Increased size */
             line-height: 0.9;
             color: #fff;
             text-transform: uppercase;
-            margin-bottom: 5px;
-            transform: rotate(-3deg);
-            /* Dynamic tilt */
-            display: inline-block;
+        }
+
+        .bm-desc {
+            font-family: 'Barlow Condensed';
+            font-weight: 700;
+            font-size: 22px;
+            /* Increased size for better readability */
+            color: #FFC000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            line-height: 1;
         }
 
         .bm-price {
-            font-family: 'Anton';
+            font-family: 'Barlow Condensed';
+            font-weight: 700;
             font-size: 42px;
+            /* HUGE PRICE */
             color: #FFC000;
             line-height: 1;
             transform: rotate(-3deg);
@@ -283,39 +951,49 @@
 
 
         /* === COL 2: BOWLS (27%) === */
+        /* === COL 2: BOWLS (27%) - PREMIUM REDESIGN === */
         .col-bowls {
             grid-column: 2;
-            background: #0d0d0d;
-            border-left: 2px solid #4CAF50;
+            background: radial-gradient(circle at 50% 30%, #1a1a1a 0%, #080808 100%);
+            border-left: 2px solid #FFC000;
             border-right: 2px solid #222;
             display: flex;
             flex-direction: column;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
         }
 
         .cb-header {
-            background: #4CAF50;
-            padding: 10px;
+            background: linear-gradient(180deg, #FFC000 0%, #FF8F00 100%);
+            padding: 15px 10px;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            position: relative;
         }
 
         .cb-title {
             font-family: 'Anton';
-            font-size: 45px;
+            font-size: 50px;
             color: #000;
-            line-height: 1;
+            line-height: 0.9;
+            text-shadow: 0 2px 0 rgba(255, 255, 255, 0.4);
         }
 
         .cb-sub {
             font-family: 'Barlow Condensed';
             font-weight: 800;
-            font-size: 22px;
+            font-size: 24px;
             color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
         }
 
         .bowls-list {
             flex: 1;
             display: flex;
             flex-direction: column;
+            padding: 10px 0;
         }
 
         .bowl-row {
@@ -323,90 +1001,380 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 1px solid #222;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 192, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 20px;
             overflow: visible;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            /* Ensure cards have width to fit in container with padding */
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Removed hover effects as it's a TV menu */
+        /* .bowl-row:hover { ... } */
+
+
+        /* --- ZIGZAG LAYOUT (User Request: Mirrored Alignment) --- */
+        .bowl-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        /* Even Rows: Text Left, Lock to Left Align */
+        .bowl-row:nth-child(even) .bowl-info {
+            padding-left: 20px;
+            padding-right: 0;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .bowl-row:nth-child(even) .bowl-img {
+            margin-right: -40px;
+            margin-left: -20px;
+        }
+
+        .bowl-img {
+            width: 340px;
+            /* HUGE Image */
+            height: 125%;
+            /* Pop out more */
+            object-fit: contain;
+            margin-right: -60px;
+            margin-left: -60px;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
+            transition: transform 0.4s ease;
+            z-index: 1;
+            /* Pop out of card */
             position: relative;
         }
 
-        /* Overflow Visible for Controls */
-
-        .bowl-img {
-            width: 280px;
-            height: 100%;
-            object-fit: contain;
-            margin-right: -20px;
-            margin-left: -40px;
-            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.6));
-            transform-origin: center center;
-            cursor: pointer;
+        .bowl-row:hover .bowl-img {
+            transform: scale(1.15) rotate(3deg);
+            filter: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.9));
         }
 
+        /* Odd Rows: Text Right (Mirrored) */
         .bowl-info {
             padding-right: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             height: 100%;
-            z-index: 2;
-            padding-left: 10px;
+            z-index: 20;
+            padding-left: 15px;
+            align-items: flex-end;
+            text-align: right;
+            flex: 1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
         .bi-name {
             font-family: 'Anton';
-            font-size: 38px;
-            line-height: 0.9;
-            color: #fff;
+            font-size: 58px;
+            /* HUGE TITLE */
+            line-height: 0.85;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.9));
+            margin-bottom: 5px;
+            white-space: nowrap;
+            letter-spacing: -1px;
+        }
+
+        #meat-cycle {
+            display: none;
+        }
+
+        .meat-marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: rgba(255, 192, 0, 0.05);
+            /* Softer background */
+            border-radius: 4px;
+            padding: 6px 0;
+            margin-top: 5px;
+            position: relative;
+            /* Fade edges for professionalism */
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .meat-marquee {
+            display: flex;
+            width: max-content;
+            /* Ensure it takes full content width */
+            white-space: nowrap;
+            animation: meat-scroll 25s linear infinite;
+            /* Very slow for readability */
+            will-change: transform;
+        }
+
+        @keyframes meat-scroll {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .meat-item {
+            font-family: 'Barlow Condensed';
+            font-weight: 800;
+            font-size: 18px;
+            color: #FFC000;
+            padding: 0 8px;
+            /* Reduced padding */
             text-transform: uppercase;
         }
 
-        .bi-desc {
-            font-size: 20px;
-            color: #bbb;
-            line-height: 1.1;
-            margin-top: 5px;
+        .meat-item::after {
+            content: ',';
+            /* Removed space before comma */
+            color: #fff;
+            margin-left: 2px;
+            /* Reduced margin */
         }
 
         .bi-price {
             font-family: 'Anton';
-            font-size: 48px;
-            color: #4CAF50;
-            margin-top: 2px;
+            font-size: 55px;
+            /* HUGE PRICE */
+            color: #000;
+            background: #FFC000;
+            padding: 0px 25px;
+            border-radius: 40px;
+            transform: rotate(-2deg);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            border: 3px solid #fff;
+            margin-top: 8px;
+            display: inline-block;
         }
 
+        /* Chef Bowl Highlight - Premium Gold Card */
         .bowl-row.chef-row {
-            background: rgba(76, 175, 80, 0.1);
+            background: linear-gradient(135deg, rgba(255, 192, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
+            border: 3px solid #FFC000;
+            box-shadow: 0 0 50px rgba(255, 192, 0, 0.3);
         }
 
         .bowl-row.chef-row .bi-name {
-            color: #4CAF50;
+            background: linear-gradient(to right, #FFC000, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
 
         /* === COL 3: FRITES (18%) === */
+        /* === COL 3: FRITES (18%) - CARD STYLE === */
         .col-fries {
             grid-column: 3;
             background: #111;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.02) 10px, rgba(255, 255, 255, 0.02) 20px);
             display: flex;
             flex-direction: column;
+            border-left: 2px solid #222;
+        }
+
+        .menu-badge {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #FF5722;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-family: 'Anton';
+            font-size: 32px;
+            line-height: 1;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transform: rotate(2deg);
+        }
+
+        .menu-badge small {
+            font-size: 14px;
+            display: block;
+            font-family: 'Barlow Condensed';
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .bm-desc {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: #FFC000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            line-height: 1.1;
+        }
+
+        /* --- SLIDER LAYOUT FIXES --- */
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide.active {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .slide.exiting {
+            display: flex !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .slide-left {
+            z-index: 10;
+            /* Text ON TOP */
+            position: relative;
+            padding-left: 20px;
+            max-width: 60%;
+            /* Prevent text from running into image too much */
+        }
+
+        .slide-center {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            height: 100%;
+            width: 50%;
+            /* constrain image area */
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            z-index: 1;
+            /* Image BEHIND text */
+        }
+
+        .slide-center img {
+            max-height: 95%;
+            max-width: 100%;
+            object-fit: contain;
+            margin-right: 10px;
+            /* Small buffer from edge */
+        }
+
+        /* --- STICKER BADGE (Menu +2€) --- */
+        /* --- PREMIUM BADGE (Menu +2€) REWORKED --- */
+        .sticker-badge {
+            position: absolute;
+            top: -55px;
+            /* Raised slightly for better seam fit */
+            left: 20px;
+            /* Shifted slightly from the edge */
+            z-index: 999;
+            background: linear-gradient(135deg, #FFC000 0%, #FF8F00 100%);
+            color: #000;
+            font-family: 'Anton', sans-serif;
+            padding: 12px 25px;
+            transform: rotate(-5deg);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 3px solid #fff;
+            border-radius: 8px;
+            text-transform: uppercase;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+            animation: premium-badge-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes premium-badge-pulse {
+
+            0%,
+            100% {
+                transform: rotate(-5deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(-2deg) scale(1.05);
+            }
+        }
+
+        .sb-title {
+            font-size: 45px;
+            letter-spacing: -1px;
+            margin-bottom: 2px;
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.3);
+        }
+
+        .sb-sub {
+            font-family: 'Barlow Condensed';
+            font-weight: 800;
+            font-size: 22px;
+            background: #000;
+            color: #FFC000;
+            padding: 2px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes badge-pulse {
+
+            0%,
+            100% {
+                transform: rotate(-5deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(-5deg) scale(1.05);
+            }
         }
 
         .cf-header {
             background: #FFC000;
-            padding: 10px;
+            padding: 15px 10px;
             text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+            margin-bottom: 0px;
+            z-index: 10;
         }
 
         .cf-title {
             font-family: 'Anton';
-            font-size: 35px;
+            font-size: 40px;
             color: #000;
             line-height: 1;
+            text-transform: uppercase;
         }
 
         .fries-list {
             flex: 1;
             display: flex;
             flex-direction: column;
+            padding: 10px 15px;
+            gap: 15px;
+            justify-content: center;
         }
 
         .fry-row {
@@ -415,32 +1383,56 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-bottom: 1px solid #333;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             padding: 10px;
+            position: relative;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
+        /* Removed hover effects as it's a TV menu */
+        /* .fry-row:hover { ... } */
+
+
         .fry-row img {
-            height: 120px;
+            height: 110px;
             width: auto;
             object-fit: contain;
             margin-bottom: 5px;
-            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.6));
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .fry-row:nth-child(even) img {
+            animation-delay: 1s;
         }
 
         .fry-name {
             font-family: 'Anton';
-            font-size: 30px;
+            font-size: 32px;
             color: #fff;
             text-transform: uppercase;
             text-align: center;
             line-height: 1;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
         }
 
         .fry-price {
             font-family: 'Anton';
-            font-size: 38px;
-            color: #FFC000;
+            font-size: 35px;
+            color: #000;
+            background: #FFC000;
+            padding: 0px 15px;
+            border-radius: 20px;
+            transform: rotate(-3deg);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+            border: 2px solid #fff;
         }
+
+
 
         @keyframes float {
 
@@ -473,6 +1465,523 @@
                 transform: translateY(-8px);
             }
         }
+
+        @keyframes premiumFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes titleShimmer {
+
+            0%,
+            100% {
+                color: #FFC000;
+                filter: drop-shadow(0 0 10px rgba(255, 192, 0, 0.4));
+            }
+
+            50% {
+                color: #FF8F00;
+                filter: drop-shadow(0 0 20px rgba(255, 143, 0, 0.7));
+            }
+        }
+
+        /* === RIGHT PANEL (BOWLS + FRIES) - 870px === */
+
+        .col-right-panel {
+            grid-column: 2;
+            grid-column-end: span 2 !important;
+            /* Merge Col 2 and 3 force */
+            grid-row: 1;
+            display: flex;
+            height: 100%;
+            border-left: 2px solid #222;
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* --- BOWLS SECTION (Left side of Right Panel) --- */
+        .rp-bowls {
+            width: 63%;
+            /* ~548px - Maximize this for Bowls */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at 0% 50%, #1a1a1a 0%, #050505 100%);
+            border-right: 2px solid #333;
+            position: relative;
+            z-index: 10;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .rp-header {
+            height: 90px;
+            background: linear-gradient(90deg, #FFC000 0%, #FF8F00 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            position: relative;
+        }
+
+        .rp-title {
+            font-family: 'Anton';
+            font-size: 55px;
+            /* HUGE TITLE */
+            color: #000;
+            line-height: 0.9;
+            text-transform: uppercase;
+        }
+
+        .rp-sub {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .rp-tag {
+            font-family: 'Barlow Condensed';
+            font-weight: 800;
+            font-size: 20px;
+            color: #000;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .rb-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            /* Padding for gap */
+            gap: 10px;
+            /* Real gap */
+            overflow: hidden;
+        }
+
+        /* --- NEW BOWL CARD --- */
+        .rb-card {
+            flex: 1;
+            /* Auto-height! 5 cards = ~180px each */
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden !important;
+            /* Force Clip */
+            transition: all 0.3s ease;
+        }
+
+        /* Removed hover effects as it's a TV menu */
+        /* .rb-card:hover { ... } */
+
+
+        /* Text Container */
+        .rb-info {
+            width: 70%;
+            /* Text Priority */
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 5;
+            position: relative;
+        }
+
+        .rb-name {
+            font-family: 'Anton';
+            font-size: 45px;
+            /* HUGE NO-WRAP SIZE (Adjusted for safety) */
+            color: #fff;
+            line-height: 0.85;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0 #000;
+            margin-bottom: 5px;
+            background: linear-gradient(to bottom, #fff, #ddd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            white-space: nowrap;
+        }
+
+        .rb-desc {
+            font-size: 19px;
+            /* Legible */
+            color: #ccc;
+            line-height: 1;
+            font-weight: 500;
+        }
+
+        .rb-price {
+            font-family: 'Anton';
+            font-size: 45px;
+            color: #FFC000;
+            margin-top: 5px;
+            text-shadow: 2px 2px 0 #000;
+            display: inline-block;
+        }
+
+        /* Image Container */
+        .rb-img-wrap {
+            position: absolute;
+            right: -20px;
+            top: 0;
+            height: 100%;
+            width: 40%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .rb-img {
+            width: 100%;
+            height: 130%;
+            /* POP OUT vertically */
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.6));
+            transition: transform 0.4s ease;
+        }
+
+        /* INDIVIDUAL BOWL IMAGE CONTROLS (Uses Config at top) */
+        #img-classique {
+            transform: scale(var(--scale-classique)) translateY(var(--pos-y-classique)) translateX(var(--pos-x-classique));
+        }
+
+        #img-indien {
+            transform: scale(var(--scale-indien)) translateY(var(--pos-y-indien)) translateX(var(--pos-x-indien));
+        }
+
+        #img-crousty {
+            transform: scale(var(--scale-crousty)) translateY(var(--pos-y-crousty)) translateX(var(--pos-x-crousty));
+        }
+
+        #img-hot {
+            transform: scale(var(--scale-hot)) translateY(var(--pos-y-hot)) translateX(var(--pos-x-hot));
+        }
+
+        #img-chef {
+            transform: scale(var(--scale-chef)) translateY(var(--pos-y-chef)) translateX(var(--pos-x-chef));
+        }
+
+
+
+        /* Removed hover effects as it's a TV menu */
+        /* .rb-card:hover .rb-img { ... } */
+
+
+        .rb-name {
+            font-family: 'Anton';
+            font-size: 45px;
+            color: #fff !important;
+            line-height: 0.85;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0 #000;
+            margin-bottom: 5px;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            -webkit-text-fill-color: initial !important;
+            white-space: nowrap;
+        }
+
+        /* CHEF BOWL SPECIAL */
+
+
+        /* --- FRIES SECTION (Right side of Right Panel) --- */
+        .rp-fries {
+            flex: 1;
+            /* Remaining width (~37%) */
+            display: flex;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .rp-fries img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            animation: fries-dynamic 40s ease-in-out infinite;
+        }
+
+        @keyframes fries-dynamic {
+            0% {
+                transform: scale(1.0) translate(0, 0);
+            }
+
+            25% {
+                transform: scale(1.01) translate(-0.5%, 0.5%);
+            }
+
+            50% {
+                transform: scale(1.02) translate(0.5%, -0.5%);
+            }
+
+            75% {
+                transform: scale(1.01) translate(-0.5%, -0.5%);
+            }
+
+            100% {
+                transform: scale(1.0) translate(0, 0);
+            }
+        }
+
+        .rf-header {
+            height: 90px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .rf-title {
+            font-family: 'Anton';
+            font-size: 35px;
+            color: #FFC000;
+            text-transform: uppercase;
+            text-align: center;
+            animation: titleShimmer 3s ease-in-out infinite 0.5s;
+        }
+
+        /* Float for bowl cards too */
+        .rf-card img {
+            height: 80%;
+            width: auto;
+            max-width: 90%;
+            object-fit: contain;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+            animation: premiumFloat 5s ease-in-out infinite alternate;
+        }
+
+        .rf-list {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rf-card {
+            flex: 1;
+            background: #151515;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #222;
+        }
+
+        .rf-card img {
+            height: 80%;
+            /* Max height percentage */
+            width: auto;
+            max-width: 90%;
+            object-fit: contain;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+        }
+
+        .rf-name {
+            font-family: 'Anton';
+            font-size: 26px;
+            color: #fff;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-top: -10px;
+            /* Pull up */
+        }
+
+        .rf-price {
+            font-family: 'Anton';
+            font-size: 30px;
+            color: #FFC000;
+            line-height: 1;
+            background: #000;
+            padding: 0 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        /* === BOXES SECTION - 360px (1/3 of screen) === */
+        .boxes-section {
+            height: 360px;
+            flex-shrink: 0;
+            background: radial-gradient(ellipse at center, #1a0a00 0%, #080808 70%);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Slides area */
+        .boxes-content {
+            flex: 1;
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .box-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .box-slide.active {
+            opacity: 1;
+        }
+
+        /* === IMAGE CENTERED - FIXED POSITION === */
+        .box-img-wrap {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        .box-img {
+            height: 320px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 40px rgba(255, 87, 34, 0.25));
+        }
+
+        /* Mega Box slightly bigger */
+        .box-slide:nth-child(2) .box-img {
+            height: 350px;
+        }
+
+        /* === LEFT SIDE === */
+        .box-left {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .box-title {
+            font-family: 'Anton';
+            font-size: 70px;
+            line-height: 0.9;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 3px 3px 0 #000;
+            margin-bottom: 12px;
+        }
+
+        .box-title span {
+            color: #FF5722;
+        }
+
+        .box-slide:nth-child(2) .box-title span {
+            color: #FFC000;
+        }
+
+        .box-choice {
+            display: flex;
+            gap: 10px;
+        }
+
+        .box-choice .tag {
+            font-family: 'Anton';
+            font-size: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+
+        .box-choice .tag.beef {
+            background: #B71C1C;
+            color: #fff;
+        }
+
+        .box-choice .tag.chicken {
+            background: #FF5722;
+            color: #fff;
+        }
+
+        /* === RIGHT SIDE === */
+        .box-right {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: right;
+            z-index: 10;
+        }
+
+        .box-includes {
+            margin-bottom: 12px;
+        }
+
+        .box-includes span {
+            display: block;
+            font-family: 'Barlow Condensed';
+            font-weight: 600;
+            font-size: 26px;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        .box-price-wrap {
+            display: flex;
+            align-items: baseline;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .box-price {
+            font-family: 'Anton';
+            font-size: 90px;
+            color: #FFC000;
+            text-shadow: 4px 4px 0 #000, 0 0 25px rgba(255, 192, 0, 0.4);
+            line-height: 1;
+        }
+
+        /* === PROMO BANNER - SIMPLE & CLEAN === */
+        .boxes-promo {
+            height: 55px;
+            flex-shrink: 0;
+            margin-top: auto;
+            background: linear-gradient(90deg, #E64A19, #FF5722, #E64A19);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .boxes-promo .promo-text {
+            font-family: 'Anton';
+            font-size: 30px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .boxes-promo .promo-highlight {
+            font-family: 'Anton';
+            font-size: 40px;
+            color: #FFC000;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 
@@ -483,159 +1992,291 @@
         <!-- BURGERS (No changes) -->
         <div class="col-burgers">
             <div class="burger-slider">
-                <div class="promo-badge">MENU +2€</div>
-                <div class="slide active" id="s1">
+                <!-- S1: Smash Tower -->
+                <div class="slide style-premium active">
+                    <img src="AssetsTv3/chickenzz_logo.jpg" class="slide-watermark">
                     <div class="slide-left">
                         <div class="slide-title">Smash<br><span>Tower</span></div>
-                        <div class="slide-desc"><span class="sd-item">Triple Steak</span><span class="sd-item">Galette
-                                P.D.T</span><span class="sd-item">Bacon</span></div>
-                        <div class="slide-price">14.90€</div>
+                        <div class="slide-desc"><span class="sd-item">3 Steaks smaché</span><span
+                                class="sd-item">P.D.T</span><span class="sd-item">Cheddar</span><span
+                                class="sd-item">Bacon</span></div>
                     </div>
-                    <div class="slide-center"><img src="AssetsTv3/smash_tower.png"></div>
+                    <div class="slide-price">14.90€</div>
+                    <div class="slide-center"><img src="AssetsTv3/smash_tower_real.png"></div>
+                </div>
+
+                <!-- S4: Délices Smash -->
+                <div class="slide style-street">
+                    <img src="AssetsTv3/chickenzz_logo.jpg" class="slide-watermark">
+                    <div class="slide-left">
+                        <div class="slide-title">Délices<br><span>Smash</span></div>
+                        <div class="slide-desc"><span class="sd-item">Steak smaché</span><span
+                                class="sd-item">P.D.T</span><span class="sd-item">Œuf</span><span
+                                class="sd-item">Raclette</span><span class="sd-item">Bacon</span></div>
+                    </div>
+                    <div class="slide-price">11.50€</div>
+                    <div class="slide-center"><img src="AssetsTv3/delices_smash_real.png"></div>
+                </div>
+                <!-- S5: Smokey Chick -->
+                <div class="slide style-street">
+                    <img src="AssetsTv3/chickenzz_logo.jpg" class="slide-watermark">
+                    <div class="slide-left">
+                        <div class="slide-title">Smokey<br><span>Chick</span></div>
+                        <div class="slide-desc"><span class="sd-item">2 Tenders</span><span
+                                class="sd-item">Bacon</span><span class="sd-item">Oignons frits</span></div>
+                    </div>
+                    <div class="slide-price">8.50€</div>
+                    <div class="slide-center"><img src="AssetsTv3/smokey_chick_real.png"></div>
+                </div>
+                <!-- S6: Double Smash -->
+                <div class="slide style-street">
+                    <img src="AssetsTv3/chickenzz_logo.jpg" class="slide-watermark">
+                    <div class="slide-left">
+                        <div class="slide-title">Double<br><span>Smash</span></div>
+                        <div class="slide-desc"><span class="sd-item">2 Steaks smaché</span></div>
+                    </div>
+                    <div class="slide-price">7.90€</div>
+                    <div class="slide-center"><img src="AssetsTv3/double_smash_real.png"></div>
+                </div>
+                <!-- S7: Smash Burger -->
+                <div class="slide style-street">
+                    <img src="AssetsTv3/chickenzz_logo.jpg" class="slide-watermark">
+                    <div class="slide-left">
+                        <div class="slide-title">Smash<br><span>Burger</span></div>
+                        <div class="slide-desc"><span class="sd-item">1 Steak Smashé</span></div>
+                    </div>
+                    <div class="slide-price">5.90€</div>
+                    <div class="slide-center"><img src="AssetsTv3/smash_burger_real.png"></div>
                 </div>
             </div>
             <div class="grid-area">
-                <!-- Removed Title as requested -->
+                <!-- Sticker Badge restored to original junction -->
+                <div class="sticker-badge">
+                    <div class="sb-title">MENU +2€</div>
+                    <div class="sb-sub">FRITES + BOISSON 33CL</div>
+                </div>
+
+
+
                 <div class="burgers-grid">
-                    <div class="b-mini highlight"><img src="AssetsTv3/smash_tower.png">
+                    <!-- ROW 1: Délices Smash -->
+                    <div class="b-mini style-street" style="animation-delay: 0.1s;">
+                        <img src="AssetsTv3/delices_smash_real.png">
                         <div class="bm-content">
-                            <div class="bm-name">Smash Tower</div>
-                            <div class="bm-price">14.90€</div>
-                        </div>
-                    </div>
-                    <div class="b-mini"><img src="AssetsTv3/mega burger.png">
-                        <div class="bm-content">
-                            <div class="bm-name">Le Méga</div>
-                            <div class="bm-price">13.00€</div>
-                        </div>
-                    </div>
-                    <div class="b-mini"><img src="AssetsTv3/delices_burger.png">
-                        <div class="bm-content">
-                            <div class="bm-name">Le Délice</div>
+                            <div class="bm-name">Délices Smash</div>
+                            <div class="bm-desc">1 Steak Smashé + P.D.T + Bacon + Raclette</div>
                             <div class="bm-price">11.50€</div>
                         </div>
                     </div>
-                    <div class="b-mini"><img src="AssetsTv3/chicken_cheese.png">
+                    <!-- ROW 1: Smokey Chick -->
+                    <div class="b-mini style-street" style="animation-delay: 0.2s;">
+                        <img src="AssetsTv3/smokey_chick_real.png">
                         <div class="bm-content">
-                            <div class="bm-name">Bacon Fried Chicken</div>
+                            <div class="bm-name">Smokey Chick</div>
+                            <div class="bm-desc">2 Tenders + Bacon + Oignons frits</div>
                             <div class="bm-price">8.50€</div>
                         </div>
                     </div>
-                    <div class="b-mini"><img src="AssetsTv3/double_cheese.png">
-                        <div class="bm-content">
-                            <div class="bm-name">Double Smash</div>
-                            <div class="bm-price">7.00€</div>
-                        </div>
-                    </div>
-                    <div class="b-mini"><img src="AssetsTv3/cheeseburger.png">
+
+                    <!-- ROW 2: Smash Burger -->
+                    <div class="b-mini style-street" style="animation-delay: 0.3s; z-index: 5;">
+                        <img src="AssetsTv3/smash_burger_real.png">
                         <div class="bm-content">
                             <div class="bm-name">Smash Burger</div>
-                            <div class="bm-price">5.50€</div>
+                            <div class="bm-desc">1 Steak Smashé</div>
+                            <div class="bm-price">5.90€</div>
+                        </div>
+                    </div>
+
+                    <!-- ROW 2: Double Smash -->
+                    <div class="b-mini style-street" style="animation-delay: 0.4s; z-index: 5;">
+                        <img src="AssetsTv3/double_smash_real.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Double Smash</div>
+                            <div class="bm-desc">2 Steaks Smashé</div>
+                            <div class="bm-price">7.90€</div>
+                        </div>
+                    </div>
+
+                    <!-- ROW 2: Smash Tower -->
+                    <div class="b-mini highlight style-street"
+                        style="background:radial-gradient(circle closest-side, rgba(255, 87, 34, 0.2), transparent); border:none; animation-delay: 0.5s; z-index: 5;">
+                        <img src="AssetsTv3/smash_tower_real.png">
+                        <div class="bm-content">
+                            <div class="bm-name">Smash Tower</div>
+                            <div class="bm-desc">3 Steaks Smashé + P.D.T + Bacon</div>
+                            <div class="bm-price">14.90€</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- BOWLS (CALIBRATION MODE) -->
-        <div class="col-bowls">
-            <div class="cb-header">
-                <div class="cb-title">NOS BOWLS</div>
-                <div class="cb-sub">BOISSON +1.50€</div>
-            </div>
+            <!-- === BOXES SECTION === -->
+            <div class="boxes-section">
+                <div class="boxes-content">
+                    <!-- SLIDE 1: Single Box -->
+                    <div class="box-slide active">
+                        <div class="box-img-wrap">
+                            <img src="AssetsTv3/SINGLE BOX.png" class="box-img">
+                        </div>
+                        <div class="box-left">
+                            <div class="box-title"><span>SINGLE</span><br>BOX</div>
+                            <div class="box-choice">
+                                <span class="tag beef">STEAK</span>
+                                <span class="tag chicken">POULET</span>
+                            </div>
+                        </div>
+                        <div class="box-right">
+                            <div class="box-includes">
+                                <span>1 Burger</span>
+                                <span>2 Mozza Sticks</span>
+                                <span>Frites Cheddar + Sauce</span>
+                            </div>
+                            <div class="box-price-wrap">
+                                <span class="box-price">9.90€</span>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="bowls-list">
-                <!-- CHEF -->
-                <div class="bowl-row chef-row">
-                    <div class="bounce-wrap" style="animation-delay: 0s;">
-                        <img src="AssetsTv3/chef bowl.png" class="bowl-img chef" id="img-chef"
-                            style="transform: scale(1.5);">
-                    </div>
-                    <div class="bowl-info">
-                        <div class="bi-name">Chef Bowl</div>
-                        <div class="bi-desc">Avocat, Poulet, Fromage</div>
-                        <div class="bi-price">10.90€</div>
-                    </div>
-                </div>
-                <!-- HOT -->
-                <div class="bowl-row">
-                    <div class="bounce-wrap" style="animation-delay: 0.5s;">
-                        <img src="AssetsTv3/spicy bowl.png" class="bowl-img spicy" id="img-spicy"
-                            style="transform: scale(1.55) translateY(5px);">
-                    </div>
-                    <div class="bowl-info">
-                        <div class="bi-name">Hot Bowl</div>
-                        <div class="bi-desc">Piment, Jalapenos, Riz</div>
-                        <div class="bi-price">10.90€</div>
-                    </div>
-                </div>
-                <!-- INDIAN -->
-                <div class="bowl-row">
-                    <div class="bounce-wrap" style="animation-delay: 1s;">
-                        <img src="AssetsTv3/indian bowl.png" class="bowl-img indian" id="img-indian"
-                            style="transform: scale(1.55) translateY(5px);">
-                    </div>
-                    <div class="bowl-info">
-                        <div class="bi-name">Indian</div>
-                        <div class="bi-desc">Curry, Oignons Rouges</div>
-                        <div class="bi-price">9.90€</div>
+                    <!-- SLIDE 2: Mega Box -->
+                    <div class="box-slide">
+                        <div class="box-img-wrap">
+                            <img src="AssetsTv3/MEGA BOX.png" class="box-img">
+                        </div>
+                        <div class="box-left">
+                            <div class="box-title"><span>MEGA</span><br>BOX</div>
+                            <div class="box-choice">
+                                <span class="tag beef">2 STEAKS</span>
+                                <span class="tag chicken">2 POULETS</span>
+                            </div>
+                        </div>
+                        <div class="box-right">
+                            <div class="box-includes">
+                                <span>1 Burger</span>
+                                <span>4 Mozza Sticks + Tenders dés</span>
+                                <span>Frites Cheddar + Sauce</span>
+                            </div>
+                            <div class="box-price-wrap">
+                                <span class="box-price">11.90€</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- CROUSTY -->
-                <div class="bowl-row">
-                    <div class="bounce-wrap" style="animation-delay: 1.5s;">
-                        <img src="AssetsTv3/crousty bowl.png" class="bowl-img crousty" id="img-crousty"
-                            style="transform: scale(1.6) translateX(10px);">
-                    </div>
-                    <div class="bowl-info" style="padding-left: 30px;">
-                        <div class="bi-name">Crousty</div>
-                        <div class="bi-desc">Oignons Frits, Cheese</div>
-                        <div class="bi-price">9.90€</div>
-                    </div>
-                </div>
-                <!-- CLASSIQUE -->
-                <div class="bowl-row">
-                    <div class="bounce-wrap" style="animation-delay: 2s;">
-                        <img src="AssetsTv3/classique bowl.png" class="bowl-img classique" id="img-classique"
-                            style="transform: scale(1.3);">
-                    </div>
-                    <div class="bowl-info">
-                        <div class="bi-name">Classique</div>
-                        <div class="bi-desc">Tenders, Riz, Sauce</div>
-                        <div class="bi-price">8.90€</div>
-                    </div>
+
+                <!-- PROMO BANNER -->
+                <div class="boxes-promo">
+                    <span class="promo-text">Ta boisson à seulement</span>
+                    <span class="promo-highlight">1€</span>
                 </div>
             </div>
         </div>
 
-        <!-- FRITES (No changes) -->
-        <div class="col-fries">
-            <div class="cf-header">
-                <div class="cf-title">FRITES SPÉCIALES</div>
+        <!-- RIGHT PANEL (MERGED BOWLS & FRIES) -->
+        <div class="col-right-panel">
+
+            <!-- SUB-COL: BOWLS (63% Width) -->
+            <div class="rp-bowls">
+                <div class="rp-header">
+                    <div class="rp-title">NOS BOWLS</div>
+                    <div class="rp-sub">
+                        <div class="rp-tag">TAILLE XL +5.00€</div>
+                        <div class="rp-tag" style="background:#fff; color:#000;">CANETTE 1.70€</div>
+                    </div>
+                </div>
+
+                <div class="rb-list">
+                    <!-- 1. CROUSTI (Swapped back to 1) -->
+                    <div class="rb-card">
+                        <div class="rb-info">
+                            <div class="rb-name">CROUSTY BOWL</div>
+                            <div class="rb-desc">Tenders, Sweet Chily, Oignons frits</div>
+                            <div class="rb-price">9.90€</div>
+                        </div>
+                        <div class="rb-img-wrap">
+                            <img src="AssetsTv3/classique bowl.png" class="rb-img" id="img-classique">
+                        </div>
+                    </div>
+
+                    <!-- 2. INDIEN -->
+                    <div class="rb-card">
+                        <div class="rb-info">
+                            <div class="rb-name">BOWL INDIEN</div>
+                            <div class="rb-desc">Poulet tikka, curry, oignons frits</div>
+                            <div class="rb-price">9.90€</div>
+                        </div>
+                        <div class="rb-img-wrap">
+                            <img src="AssetsTv3/indian bowl.png" class="rb-img" id="img-indien">
+                        </div>
+                    </div>
+
+                    <!-- 3. DYNAMITE (Swapped back to 3, with meat choices added) -->
+                    <div class="rb-card">
+                        <div class="rb-info">
+                            <div class="rb-name">DYNAMITE BOWL</div>
+                            <div class="rb-desc">VIANDE AU CHOIX :</div>
+                            <div class="meat-marquee-container">
+                                <div class="meat-marquee">
+                                    <div class="meat-item">CORDON BLEU</div>
+                                    <div class="meat-item">POULET TIKKA</div>
+                                    <div class="meat-item">KEBAB</div>
+                                    <div class="meat-item">STEAK</div>
+                                    <div class="meat-item">KEFTA</div>
+                                    <div class="meat-item">TENDERS</div>
+                                    <div class="meat-item">MERGUEZ</div>
+                                    <div class="meat-item">NUGGETS</div>
+                                    <!-- Duplicate for seamless loop -->
+                                    <div class="meat-item">CORDON BLEU</div>
+                                    <div class="meat-item">POULET TIKKA</div>
+                                    <div class="meat-item">KEBAB</div>
+                                    <div class="meat-item">STEAK</div>
+                                    <div class="meat-item">KEFTA</div>
+                                    <div class="meat-item">TENDERS</div>
+                                    <div class="meat-item">MERGUEZ</div>
+                                    <div class="meat-item">NUGGETS</div>
+                                </div>
+                            </div>
+                            <div class="rb-price">9.90€</div>
+                        </div>
+                        <div class="rb-img-wrap">
+                            <img src="AssetsTv3/crousty bowl.png" class="rb-img" id="img-crousty">
+                        </div>
+                    </div>
+
+                    <!-- 4. HOT -->
+                    <div class="rb-card">
+                        <div class="rb-info">
+                            <div class="rb-name">HOT BOWL</div>
+                            <div class="rb-desc">Poulet tikka, hot sauce, oignons frits</div>
+                            <div class="rb-price">9.90€</div>
+                        </div>
+                        <div class="rb-img-wrap">
+                            <img src="AssetsTv3/spicy bowl.png" class="rb-img" id="img-hot">
+                        </div>
+                    </div>
+
+                    <!-- 5. CHEF (Highlighted) -->
+                    <div class="rb-card chef">
+                        <div class="rb-info">
+                            <div class="rb-name">CHEF BOWL</div>
+                            <div class="rb-desc">Cordon bleu, chili-thaï, oignons frits</div>
+                            <div class="rb-price">10.90€</div>
+                        </div>
+                        <div class="rb-img-wrap">
+                            <img src="AssetsTv3/chef bowl.png" class="rb-img" id="img-chef">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="fries-list">
-                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png">
-                    <div class="fry-name">Bacon</div>
-                    <div class="fry-price">4.90€</div>
-                </div>
-                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png">
-                    <div class="fry-name">Lardon</div>
-                    <div class="fry-price">4.90€</div>
-                </div>
-                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png" style="filter:hue-rotate(-20deg);">
-                    <div class="fry-name">Boursin</div>
-                    <div class="fry-price">4.90€</div>
-                </div>
-                <div class="fry-row"><img src="AssetsTv5/frktes chedar becon.png">
-                    <div class="fry-name">Cheddar</div>
-                    <div class="fry-price">3.90€</div>
-                </div>
+
+            <!-- SUB-COL: FRIES (37% Width) -->
+            <div class="rp-fries">
+                <img src="AssetsTv3/frites_speciales_vertical.jpg">
             </div>
+
         </div>
 
     </div>
 
-    <!-- CALIBRATION SCRIPT -->
     <script>
         function fitScreen() {
             const s = document.getElementById('screen');
@@ -644,26 +2285,55 @@
             s.style.left = '50%'; s.style.top = '50%';
         }
 
-        // Slider Logic
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
+        // SEAMLESS SLIDER
+        const slides = document.querySelectorAll('.burger-slider .slide');
+        let currentIndex = 0;
+        let isAnimating = false;
 
-        function nextSlide() {
-            // Simple logic for 1 slide for now, but enabling structure
-            // If there were multiple:
-            // slides[currentSlide].classList.remove('active');
-            // currentSlide = (currentSlide + 1) % slides.length;
-            // slides[currentSlide].classList.add('active');
+        // Initialize
+        slides.forEach(s => s.classList.remove('active', 'exiting'));
+        if (slides.length > 0) slides[currentIndex].classList.add('active');
+
+        function cycle() {
+            if (slides.length < 2 || isAnimating) return;
+            isAnimating = true;
+
+            const oldSlide = slides[currentIndex];
+            currentIndex = (currentIndex + 1) % slides.length;
+            const newSlide = slides[currentIndex];
+
+            // 1. New slide becomes active behind the old one
+            newSlide.classList.add('active');
+
+            // 2. Old slide starts flying away
+            oldSlide.classList.add('exiting');
+            oldSlide.classList.remove('active');
+
+            // 3. Cleanup after fly-away completes
+            setTimeout(() => {
+                oldSlide.classList.remove('exiting');
+                isAnimating = false;
+            }, 800);
         }
 
-        // Auto-run slider if more slides exist
-        if (slides.length > 1) {
-            setInterval(nextSlide, 5000);
+        setInterval(cycle, 12000);
+
+        // === BOXES SLIDER ===
+        const boxSlides = document.querySelectorAll('.box-slide');
+        let boxIndex = 0;
+
+        function cycleBoxes() {
+            if (boxSlides.length < 2) return;
+            boxSlides[boxIndex].classList.remove('active');
+            boxIndex = (boxIndex + 1) % boxSlides.length;
+            boxSlides[boxIndex].classList.add('active');
         }
 
-        window.onresize = fitScreen; window.onload = fitScreen; fitScreen();
+        setInterval(cycleBoxes, 8000);
 
-
+        window.onresize = fitScreen;
+        window.onload = () => { fitScreen(); };
+        fitScreen();
     </script>
 </body>
 
