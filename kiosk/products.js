@@ -108,6 +108,7 @@ const CATEGORIES = [
     { id: 'burgers', name: 'Burgers', image: '../AssetsTv3/smash_burger_real.png' },
     { id: 'poutines', name: 'Poutines', image: '../AssetsTv5/poutine.png' },
     { id: 'tex_mex', name: 'Tex Mex', image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png' },
+    { id: 'frites', name: 'Frites', image: '../AssetsTv3/frite boisson.png' },
     { id: 'salades', name: 'Salades', image: '../AssetsTv5/salade.png' },
     { id: 'desserts', name: 'Desserts', image: '../AssetsTv5/panini nutella.png' },
     { id: 'boissons', name: 'Boissons', image: '../AssetsTv3/frite boisson.png' },
@@ -718,6 +719,89 @@ const PRODUCTS = [
         description: '6 Tenders sauce coréenne',
         image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_tenders.png',
         price: 8.90
+    },
+
+    // ==================== FRITES ====================
+    {
+        id: 'frite_simple',
+        category: 'frites',
+        name: 'Frite Simple',
+        description: 'Portion de frites',
+        image: '../AssetsTv3/frite boisson.png',
+        price: 2.50
+    },
+    {
+        id: 'grande_frite',
+        category: 'frites',
+        name: 'Grande Frite',
+        description: 'Grande portion de frites',
+        image: '../AssetsTv3/frite boisson.png',
+        price: 3.50
+    },
+    {
+        id: 'frites_cheddar',
+        category: 'frites',
+        name: 'Frites Cheddar',
+        description: 'Frites sauce cheddar',
+        image: '../AssetsTv3/frite boisson.png',
+        type: 'frites',
+        hasBuilder: true,
+        sizes: [
+            { id: 'M', name: 'M', price: 3.90 },
+            { id: 'XL', name: 'XL', price: 4.90 }
+        ]
+    },
+    {
+        id: 'frites_cheddar_bacon',
+        category: 'frites',
+        name: 'Frites Cheddar Bacon',
+        description: 'Frites cheddar & bacon',
+        image: '../AssetsTv3/frite boisson.png',
+        type: 'frites',
+        hasBuilder: true,
+        sizes: [
+            { id: 'M', name: 'M', price: 4.90 },
+            { id: 'XL', name: 'XL', price: 5.90 }
+        ]
+    },
+    {
+        id: 'frites_cheddar_lardon',
+        category: 'frites',
+        name: 'Frites Cheddar Lardon',
+        description: 'Frites cheddar & lardons',
+        image: '../AssetsTv3/frite boisson.png',
+        type: 'frites',
+        hasBuilder: true,
+        sizes: [
+            { id: 'M', name: 'M', price: 4.90 },
+            { id: 'XL', name: 'XL', price: 5.90 }
+        ]
+    },
+    {
+        id: 'frites_cheddar_boursin',
+        category: 'frites',
+        name: 'Frites Cheddar Boursin',
+        description: 'Frites cheddar & boursin',
+        image: '../AssetsTv3/frite boisson.png',
+        type: 'frites',
+        hasBuilder: true,
+        sizes: [
+            { id: 'M', name: 'M', price: 4.90 },
+            { id: 'XL', name: 'XL', price: 5.90 }
+        ]
+    },
+    {
+        id: 'patate_douce',
+        category: 'frites',
+        name: 'Patate Douce',
+        description: 'Frites de patate douce',
+        image: '../AssetsTv3/frite boisson.png',
+        type: 'frites',
+        hasBuilder: true,
+        sizes: [
+            { id: 'M', name: 'M', price: 3.90 },
+            { id: 'XL', name: 'XL', price: 4.90 }
+        ]
     },
 
     // ==================== SALADES ====================
