@@ -129,7 +129,7 @@ const PRODUCTS = [
         promoLabel: '-30%',
         sizes: [
             { id: 'M', name: 'M', price: 6.90, originalPrice: 9.90 },
-            { id: 'XL', name: 'XL', price: 10.40, originalPrice: 14.90 }
+            { id: 'XL', name: 'XL', price: 11.90, originalPrice: 14.90 }
         ]
     },
     {
@@ -150,7 +150,7 @@ const PRODUCTS = [
         id: 'offre_single_box',
         category: 'offres',
         name: 'Single Box',
-        description: '1 Burger + 2 Wings/Tenders + Frites Cheddar + Sauce',
+        description: '1 Burger + 2 Mozza Sticks + Frites Cheddar + Sauce',
         image: '../AssetsTv3/SINGLE BOX.png',
         price: 9.90,
         type: 'box',
@@ -162,7 +162,7 @@ const PRODUCTS = [
         id: 'offre_mega_box',
         category: 'offres',
         name: 'Mega Box',
-        description: '1 Burger + 2 Wings + 2 Tenders + Frites Cheddar + Sauce',
+        description: '1 Burger + 4 Mozza Sticks + Tenders dés + Frites Cheddar + Sauce',
         image: '../AssetsTv3/MEGA BOX.png',
         price: 11.90,
         type: 'box',
@@ -454,7 +454,7 @@ const PRODUCTS = [
         promoLabel: '-30%',
         sizes: [
             { id: 'M', name: 'M', price: 6.90, originalPrice: 9.90 },
-            { id: 'XL', name: 'XL', price: 10.40, originalPrice: 14.90 }
+            { id: 'XL', name: 'XL', price: 11.90, originalPrice: 14.90 }
         ]
     },
     {
@@ -483,7 +483,7 @@ const PRODUCTS = [
         id: 'box_single',
         category: 'boxes',
         name: 'Single Box',
-        description: '1 Burger + 2 Wings/Tenders + Frites Cheddar + Sauce',
+        description: '1 Burger + 2 Mozza Sticks + Frites Cheddar + Sauce',
         image: '../AssetsTv3/SINGLE BOX.png',
         price: 9.90,
         type: 'box',
@@ -493,7 +493,7 @@ const PRODUCTS = [
         id: 'box_mega',
         category: 'boxes',
         name: 'Mega Box',
-        description: '1 Burger + 2 Wings + 2 Tenders + Frites Cheddar + Sauce',
+        description: '1 Burger + 4 Mozza Sticks + Tenders dés + Frites Cheddar + Sauce',
         image: '../AssetsTv3/MEGA BOX.png',
         price: 11.90,
         type: 'box',

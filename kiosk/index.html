@@ -681,14 +681,20 @@
         }
 
         .modal-close {
-            width: clamp(40px, 6vw, 60px);
-            height: clamp(40px, 6vw, 60px);
-            border-radius: 50%;
+            min-width: clamp(100px, 15vw, 160px);
+            height: clamp(50px, 7vw, 70px);
+            border-radius: 15px;
             background: #ff3333;
             color: white;
-            border: none;
-            font-size: clamp(20px, 3vw, 32px);
+            border: 3px solid #ff6666;
+            font-size: clamp(18px, 2.5vw, 26px);
+            font-family: 'Anton', sans-serif;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4);
+        }
+
+        .modal-close:active {
+            transform: scale(0.95);
         }
 
         .modal-content {
@@ -1131,7 +1137,7 @@
     <div class="modal" id="builder-modal">
         <div class="modal-header">
             <h2 id="builder-title">Personnaliser</h2>
-            <button class="modal-close" onclick="closeBuilder()">✕</button>
+            <button class="modal-close" onclick="closeBuilder()">FERMER</button>
         </div>
         <div class="modal-content" id="builder-content"></div>
         <div class="modal-footer" style="display: flex; gap: 15px;">
