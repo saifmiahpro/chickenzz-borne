@@ -1253,6 +1253,24 @@
                     RETOUR
                 </button>
             </div>
+            <!-- OUTILS ADMIN -->
+            <div style="margin-top: 3vh; padding-top: 2vh; border-top: 1px solid var(--border);">
+                <div style="font-family: 'Anton', sans-serif; font-size: 14px; color: var(--text-dim); margin-bottom: 10px;">OUTILS ADMIN:</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <a href="https://epson.com/Support/Point-of-Sale/TM-Series/Epson-TM-m30II/s/SPT_C31CJ27012" target="_blank"
+                        style="background: #0066cc; color: white; padding: 10px 15px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: bold;">
+                        📥 Driver Epson TM-M30II
+                    </a>
+                    <button onclick="window.open('ms-settings:printers', '_blank')"
+                        style="background: #333; color: white; padding: 10px 15px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer;">
+                        🖨️ Paramètres Imprimantes
+                    </button>
+                    <button onclick="testPrintBoth()"
+                        style="background: #ff9800; color: white; padding: 10px 15px; border-radius: 8px; border: none; font-size: 14px; font-weight: bold; cursor: pointer;">
+                        🧪 Test Impression
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3069,6 +3087,35 @@
             kitchen += '</div>';
 
             return { client: client, kitchen: kitchen };
+        }
+
+        // Test des deux imprimantes
+        function testPrintBoth() {
+            showToast('Test impression en cours...');
+
+            // Ticket test CLIENT (Epson)
+            let clientTest = '<div class="ticket">';
+            clientTest += '<div class="header"><div class="logo">TEST IMPRIMANTE</div></div>';
+            clientTest += '<div class="black-band"><div class="client-name">EPSON CLIENT</div></div>';
+            clientTest += '<div style="padding: 20px; text-align: center; font-size: 16pt;">';
+            clientTest += '✓ Si vous voyez ce ticket,<br>l\'Epson fonctionne !';
+            clientTest += '<br><br>' + new Date().toLocaleString('fr-FR');
+            clientTest += '</div>';
+            clientTest += '<div class="cut-space"></div></div>';
+
+            // Ticket test CUISINE (Star)
+            let kitchenTest = '<div class="ticket kitchen">';
+            kitchenTest += '<div class="black-band"><div class="client-name">TEST STAR</div><div class="order-type">CUISINE</div></div>';
+            kitchenTest += '<div class="kitchen-item"><div class="kitchen-item-header">TEST IMPRIMANTE CUISINE</div></div>';
+            kitchenTest += '<div class="kitchen-time">' + new Date().toLocaleString('fr-FR') + '</div>';
+            kitchenTest += '<div class="cut-space"></div></div>';
+
+            // Imprimer sur les deux
+            printTicket(clientTest);
+            setTimeout(() => {
+                printToStarKitchen(kitchenTest);
+                showToast('Tests envoyés aux 2 imprimantes !');
+            }, 1500);
         }
 
         function resetKiosk() {
