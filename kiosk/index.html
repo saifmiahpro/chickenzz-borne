@@ -1367,11 +1367,27 @@
             }
         }
 
-        // Imprimer les 2 tickets sur l'imprimante par défaut (Epson)
-        // Les 2 tickets sortent l'un après l'autre, séparés par une coupe
-        function printDualTickets(clientTicket, kitchenTicket) {
-            // Impression simple et fiable - tout sur Epson
-            printTicket(clientTicket + kitchenTicket);
+        // Imprimer les 2 tickets sur les 2 imprimantes via QZ Tray
+        async function printDualTickets(clientTicket, kitchenTicket) {
+            if (!qzConnected) {
+                await connectQZ();
+            }
+
+            if (qzConnected) {
+                // QZ Tray connecté - impression sur 2 imprimantes
+                console.log('Impression dual via QZ Tray...');
+                try {
+                    await printToQZ(PRINTER_CONFIG.client, clientTicket);
+                    await printToQZ(PRINTER_CONFIG.kitchen, kitchenTicket);
+                } catch (err) {
+                    console.error('Erreur QZ:', err);
+                    printTicket(clientTicket + kitchenTicket);
+                }
+            } else {
+                // Fallback - tout sur l'imprimante par défaut
+                console.log('QZ Tray non disponible - fallback');
+                printTicket(clientTicket + kitchenTicket);
+            }
         }
 
         // Lister les imprimantes disponibles (pour debug)
