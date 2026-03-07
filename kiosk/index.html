@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chickenzz - Borne de Commande</title>
+    <!-- QZ Tray pour impression multi-imprimantes -->
+    <script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.4/qz-tray.min.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -1228,14 +1230,18 @@
                 </button>
                 <!-- OUTILS ADMIN - DRIVERS -->
                 <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border);">
-                    <div style="font-family: 'Anton', sans-serif; font-size: 16px; color: var(--text-dim); margin-bottom: 15px;">INSTALLATION DRIVERS:</div>
-                    <a href="https://epson.com/Support/Point-of-Sale/TM-Series/Epson-TM-m30II/s/SPT_C31CJ27012" target="_blank"
-                        style="display: block; background: #0066cc; color: white; padding: 18px; border-radius: 12px; text-decoration: none; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2vw, 20px); text-align: center; margin-bottom: 10px;">
-                        DRIVER EPSON TM-M30II
-                    </a>
-                    <button onclick="window.open('ms-settings:printers', '_blank'); closeAdminModal();"
+                    <div style="font-family: 'Anton', sans-serif; font-size: 16px; color: var(--text-dim); margin-bottom: 15px;">INSTALLATION:</div>
+                    <button onclick="exitFullscreenAndOpen('https://qz.io/download/')"
+                        style="width: 100%; background: #ff9800; color: white; padding: 18px; border-radius: 12px; border: none; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2vw, 20px); cursor: pointer; margin-bottom: 10px;">
+                        ⬇️ QZ TRAY (2 imprimantes)
+                    </button>
+                    <button onclick="exitFullscreenAndOpen('https://epson.com/Support/Point-of-Sale/TM-Series/Epson-TM-m30II/s/SPT_C31CJ27012')"
+                        style="width: 100%; background: #0066cc; color: white; padding: 15px; border-radius: 12px; border: none; font-family: 'Anton', sans-serif; font-size: clamp(14px, 1.8vw, 18px); cursor: pointer; margin-bottom: 10px;">
+                        📥 DRIVER EPSON TM-M30II
+                    </button>
+                    <button onclick="listPrinters()"
                         style="width: 100%; background: #333; color: white; padding: 15px; border-radius: 12px; border: none; font-family: 'Anton', sans-serif; font-size: clamp(14px, 1.8vw, 18px); cursor: pointer;">
-                        PARAMETRES IMPRIMANTES WINDOWS
+                        🖨️ VOIR LES IMPRIMANTES
                     </button>
                 </div>
                 <button onclick="closeAdminModal()"
@@ -1289,18 +1295,114 @@
     <script src="products.js"></script>
     <script>
         // ============ CONFIGURATION IMPRIMANTES ============
+        // IMPORTANT: Modifier ces noms pour correspondre aux noms exacts dans Windows
+        // Pour trouver les noms: Paramètres → Imprimantes → voir le nom exact
         const PRINTER_CONFIG = {
-            // Imprimante CUISINE (Star) - envoi direct par IP
-            kitchen: {
-                ip: '192.168.1.149',
-                type: 'star'
-            },
-            // Imprimante CLIENT (Epson) - WiFi
-            client: {
-                ip: '192.168.1.200',
-                type: 'epson'
-            }
+            // Imprimante CLIENT (Epson TM-M30II)
+            client: 'EPSON TM-m30II Receipt',  // Modifier si le nom est différent
+            // Imprimante CUISINE (Star)
+            kitchen: 'Star TSP143IIIW'  // Modifier si le nom est différent
         };
+
+        // État de connexion QZ Tray
+        let qzConnected = false;
+
+        // Connexion à QZ Tray au démarrage
+        async function connectQZ() {
+            if (typeof qz === 'undefined') {
+                console.warn('QZ Tray non chargé - utilisation du mode fallback');
+                return false;
+            }
+
+            try {
+                if (!qz.websocket.isActive()) {
+                    await qz.websocket.connect();
+                }
+                qzConnected = true;
+                console.log('✓ QZ Tray connecté');
+                return true;
+            } catch (err) {
+                console.warn('QZ Tray non disponible:', err.message);
+                qzConnected = false;
+                return false;
+            }
+        }
+
+        // Imprimer sur une imprimante spécifique via QZ Tray
+        async function printToQZ(printerName, htmlContent) {
+            if (!qzConnected) {
+                const connected = await connectQZ();
+                if (!connected) {
+                    console.log('Fallback: impression sur imprimante par défaut');
+                    printTicket(htmlContent);
+                    return;
+                }
+            }
+
+            try {
+                const config = qz.configs.create(printerName);
+
+                // Créer le HTML complet pour impression
+                const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+                    <style>
+                        @page { size: 80mm auto; margin: 0; }
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { width: 80mm; font-family: Arial, sans-serif; }
+                    </style>
+                </head><body>${htmlContent}</body></html>`;
+
+                const data = [{
+                    type: 'html',
+                    format: 'plain',
+                    data: fullHtml
+                }];
+
+                await qz.print(config, data);
+                console.log('✓ Imprimé sur ' + printerName);
+            } catch (err) {
+                console.error('Erreur impression QZ:', err);
+                showToast('Erreur: ' + printerName + ' non trouvée');
+                // Fallback sur impression par défaut
+                printTicket(htmlContent);
+            }
+        }
+
+        // Imprimer les 2 tickets sur les 2 imprimantes
+        async function printDualTickets(clientTicket, kitchenTicket) {
+            if (!qzConnected) {
+                await connectQZ();
+            }
+
+            if (qzConnected) {
+                // QZ Tray disponible - impression sur 2 imprimantes
+                console.log('Impression dual via QZ Tray...');
+                await printToQZ(PRINTER_CONFIG.client, clientTicket);
+                setTimeout(async () => {
+                    await printToQZ(PRINTER_CONFIG.kitchen, kitchenTicket);
+                }, 500);
+            } else {
+                // Fallback - tout sur l'imprimante par défaut
+                console.log('QZ Tray non disponible - fallback sur imprimante par défaut');
+                printTicket(clientTicket + kitchenTicket);
+            }
+        }
+
+        // Lister les imprimantes disponibles (pour debug)
+        async function listPrinters() {
+            if (!qzConnected) await connectQZ();
+            if (qzConnected) {
+                const printers = await qz.printers.find();
+                console.log('Imprimantes disponibles:', printers);
+                alert('Imprimantes:\\n' + printers.join('\\n'));
+                return printers;
+            }
+            return [];
+        }
+
+        // Connexion automatique au chargement
+        window.addEventListener('load', () => {
+            setTimeout(connectQZ, 1000);
+        });
 
         // Fonction pour envoyer à l'imprimante Star via WebSocket/HTTP
         async function printToStarKitchen(htmlContent) {
@@ -2758,12 +2860,11 @@
             // Sauvegarder la commande dans l'historique AVANT d'imprimer
             saveOrderToHistory();
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 const tickets = generateTicketHTML();
 
-                // Imprimer les 2 tickets sur l'imprimante par défaut (Epson)
-                // Les 2 tickets sont dans la même page, ils sortiront l'un après l'autre
-                printTicket(tickets.client + tickets.kitchen);
+                // Imprimer sur 2 imprimantes: Epson (client) + Star (cuisine)
+                await printDualTickets(tickets.client, tickets.kitchen);
 
                 document.getElementById('screen-confirm').classList.remove('active');
                 document.getElementById('thank-name').textContent = state.prenom.toUpperCase();
@@ -2871,10 +2972,10 @@
             state.mode = savedState.mode;
             state.cart = savedState.cart;
 
-            // Imprimer les 2 tickets
+            // Imprimer les 2 tickets sur les 2 imprimantes
             showToast('Réimpression en cours...');
             closeHistoryModal();
-            printTicket(tickets.client + tickets.kitchen);
+            printDualTickets(tickets.client, tickets.kitchen);
         }
 
         function printTicket(htmlContent) {
@@ -3209,9 +3310,9 @@
             kitchenTest += '<div class="kitchen-time">' + new Date().toLocaleString('fr-FR') + '</div>';
             kitchenTest += '<div class="cut-space"></div></div>';
 
-            // Imprimer les 2 tickets test
-            printTicket(clientTest + kitchenTest);
-            showToast('Test impression envoyé !');
+            // Imprimer sur les 2 imprimantes
+            printDualTickets(clientTest, kitchenTest);
+            showToast('Test envoyé: Epson + Star !');
         }
 
         function resetKiosk() {
@@ -3281,6 +3382,23 @@
             document.getElementById('admin-modal').classList.remove('active');
         }
 
+        // Sortir du plein écran et ouvrir une URL
+        function exitFullscreenAndOpen(url) {
+            closeAdminModal();
+            // Sortir du mode plein écran
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            }
+            // Attendre un peu puis ouvrir l'URL
+            setTimeout(() => {
+                window.open(url, '_blank');
+            }, 300);
+        }
+
         function adminTestPrint() {
             showToast('Impression des tickets test...');
             closeAdminModal();
@@ -3344,8 +3462,8 @@
             kitchen += '<div class="cut-space"></div>';
             kitchen += '</div>';
 
-            // Imprimer les 2 tickets test
-            printTicket(client + kitchen);
+            // Imprimer sur les 2 imprimantes: Epson (client) + Star (cuisine)
+            printDualTickets(client, kitchen);
         }
 
         function adminCloseKiosk() {
