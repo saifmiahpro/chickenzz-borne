@@ -1367,17 +1367,10 @@
             }
         }
 
-        // Imprimer les 2 tickets: Epson (défaut) + Star (IP direct)
-        async function printDualTickets(clientTicket, kitchenTicket) {
-            // 1. Ticket CLIENT sur Epson (imprimante par défaut Windows)
-            console.log('Impression ticket client sur Epson...');
-            printTicket(clientTicket);
-
-            // 2. Ticket CUISINE sur Star (envoi direct IP 192.168.1.149)
-            console.log('Envoi ticket cuisine sur Star...');
-            setTimeout(() => {
-                printToStarKitchen(kitchenTicket);
-            }, 2000);
+        // Imprimer les 2 tickets sur l'imprimante par défaut (Star)
+        function printDualTickets(clientTicket, kitchenTicket) {
+            // Les 2 tickets sortent sur Star, l'un après l'autre
+            printTicket(clientTicket + kitchenTicket);
         }
 
         // Lister les imprimantes disponibles (pour debug)
