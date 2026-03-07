@@ -813,8 +813,8 @@ const PRODUCTS = [
         type: 'frites',
         hasBuilder: true,
         sizes: [
-            { id: 'M', name: 'M', price: 3.80 },
-            { id: 'XL', name: 'XL', price: 4.80 }
+            { id: 'M', name: 'M', price: 3.90 },
+            { id: 'XL', name: 'XL', price: 4.90 }
         ]
     },
 
