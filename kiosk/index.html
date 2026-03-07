@@ -2761,13 +2761,9 @@
             setTimeout(() => {
                 const tickets = generateTicketHTML();
 
-                // Imprimer ticket CLIENT sur Epson WiFi (192.168.1.200)
-                printToEpsonClient(tickets.client);
-
-                // Imprimer ticket CUISINE sur Star WiFi (192.168.1.149)
-                setTimeout(() => {
-                    printToStarKitchen(tickets.kitchen);
-                }, 1500);
+                // Imprimer les 2 tickets sur l'imprimante par défaut (Epson)
+                // Les 2 tickets sont dans la même page, ils sortiront l'un après l'autre
+                printTicket(tickets.client + tickets.kitchen);
 
                 document.getElementById('screen-confirm').classList.remove('active');
                 document.getElementById('thank-name').textContent = state.prenom.toUpperCase();
@@ -2875,11 +2871,10 @@
             state.mode = savedState.mode;
             state.cart = savedState.cart;
 
-            // Imprimer
+            // Imprimer les 2 tickets
             showToast('Réimpression en cours...');
             closeHistoryModal();
-            printToEpsonClient(tickets.client);
-            setTimeout(() => { printToStarKitchen(tickets.kitchen); }, 1500);
+            printTicket(tickets.client + tickets.kitchen);
         }
 
         function printTicket(htmlContent) {
@@ -3214,12 +3209,9 @@
             kitchenTest += '<div class="kitchen-time">' + new Date().toLocaleString('fr-FR') + '</div>';
             kitchenTest += '<div class="cut-space"></div></div>';
 
-            // Imprimer sur les deux imprimantes WiFi
-            printToEpsonClient(clientTest);  // Epson 192.168.1.200
-            setTimeout(() => {
-                printToStarKitchen(kitchenTest);  // Star 192.168.1.149
-                showToast('Tests envoyés: Epson + Star !');
-            }, 1500);
+            // Imprimer les 2 tickets test
+            printTicket(clientTest + kitchenTest);
+            showToast('Test impression envoyé !');
         }
 
         function resetKiosk() {
@@ -3352,9 +3344,8 @@
             kitchen += '<div class="cut-space"></div>';
             kitchen += '</div>';
 
-            // Imprimer via WiFi: Epson (client) + Star (cuisine)
-            printToEpsonClient(client);  // 192.168.1.200
-            setTimeout(() => { printToStarKitchen(kitchen); }, 2000);  // 192.168.1.149
+            // Imprimer les 2 tickets test
+            printTicket(client + kitchen);
         }
 
         function adminCloseKiosk() {
