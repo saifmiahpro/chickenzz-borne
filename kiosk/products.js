@@ -804,6 +804,19 @@ const PRODUCTS = [
             { id: 'XL', name: 'XL', price: 4.90 }
         ]
     },
+    {
+        id: 'potato_pops',
+        category: 'frites',
+        name: 'Potato Pops',
+        description: 'Billes de pomme de terre',
+        image: '../AssetsTv3/frite boisson.png',
+        type: 'frites',
+        hasBuilder: true,
+        sizes: [
+            { id: 'M', name: 'M', price: 3.80 },
+            { id: 'XL', name: 'XL', price: 4.80 }
+        ]
+    },
 
     // ==================== SALADES ====================
     {
