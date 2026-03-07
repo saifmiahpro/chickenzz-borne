@@ -64,7 +64,7 @@ const GRATINS = [
     { id: 'lardon', name: 'Lardon' },
     { id: 'cheddar', name: 'Cheddar' },
     { id: 'raclette', name: 'Raclette' },
-    { id: 'chevre', name: 'Chèvre' },
+    { id: 'chevre', name: 'Chèvre Miel' },
     { id: 'bacon', name: 'Bacon' },
     { id: 'olives', name: 'Olives' },
     { id: 'poivrons', name: 'Poivrons' },
