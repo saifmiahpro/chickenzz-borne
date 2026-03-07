@@ -1367,27 +1367,17 @@
             }
         }
 
-        // Imprimer les 2 tickets sur les 2 imprimantes via QZ Tray
+        // Imprimer les 2 tickets: Epson (défaut) + Star (IP direct)
         async function printDualTickets(clientTicket, kitchenTicket) {
-            if (!qzConnected) {
-                await connectQZ();
-            }
+            // 1. Ticket CLIENT sur Epson (imprimante par défaut Windows)
+            console.log('Impression ticket client sur Epson...');
+            printTicket(clientTicket);
 
-            if (qzConnected) {
-                // QZ Tray connecté - impression sur 2 imprimantes
-                console.log('Impression dual via QZ Tray...');
-                try {
-                    await printToQZ(PRINTER_CONFIG.client, clientTicket);
-                    await printToQZ(PRINTER_CONFIG.kitchen, kitchenTicket);
-                } catch (err) {
-                    console.error('Erreur QZ:', err);
-                    printTicket(clientTicket + kitchenTicket);
-                }
-            } else {
-                // Fallback - tout sur l'imprimante par défaut
-                console.log('QZ Tray non disponible - fallback');
-                printTicket(clientTicket + kitchenTicket);
-            }
+            // 2. Ticket CUISINE sur Star (envoi direct IP 192.168.1.149)
+            console.log('Envoi ticket cuisine sur Star...');
+            setTimeout(() => {
+                printToStarKitchen(kitchenTicket);
+            }, 2000);
         }
 
         // Lister les imprimantes disponibles (pour debug)
