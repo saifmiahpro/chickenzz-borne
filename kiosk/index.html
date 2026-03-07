@@ -1258,6 +1258,88 @@
 
     <script src="products.js"></script>
     <script>
+        // ============ CONFIGURATION IMPRIMANTES ============
+        const PRINTER_CONFIG = {
+            // Imprimante CUISINE (Star) - envoi direct par IP
+            kitchen: {
+                ip: '192.168.1.149',
+                port: 9100  // Port raw TCP standard pour imprimantes thermiques
+            }
+            // Imprimante CLIENT (Epson) - utilise l'imprimante par défaut Windows
+        };
+
+        // Fonction pour envoyer à l'imprimante Star via WebSocket/HTTP
+        async function printToStarKitchen(htmlContent) {
+            const ip = PRINTER_CONFIG.kitchen.ip;
+
+            // Convertir HTML en texte simple pour la cuisine
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+
+            // Extraire le texte brut avec formatage basique
+            let textContent = '';
+
+            // Bande nom
+            const clientName = tempDiv.querySelector('.client-name');
+            const orderType = tempDiv.querySelector('.order-type');
+            if (clientName) textContent += '\n' + '='.repeat(32) + '\n';
+            if (clientName) textContent += '   ' + clientName.textContent + '\n';
+            if (orderType) textContent += '   ' + orderType.textContent + '\n';
+            if (clientName) textContent += '='.repeat(32) + '\n\n';
+
+            // Articles
+            const items = tempDiv.querySelectorAll('.kitchen-item');
+            items.forEach(item => {
+                const header = item.querySelector('.kitchen-item-header');
+                if (header) textContent += header.textContent + '\n';
+
+                const details = item.querySelectorAll('.kitchen-item-detail');
+                details.forEach(d => {
+                    textContent += '  ' + d.textContent + '\n';
+                });
+                textContent += '\n';
+            });
+
+            // Heure
+            const time = tempDiv.querySelector('.kitchen-time');
+            if (time) textContent += '-'.repeat(32) + '\n' + time.textContent + '\n';
+
+            textContent += '\n\n\n';  // Espace avant coupe
+
+            // Essayer d'envoyer via Star WebPRNT
+            try {
+                const xmlContent = `<?xml version="1.0" encoding="utf-8"?>
+                <StarWebPrint xmlns="http://www.star-m.jp/StarWebPRNT">
+                <Request>
+                    <SetEncoding name="UTF-8"/>
+                    <Text scale="2x2">${escapeXml(textContent)}</Text>
+                    <CutPaper feed="true"/>
+                </Request>
+                </StarWebPrint>`;
+
+                await fetch(`http://${ip}/StarWebPRNT/SendMessage`, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/xml; charset=utf-8' },
+                    body: xmlContent
+                });
+                console.log('✓ Ticket cuisine envoyé à Star ' + ip);
+            } catch (error) {
+                console.error('Erreur Star WebPRNT:', error);
+                // Fallback: ouvrir fenêtre d'impression normale
+                console.log('Fallback: impression via fenêtre');
+                printTicket(htmlContent);
+            }
+        }
+
+        function escapeXml(text) {
+            return text.replace(/&/g, '&amp;')
+                       .replace(/</g, '&lt;')
+                       .replace(/>/g, '&gt;')
+                       .replace(/"/g, '&quot;')
+                       .replace(/'/g, '&apos;');
+        }
+
         // ============ ÉTAT ============
         const state = {
             prenom: '',
@@ -2557,13 +2639,13 @@
             setTimeout(() => {
                 const tickets = generateTicketHTML();
 
-                // Imprimer ticket CLIENT
+                // Imprimer ticket CLIENT sur Epson (imprimante par défaut)
                 printTicket(tickets.client);
 
-                // Imprimer ticket CUISINE après 2 secondes (pour laisser le temps à la découpe)
+                // Imprimer ticket CUISINE sur Star (envoi direct IP)
                 setTimeout(() => {
-                    printTicket(tickets.kitchen);
-                }, 2000);
+                    printToStarKitchen(tickets.kitchen);
+                }, 1500);
 
                 document.getElementById('screen-confirm').classList.remove('active');
                 document.getElementById('thank-name').textContent = state.prenom.toUpperCase();
@@ -2675,7 +2757,7 @@
             showToast('Réimpression en cours...');
             closeHistoryModal();
             printTicket(tickets.client);
-            setTimeout(() => { printTicket(tickets.kitchen); }, 2000);
+            setTimeout(() => { printToStarKitchen(tickets.kitchen); }, 1500);
         }
 
         function printTicket(htmlContent) {
