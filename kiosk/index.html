@@ -1308,33 +1308,20 @@
         };
 
         // ============ IMPRESSION DUAL ============
-        // Star = imprimante par défaut (cuisine)
-        // Epson = via ePOS HTTP (client)
-        // Fallback: tout sur Star (défaut)
+        // TOUT SUR STAR (imprimante par défaut) - 2 tickets séparés
+        // Ticket cuisine d'abord, puis ticket client après délai
         async function printDualTickets(clientTicket, kitchenTicket) {
-            if (PRINTER_CONFIG.mode === 'dual') {
-                console.log('Mode DUAL: Star (cuisine/défaut) + Epson (client/ePOS)');
+            console.log('Impression: 2 tickets sur Star (défaut)');
 
-                // 1. Ticket CUISINE → Star (imprimante par défaut via window.print)
-                printTicket(kitchenTicket);
-                showToast('Ticket CUISINE → Star');
+            // 1. Ticket CUISINE → Star
+            printTicket(kitchenTicket);
+            showToast('Ticket CUISINE imprimé');
 
-                // 2. Ticket CLIENT → Epson (via ePOS HTTP)
-                setTimeout(async () => {
-                    const success = await printToEpsonePOS(clientTicket);
-                    if (!success) {
-                        // Fallback: imprimer aussi sur Star
-                        console.log('Fallback: ticket client sur Star');
-                        printTicket(clientTicket);
-                        showToast('Ticket CLIENT → Star (fallback)');
-                    }
-                }, 2000);
-
-            } else {
-                // SINGLE: Les 2 tickets sur l'imprimante par défaut (Star)
-                console.log('Mode SINGLE: tout sur Star');
-                printTicket(kitchenTicket + clientTicket);
-            }
+            // 2. Ticket CLIENT → Star (après délai pour éviter conflit)
+            setTimeout(() => {
+                printTicket(clientTicket);
+                showToast('Ticket CLIENT imprimé');
+            }, 2500);
         }
 
         // Envoyer ticket client à Epson via ePOS
