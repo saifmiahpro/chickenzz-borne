@@ -1228,6 +1228,10 @@
                     style="background: rgba(0,150,255,0.15); border: 2px solid #0096ff; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2.5vw, 24px); color: #0096ff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
                     VOIR IMPRIMANTES QZ
                 </button>
+                <button onclick="installQZv2()"
+                    style="background: rgba(255,150,0,0.15); border: 2px solid #ff9600; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2.5vw, 24px); color: #ff9600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    INSTALLER QZ v2.0
+                </button>
                 <button onclick="togglePrinterMode()" id="btn-printer-mode"
                     style="background: rgba(0,204,102,0.15); border: 2px solid #00cc66; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2.5vw, 24px); color: #00cc66; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
                     MODE: <span id="printer-mode-label">DUAL (Star + Epson)</span>
@@ -1392,6 +1396,22 @@
                     showToast('Ticket CLIENT imprimé');
                 }, 2500);
             }
+        }
+
+        // Installer QZ Tray v2.0
+        function installQZv2() {
+            alert(
+                "INSTALLATION QZ TRAY v2.0\n\n" +
+                "1. Appuie sur ECHAP pour sortir du mode kiosk\n" +
+                "2. Va dans le dossier: kiosk\n" +
+                "3. Clic droit sur 'Install_QZ_v2.bat'\n" +
+                "4. 'Executer en tant qu'administrateur'\n" +
+                "5. Attends la fin de l'installation\n" +
+                "6. Relance Lancer_Borne_Serveur.bat"
+            );
+            // Essayer de fermer le kiosk
+            if (document.exitFullscreen) document.exitFullscreen();
+            window.close();
         }
 
         // Lister les imprimantes QZ Tray
