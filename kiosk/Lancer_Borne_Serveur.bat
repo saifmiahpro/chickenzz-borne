@@ -17,9 +17,9 @@ git pull origin main
 REM Attendre que le pull soit termine
 timeout /t 2 /nobreak >nul
 
-REM Lancer le serveur web local (Python ou npx serve)
+REM Lancer le serveur web local DEPUIS LA RACINE DU PROJET (pour acceder aux assets)
 echo Lancement du serveur local...
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 REM Essayer avec Python d'abord
 where python >nul 2>&1
@@ -40,6 +40,6 @@ if %ERRORLEVEL% EQU 0 (
 REM Attendre que le serveur demarre
 timeout /t 2 /nobreak >nul
 
-REM Lancer Chrome en mode kiosk sur localhost
+REM Lancer Chrome en mode kiosk sur localhost - KIOSK dans sous-dossier kiosk/
 echo Lancement de la borne...
-start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk --kiosk-printing --disable-pinch --overscroll-history-navigation=0 --noerrdialogs --disable-translate --no-first-run --fast --fast-start --disable-infobars --disable-features=TranslateUI --check-for-update-interval=31536000 "http://localhost:8080/index.html"
+start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk --kiosk-printing --disable-pinch --overscroll-history-navigation=0 --noerrdialogs --disable-translate --no-first-run --fast --fast-start --disable-infobars --disable-features=TranslateUI --check-for-update-interval=31536000 "http://localhost:8080/kiosk/index.html"
