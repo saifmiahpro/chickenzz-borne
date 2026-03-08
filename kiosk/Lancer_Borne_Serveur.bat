@@ -13,28 +13,22 @@ REM   CONFIG QZ TRAY - BYPASS SECURITE
 REM ============================================
 echo Configuration QZ Tray...
 
-REM Creer dossier config QZ Tray
-if not exist "%APPDATA%\QZ Tray" mkdir "%APPDATA%\QZ Tray"
-
-REM Fichier properties pour desactiver TOUTE la securite
-(
-echo wss.enabled=false
-echo websocket.secure=false
-echo security.certificate.validate=false
-echo security.dialog.enabled=false
-echo tray.notifications=false
-) > "%APPDATA%\QZ Tray\qz-tray.properties"
-
-REM Ajouter localhost dans la whitelist
-(
-echo {"sites":[{"host":"localhost","port":8080,"secure":false,"trust":true,"remember":true}]}
-) > "%APPDATA%\QZ Tray\whitelist.json"
-
-REM Redemarrer QZ Tray pour prendre en compte la config
+REM Arreter QZ Tray d'abord
 taskkill /IM qz-tray.exe /F >nul 2>&1
-timeout /t 1 /nobreak >nul
+timeout /t 2 /nobreak >nul
+
+REM Creer fichiers config dans TOUS les emplacements possibles
+for %%D in ("%APPDATA%\QZ Tray" "%LOCALAPPDATA%\QZ Tray" "%USERPROFILE%\.qz" "C:\Program Files\QZ Tray") do (
+    if not exist %%D mkdir %%D 2>nul
+    echo localhost> %%D\allowed.txt 2>nul
+    echo 127.0.0.1>> %%D\allowed.txt 2>nul
+    echo *>> %%D\allowed.txt 2>nul
+)
+
+REM Lancer QZ Tray
+echo Lancement QZ Tray...
 start "" "C:\Program Files\QZ Tray\qz-tray.exe"
-timeout /t 3 /nobreak >nul
+timeout /t 4 /nobreak >nul
 
 REM ============================================
 REM   MISE A JOUR
