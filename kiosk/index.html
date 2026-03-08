@@ -1225,7 +1225,7 @@
                 </button>
                 <button onclick="togglePrinterMode()" id="btn-printer-mode"
                     style="background: rgba(0,204,102,0.15); border: 2px solid #00cc66; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2.5vw, 24px); color: #00cc66; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
-                    MODE: <span id="printer-mode-label">DUAL (Epson + Star)</span>
+                    MODE: <span id="printer-mode-label">DUAL (Star + Epson)</span>
                 </button>
                 <button onclick="adminCloseKiosk()"
                     style="background: rgba(255,51,51,0.15); border: 2px solid #ff3333; border-radius: 15px; padding: 25px; font-family: 'Anton', sans-serif; font-size: clamp(20px, 3vw, 30px); color: #ff3333; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
@@ -1308,26 +1308,78 @@
         };
 
         // ============ IMPRESSION DUAL ============
-        // Mode 'dual': Client sur Epson (défaut) + Cuisine sur Star (WebPRNT)
-        // Mode 'single': Les 2 tickets sur l'imprimante par défaut
+        // Star = imprimante par défaut (cuisine)
+        // Epson = via ePOS HTTP (client)
+        // Fallback: tout sur Star (défaut)
         async function printDualTickets(clientTicket, kitchenTicket) {
             if (PRINTER_CONFIG.mode === 'dual') {
-                console.log('Mode DUAL: Epson (client) + Star (cuisine)');
+                console.log('Mode DUAL: Star (cuisine/défaut) + Epson (client/ePOS)');
 
-                // 1. Ticket CLIENT → Epson (imprimante par défaut via window.print)
-                printTicket(clientTicket);
-                showToast('Ticket CLIENT → Epson');
+                // 1. Ticket CUISINE → Star (imprimante par défaut via window.print)
+                printTicket(kitchenTicket);
+                showToast('Ticket CUISINE → Star');
 
-                // 2. Ticket CUISINE → Star (via WebPRNT HTTP)
-                setTimeout(() => {
-                    printToStarKitchen(kitchenTicket);
-                }, 1500);
+                // 2. Ticket CLIENT → Epson (via ePOS HTTP)
+                setTimeout(async () => {
+                    const success = await printToEpsonePOS(clientTicket);
+                    if (!success) {
+                        // Fallback: imprimer aussi sur Star
+                        console.log('Fallback: ticket client sur Star');
+                        printTicket(clientTicket);
+                        showToast('Ticket CLIENT → Star (fallback)');
+                    }
+                }, 2000);
 
             } else {
-                // BACKUP: Les 2 tickets sur l'imprimante par défaut
-                console.log('Mode SINGLE: tout sur imprimante par défaut');
-                printTicket(clientTicket + kitchenTicket);
+                // SINGLE: Les 2 tickets sur l'imprimante par défaut (Star)
+                console.log('Mode SINGLE: tout sur Star');
+                printTicket(kitchenTicket + clientTicket);
             }
+        }
+
+        // Envoyer ticket client à Epson via ePOS
+        async function printToEpsonePOS(htmlContent) {
+            const ip = PRINTER_CONFIG.client.ip;
+
+            try {
+                // Créer le XML ePOS pour Epson
+                const eposXml = `<?xml version="1.0" encoding="utf-8"?>
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+    <s:Body>
+        <epos-print xmlns="http://www.epson-pos.com/schemas/2011/03/epos-print">
+            <text lang="fr" smooth="true"/>
+            <text>${escapeXml(stripHtmlToText(htmlContent))}</text>
+            <feed line="4"/>
+            <cut type="feed"/>
+        </epos-print>
+    </s:Body>
+</s:Envelope>`;
+
+                const response = await fetch(`http://${ip}/cgi-bin/epos/service.cgi`, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/xml; charset=utf-8',
+                        'SOAPAction': '""'
+                    },
+                    body: eposXml
+                });
+
+                console.log('✓ Ticket client envoyé à Epson ' + ip);
+                showToast('Ticket CLIENT → Epson');
+                return true;
+            } catch (error) {
+                console.error('Erreur Epson ePOS:', error);
+                showToast('Erreur Epson - fallback Star');
+                return false;
+            }
+        }
+
+        // Convertir HTML en texte simple pour ePOS
+        function stripHtmlToText(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return div.textContent || div.innerText || '';
         }
 
         // Envoyer ticket cuisine à Star via WebPRNT (fonctionne depuis localhost)
@@ -3406,7 +3458,7 @@
             const label = document.getElementById('printer-mode-label');
             const btn = document.getElementById('btn-printer-mode');
             if (PRINTER_CONFIG.mode === 'dual') {
-                label.textContent = 'DUAL (Epson + Star)';
+                label.textContent = 'DUAL (Star + Epson)';
                 btn.style.borderColor = '#00cc66';
                 btn.style.color = '#00cc66';
                 btn.style.background = 'rgba(0,204,102,0.15)';
