@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chickenzz - Borne de Commande</title>
-    <!-- QZ Tray pour impression sur 2 imprimantes -->
-    <script src="https://cdn.jsdelivr.net/npm/qz-tray@2.2.4/qz-tray.min.js"></script>
+    <!-- Impression: 2 tickets séparés sur imprimante par défaut -->
     <link
         href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -1308,90 +1307,20 @@
             mode: 'dual'
         };
 
-        // ============ QZ TRAY ============
-        let qzReady = false;
-
-        // Connexion auto à QZ Tray au chargement
-        window.addEventListener('load', async () => {
-            if (typeof qz !== 'undefined') {
-                try {
-                    // Bypass certificat - accepter tout
-                    qz.security.setCertificatePromise(() => Promise.resolve(''));
-                    qz.security.setSignaturePromise(() => Promise.resolve(''));
-
-                    await qz.websocket.connect();
-                    qzReady = true;
-                    console.log('✓ QZ Tray connecté');
-                } catch (e) {
-                    console.warn('QZ Tray non disponible:', e.message);
-                }
-            }
-        });
-
-        // Imprimer via QZ Tray sur une imprimante spécifique
-        async function printWithQZ(printerName, htmlContent) {
-            if (!qzReady) {
-                console.warn('QZ Tray non connecté');
-                return false;
-            }
-
-            try {
-                const config = qz.configs.create(printerName);
-                const printHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-                    <style>
-                        @page { size: 80mm auto; margin: 0; }
-                        * { margin: 0; padding: 0; box-sizing: border-box; }
-                        body { width: 80mm; font-family: Arial, sans-serif; font-size: 12px; }
-                    </style>
-                </head><body>${htmlContent}</body></html>`;
-
-                await qz.print(config, [{
-                    type: 'html',
-                    format: 'plain',
-                    data: printHtml
-                }]);
-
-                console.log('✓ Imprimé sur ' + printerName);
-                return true;
-            } catch (e) {
-                console.error('Erreur QZ:', e);
-                return false;
-            }
-        }
-
-        // ============ IMPRESSION DUAL ============
+        // ============ IMPRESSION ============
+        // 2 tickets séparés sur l'imprimante par défaut
         async function printDualTickets(clientTicket, kitchenTicket) {
-            if (qzReady && PRINTER_CONFIG.mode === 'dual') {
-                // Mode QZ Tray: chaque ticket sur son imprimante
-                console.log('Mode QZ: Epson (client) + Star (cuisine)');
+            console.log('Impression: 2 tickets séparés');
 
-                // 1. Ticket CLIENT → Epson
-                const clientOk = await printWithQZ(PRINTER_CONFIG.client.name, clientTicket);
-                if (clientOk) showToast('Ticket CLIENT → Epson');
+            // 1. Ticket CUISINE
+            printTicket(kitchenTicket);
+            showToast('Ticket CUISINE imprimé');
 
-                // 2. Ticket CUISINE → Star
-                setTimeout(async () => {
-                    const kitchenOk = await printWithQZ(PRINTER_CONFIG.kitchen.name, kitchenTicket);
-                    if (kitchenOk) showToast('Ticket CUISINE → Star');
-
-                    // Fallback si échec
-                    if (!clientOk || !kitchenOk) {
-                        showToast('Fallback: impression par défaut');
-                        printTicket(clientTicket + kitchenTicket);
-                    }
-                }, 1000);
-
-            } else {
-                // Fallback: tout sur imprimante par défaut
-                console.log('Fallback: 2 tickets sur imprimante défaut');
-                printTicket(kitchenTicket);
-                showToast('Ticket CUISINE imprimé');
-
-                setTimeout(() => {
-                    printTicket(clientTicket);
-                    showToast('Ticket CLIENT imprimé');
-                }, 2500);
-            }
+            // 2. Ticket CLIENT après délai
+            setTimeout(() => {
+                printTicket(clientTicket);
+                showToast('Ticket CLIENT imprimé');
+            }, 2500);
         }
 
         // Envoyer ticket client à Epson via ePOS
