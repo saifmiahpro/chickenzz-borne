@@ -1224,6 +1224,10 @@
                     style="background: var(--glass); border: 2px solid var(--border); border-radius: 15px; padding: 25px; font-family: 'Anton', sans-serif; font-size: clamp(20px, 3vw, 30px); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
                     IMPRIMER TICKET TEST
                 </button>
+                <button onclick="listQZPrinters()"
+                    style="background: rgba(0,150,255,0.15); border: 2px solid #0096ff; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2.5vw, 24px); color: #0096ff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    VOIR IMPRIMANTES QZ
+                </button>
                 <button onclick="togglePrinterMode()" id="btn-printer-mode"
                     style="background: rgba(0,204,102,0.15); border: 2px solid #00cc66; border-radius: 15px; padding: 20px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2.5vw, 24px); color: #00cc66; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px;">
                     MODE: <span id="printer-mode-label">DUAL (Star + Epson)</span>
@@ -1387,6 +1391,26 @@
                     printTicket(clientTicket);
                     showToast('Ticket CLIENT imprimé');
                 }, 2500);
+            }
+        }
+
+        // Lister les imprimantes QZ Tray
+        async function listQZPrinters() {
+            if (!qzReady) {
+                qzReady = await initQZ();
+            }
+
+            if (qzReady) {
+                try {
+                    const printers = await qz.printers.find();
+                    const msg = 'IMPRIMANTES QZ:\n\n' + printers.join('\n');
+                    alert(msg);
+                    console.log('Imprimantes QZ:', printers);
+                } catch (e) {
+                    alert('Erreur: ' + e.message);
+                }
+            } else {
+                alert('QZ Tray non connecté !');
             }
         }
 
