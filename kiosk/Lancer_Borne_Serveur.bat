@@ -1,6 +1,7 @@
 @echo off
 REM ============================================
-REM   LANCEMENT BORNE CHICKENZZ + QZ TRAY
+REM   LANCEMENT BORNE CHICKENZZ
+REM   2 tickets sur Star (imprimante par defaut)
 REM ============================================
 
 REM Fermer Chrome s'il est deja ouvert
@@ -8,31 +9,6 @@ taskkill /IM chrome.exe /F >nul 2>&1
 taskkill /IM node.exe /F >nul 2>&1
 timeout /t 1 /nobreak >nul
 
-REM ============================================
-REM   CONFIG QZ TRAY - BYPASS SECURITE
-REM ============================================
-echo Configuration QZ Tray...
-
-REM Arreter QZ Tray d'abord
-taskkill /IM qz-tray.exe /F >nul 2>&1
-timeout /t 2 /nobreak >nul
-
-REM Creer fichiers config dans TOUS les emplacements possibles
-for %%D in ("%APPDATA%\QZ Tray" "%LOCALAPPDATA%\QZ Tray" "%USERPROFILE%\.qz" "C:\Program Files\QZ Tray") do (
-    if not exist %%D mkdir %%D 2>nul
-    echo localhost> %%D\allowed.txt 2>nul
-    echo 127.0.0.1>> %%D\allowed.txt 2>nul
-    echo *>> %%D\allowed.txt 2>nul
-)
-
-REM Lancer QZ Tray
-echo Lancement QZ Tray...
-start "" "C:\Program Files\QZ Tray\qz-tray.exe"
-timeout /t 4 /nobreak >nul
-
-REM ============================================
-REM   MISE A JOUR
-REM ============================================
 REM Mise a jour depuis GitHub
 echo Mise a jour en cours...
 cd /d "%~dp0.."
