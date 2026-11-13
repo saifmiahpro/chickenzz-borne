@@ -19,4 +19,4 @@ timeout /t 2 /nobreak >nul
 
 REM Lancer Chrome en mode kiosk avec impression silencieuse
 echo Lancement de la borne...
-start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk --kiosk-printing --disable-pinch --overscroll-history-navigation=0 --noerrdialogs --disable-translate --no-first-run --fast --fast-start --disable-infobars --disable-features=TranslateUI --check-for-update-interval=31536000 "file:///%~dp0index.html?v=%RANDOM%%RANDOM%"
+start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk --kiosk-printing --disable-pinch --overscroll-history-navigation=0 --noerrdialogs --disable-translate --no-first-run --fast --fast-start --disable-infobars --disable-features=TranslateUI --check-for-update-interval=31536000 "%~dp0index.html"
