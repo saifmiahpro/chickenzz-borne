@@ -2915,6 +2915,19 @@
                     state.builderSelections.size = { id: value, price: parseFloat(element.dataset.price) || 0 };
                 }
 
+                // Tacos à composer : taille plus petite => on retire les dernières viandes en trop
+                if (product.type === 'tacos' && Array.isArray(state.builderSelections.meats)) {
+                    const maxMeats = state.builderSelections.size.meatCount || 1;
+                    while (state.builderSelections.meats.length > maxMeats) {
+                        const retiree = state.builderSelections.meats.pop();
+                        document.querySelectorAll('#builder-content .option-btn.selected').forEach(btn => {
+                            if (btn.getAttribute('onclick') === "toggleMeat('" + retiree.id + "', this)") {
+                                btn.classList.remove('selected');
+                            }
+                        });
+                    }
+                }
+
                 // Mettre à jour les prix des gratins affichés en direct dynamiquement
                 if (state.currentProduct && state.currentProduct.type === 'tacos') {
                     const dynamicGratinPrice = (value === 'L' || value === 'XL') ? 2.50 : 2.00;
@@ -2928,7 +2941,21 @@
                 if (value === 'classique') state.builderSelections.formula = { id: 'classique', price: 7.9, meatCount: 1 };
                 else if (value === 'mega') state.builderSelections.formula = { id: 'mega', price: 11, meatCount: 2 };
                 else state.builderSelections.formula = { id: value, price: parseFloat(element.dataset.price) || 0 };
-                // NE PAS afficher la boisson ici - c'est géré par menuOpt
+                // Sandwichs : la boisson est gérée par menuOpt. Naans spéciaux : MENU => choix de la boisson
+                if (product.type === 'naan') {
+                    const drinkSection = document.getElementById('menu-drink-section');
+                    if (value === 'menu') {
+                        if (drinkSection) drinkSection.style.display = 'block';
+                        if (!state.builderSelections.menuBoisson) state.builderSelections.menuBoisson = BOISSONS_33[0].name;
+                    } else {
+                        // SEUL ou MÉGA XL : pas de boisson choisie, liste remise à zéro
+                        if (drinkSection) {
+                            drinkSection.style.display = 'none';
+                            drinkSection.querySelectorAll('.option-btn').forEach((btn, i) => btn.classList.toggle('selected', i === 0));
+                        }
+                        delete state.builderSelections.menuBoisson;
+                    }
+                }
             } else if (type === 'type') {
                 state.builderSelections.type = value === '1viande' ? { id: '1viande', price: 11 } : { id: '3viandes', price: 14.5 };
             } else if (type === 'gratin') {
@@ -2950,6 +2977,8 @@
                 state.builderSelections.menuBoisson = value;
             } else if (type === 'base') {
                 state.builderSelections.base = value;
+            } else if (type === 'fritesSupp' || type === 'boisson') {
+                state.builderSelections[type] = value;
             }
 
             updateBuilderPrice();
@@ -3228,8 +3257,11 @@
                 if (sel.supplements?.length) details.push('+ ' + sel.supplements.map(s => s.name).join(', '));
                 if (sel.menuOpt) details.push('MENU (Frites + ' + (sel.menuBoisson || 'Boisson') + ')');
             } else if (product.type === 'bowl') {
+                if (product.sizes && sel.size?.name) cartName = `${product.name} ${sel.size.name}`;
                 if (sel.size?.id === 'xl') details.push('XL');
                 if (sel.meat?.name) details.push(sel.meat.name);
+            } else if (product.type === 'frites') {
+                if (sel.size?.name) cartName = `${product.name} ${sel.size.name}`;
             } else if (product.type === 'poutine') {
                 details.push(sel.size?.name || 'M');
                 details.push(sel.base === 'riz' ? 'Riz' : 'Frites');
