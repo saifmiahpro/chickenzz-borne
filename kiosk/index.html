@@ -1231,6 +1231,7 @@
 
         /* Indice « plus de catégories en dessous » */
         .nav-more {
+            pointer-events: none; /* simple repère : l'appui passe à la catégorie dessous */
             display: none;
             position: relative;
             z-index: 2;
@@ -2371,6 +2372,9 @@
             steps.forEach((step, index) => {
                 step.classList.toggle('active', index === (stepNum - 1));
             });
+            // Chaque étape s'ouvre en haut (sinon elle garde le défilement de l'étape d'avant)
+            var zoneEtapes = document.getElementById('builder-content');
+            if (zoneEtapes) zoneEtapes.scrollTop = 0;
 
             const prevBtn = document.getElementById('btn-builder-prev');
             const nextBtn = document.getElementById('btn-builder-next');
