@@ -529,7 +529,7 @@ const PRODUCTS = [
         name: 'Smokey Chick',
         description: '2 Tenders, Bacon, Oignons Frits',
         image: '../AssetsTv3/smokey_chick_real.png',
-        price: 7.90,
+        price: 8.50,
         menuUpgrade: 2.00,
         hasBuilder: true
     },
