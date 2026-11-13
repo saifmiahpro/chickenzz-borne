@@ -6,10 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chickenzz - Borne de Commande</title>
     <!-- Impression: 2 tickets sur Star (imprimante par défaut) -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
     <style>
+        /* Polices locales (kiosk/fonts, licence OFL) : plus besoin d'internet pour l'affichage */
+        @font-face {
+            font-family: 'Anton';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('fonts/anton-latin-400-normal.woff2') format('woff2');
+        }
+
+        @font-face {
+            font-family: 'Barlow Condensed';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('fonts/barlow-condensed-latin-400-normal.woff2') format('woff2');
+        }
+
+        @font-face {
+            font-family: 'Barlow Condensed';
+            font-style: normal;
+            font-weight: 500;
+            font-display: swap;
+            src: url('fonts/barlow-condensed-latin-500-normal.woff2') format('woff2');
+        }
+
+        @font-face {
+            font-family: 'Barlow Condensed';
+            font-style: normal;
+            font-weight: 600;
+            font-display: swap;
+            src: url('fonts/barlow-condensed-latin-600-normal.woff2') format('woff2');
+        }
+
+        @font-face {
+            font-family: 'Barlow Condensed';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url('fonts/barlow-condensed-latin-700-normal.woff2') format('woff2');
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -828,6 +866,9 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            /* étape plus haute que l'écran : elle commence en haut au lieu de déborder au-dessus */
+            height: auto;
+            min-height: 100%;
         }
 
         @keyframes fadeIn {
@@ -982,15 +1023,6 @@
             .mode-card h2 {
                 font-size: clamp(20px, 3vw, 28px);
             }
-
-            /* Modal: contenu décalé vers le bas */
-            .modal-content {
-                padding-top: 3vh;
-            }
-
-            .step-title {
-                margin-top: 2vh;
-            }
         }
 
         /* Très petits écrans carrés (800x600, 1024x768) */
@@ -1043,15 +1075,6 @@
 
             .mode-card h2 {
                 font-size: 16px;
-            }
-
-            /* Modal: encore plus de marge en haut */
-            .modal-content {
-                padding-top: 4vh;
-            }
-
-            .step-title {
-                margin-top: 3vh;
             }
         }
 
@@ -1157,6 +1180,266 @@
             }
         }
 
+        /* ============ MAJ ÉCRAN 13/11 (aucun effet sur les tickets) ============ */
+        /* Icônes SVG (les emojis récents s'affichent en carrés sous Windows 7) */
+        .ico {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+        }
+
+        .mode-card .icon {
+            color: var(--yellow);
+            line-height: 1;
+        }
+
+        .btn-retour-mode {
+            margin-top: 4vh;
+            background: var(--glass);
+            color: var(--text);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: clamp(10px, 1.6vh, 16px) clamp(24px, 3vw, 40px);
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(16px, 2vw, 24px);
+            cursor: pointer;
+        }
+
+        /* Bouton panier : total sous le libellé */
+        .cart-btn-sidebar {
+            flex-wrap: wrap;
+        }
+
+        .cart-btn-sidebar .cart-sum {
+            flex-basis: 100%;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: clamp(15px, 1.8vw, 20px);
+            line-height: 1;
+        }
+
+        .cart-btn-sidebar .cart-sum:empty {
+            display: none;
+        }
+
+        /* Panier : VALIDER à la même hauteur que AJOUTER */
+        .cart-buttons .btn-primary {
+            margin-top: 0;
+            border: 2px solid var(--yellow);
+        }
+
+        /* Indice « plus de catégories en dessous » */
+        .nav-more {
+            display: none;
+            position: relative;
+            z-index: 2;
+            margin-top: -48px;
+            height: 48px;
+            padding-top: 18px;
+            text-align: center;
+            font-weight: 700;
+            font-size: clamp(15px, 1.6vw, 18px);
+            letter-spacing: 1px;
+            color: var(--yellow);
+            background: linear-gradient(180deg, rgba(5, 5, 5, 0) 0%, rgba(5, 5, 5, 0.95) 55%, var(--darker) 100%);
+            cursor: pointer;
+        }
+
+        .nav-more.show {
+            display: block;
+        }
+
+        /* Composition : repère d'étape */
+        .builder-head {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .builder-step-indicator {
+            font-size: clamp(14px, 1.8vw, 20px);
+            font-weight: 600;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* Fidélité (écran d'accueil et écran merci) */
+        .fidelite {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 3vh;
+            padding: 10px 16px 10px 10px;
+            background: var(--glass);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            text-align: left;
+            max-width: min(700px, 92vw);
+        }
+
+        .fidelite-qr {
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
+            border-radius: 6px;
+        }
+
+        .fidelite-txt {
+            font-size: clamp(16px, 2vw, 22px);
+            color: var(--text);
+            line-height: 1.25;
+        }
+
+        .fidelite-txt strong {
+            color: var(--yellow);
+        }
+
+        .fidelite-txt small {
+            display: block;
+            font-size: 0.8em;
+            color: var(--text-dim);
+        }
+
+        .fidelite.grand {
+            margin-top: 5vh;
+            padding: 12px 22px 12px 12px;
+            gap: 20px;
+        }
+
+        .fidelite.grand .fidelite-qr {
+            width: clamp(110px, 16vh, 170px);
+            height: clamp(110px, 16vh, 170px);
+        }
+
+        .fidelite.grand .fidelite-txt {
+            font-size: clamp(18px, 2.4vw, 28px);
+        }
+
+        .product-card .price .des {
+            display: block;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.5em;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .cart-item .delete-btn {
+            font-size: clamp(24px, 3vw, 34px);
+            line-height: 1;
+        }
+
+        /* Écran prénom : tout doit tenir sans défiler (1280x1024, 1920x1080) */
+        @media (min-height: 801px) and (max-height: 1100px) {
+            .intro-screen {
+                padding: 3vh 4vw;
+            }
+
+            .intro-screen .logo-big {
+                width: min(170px, 17vh);
+                margin-bottom: 2vh;
+            }
+
+            .intro-screen h1 {
+                margin-bottom: 2.5vh;
+            }
+
+            .prenom-input {
+                padding: 1.8vh 3vw;
+                margin-bottom: 2.5vh;
+            }
+
+            .key {
+                padding: clamp(10px, 1.7vh, 20px) clamp(5px, 0.5vw, 10px);
+            }
+
+            .keyboard {
+                margin-bottom: 2vh;
+            }
+
+            .btn-primary {
+                padding: clamp(14px, 2.2vh, 26px) clamp(50px, 8vw, 100px);
+            }
+        }
+
+        /* Barre de catégories plus compacte quand la hauteur manque */
+        @media (max-height: 1100px) {
+            .sidebar-header {
+                padding: 1.2vh 1vw;
+            }
+
+            .sidebar-mode {
+                padding: 1vh 1vw;
+            }
+
+            .nav-item {
+                gap: 12px;
+                padding: 8px clamp(14px, 1.6vw, 24px);
+                font-size: clamp(17px, 2vw, 22px);
+            }
+
+            .nav-item img {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        /* Cartes produits plus compactes sur les petits écrans (1024x768) */
+        @media (max-height: 800px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 14px;
+            }
+
+            .product-card {
+                padding: 12px;
+                border-radius: 16px;
+            }
+
+            .product-card img {
+                height: 150px;
+                margin-bottom: 0.5vh;
+            }
+
+            .product-card h4 {
+                font-size: clamp(20px, 2.4vw, 28px);
+            }
+
+            .product-card .desc {
+                font-size: clamp(13px, 1.5vw, 16px);
+                margin-bottom: 0.5vh;
+            }
+
+            .product-card .price {
+                font-size: 26px;
+            }
+
+            .product-card.compose-card {
+                min-height: 0;
+                padding: 12px 20px;
+            }
+
+            .product-card.compose-card img {
+                height: 90px;
+            }
+
+            .fidelite {
+                margin-top: 1.5vh;
+                padding: 6px 12px 6px 6px;
+            }
+
+            .fidelite-qr {
+                width: 60px;
+                height: 60px;
+            }
+
+            .fidelite-txt {
+                font-size: 15px;
+            }
+        }
+
         /* ============ IMPRESSION ============ */
         @media print {
             body {
@@ -1179,35 +1462,51 @@
         </video>
         <div class="screensaver-content">
             <img src="videos/chickenzz_logo.png" alt="Chickenzz" class="screensaver-logo">
-            <div class="screensaver-cta">COMMANDEZ ICI</div>
-            <div class="screensaver-touch">Touchez l'écran pour commander</div>
+            <div class="screensaver-cta">COMMANDE ICI</div>
+            <div class="screensaver-touch">Touche l'écran pour commander</div>
         </div>
     </div>
 
     <!-- ============ ÉCRAN 1: PRÉNOM ============ -->
     <div id="screen-prenom" class="intro-screen active">
         <img src="videos/chickenzz_logo.png" alt="Chickenzz" class="logo-big">
-        <h1>ENTREZ VOTRE PRÉNOM</h1>
-        <input type="text" class="prenom-input" id="prenom-input" readonly placeholder="VOTRE PRÉNOM">
+        <h1>ÉCRIS TON PRÉNOM</h1>
+        <input type="text" class="prenom-input" id="prenom-input" readonly placeholder="TON PRÉNOM">
         <div class="keyboard" id="keyboard"></div>
         <button class="btn-primary" id="btn-suivant" disabled>SUIVANT</button>
+        <div class="fidelite">
+            <img src="img/qr-fidelite.svg" alt="" class="fidelite-qr">
+            <div class="fidelite-txt"><strong>Fidélité :</strong> montre ta carte en caisse, 1&nbsp;€ = 1&nbsp;point
+                <small>Pas encore de carte ? Scanne ce QR code.</small></div>
+        </div>
     </div>
 
     <!-- ============ ÉCRAN 2: MODE ============ -->
     <div id="screen-mode" class="intro-screen">
         <img src="videos/chickenzz_logo.png" alt="Chickenzz" class="logo-big">
         <h1>BONJOUR <span id="display-prenom"></span> !</h1>
-        <h2>Où souhaitez-vous manger ?</h2>
+        <h2>Tu manges ici ou tu emportes ?</h2>
         <div class="mode-cards">
             <div class="mode-card" onclick="selectMode('sur_place')">
-                <div class="icon">🍽️</div>
+                <div class="icon"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor"
+                        stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="32" cy="34" r="17" />
+                        <circle cx="32" cy="34" r="10" />
+                        <path d="M5 10v9a3 3 0 0 0 6 0v-9M8 10v9M8 22v30" />
+                        <path d="M57 10c-4 3-6 9-6 16h6M57 10v42" />
+                    </svg></div>
                 <h2>SUR PLACE</h2>
             </div>
             <div class="mode-card" onclick="selectMode('emporter')">
-                <div class="icon">🥡</div>
+                <div class="icon"><svg class="ico" viewBox="0 0 64 64" fill="none" stroke="currentColor"
+                        stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M13 22h38l-3 32H16z" />
+                        <path d="M24 22v-6a8 8 0 0 1 16 0v6" />
+                    </svg></div>
                 <h2>À EMPORTER</h2>
             </div>
         </div>
+        <button class="btn-retour-mode" onclick="showIntroScreen('screen-prenom')">&larr; RETOUR (corriger mon prénom)</button>
     </div>
 
     <!-- ============ LAYOUT PRINCIPAL ============ -->
@@ -1215,7 +1514,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="../AssetsTv3/chickenzz_logo.jpg" alt="Chickenzz">
+                <img src="img/chickenzz-logo.webp" alt="Chickenzz">
             </div>
             <div class="sidebar-mode">
                 <div class="client-name" id="sidebar-name">SAIF</div>
@@ -1224,13 +1523,20 @@
             <nav class="nav-categories" id="nav-categories">
                 <!-- Généré par JS -->
             </nav>
+            <div class="nav-more" id="nav-more" onclick="scrollNavDown()">&#9660; Plus de choix</div>
             <div class="sidebar-cart">
                 <button class="cart-btn-sidebar" onclick="showCart()">
-                    🛒 <span>PANIER</span>
+                    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M2 3h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.7a1.5 1.5 0 0 0 1.5-1.1L21 7H6.2" />
+                        <circle cx="9.5" cy="19.5" r="1.5" />
+                        <circle cx="17" cy="19.5" r="1.5" />
+                    </svg> <span>PANIER</span>
                     <span class="count" id="cart-count">0</span>
+                    <span class="cart-sum" id="cart-btn-total"></span>
                 </button>
                 <button class="cancel-btn-sidebar" onclick="showCancelModal()">
-                    ✕ <span>ABANDONNER</span>
+                    &times; <span>ABANDONNER</span>
                 </button>
             </div>
         </aside>
@@ -1253,7 +1559,7 @@
             <div id="cart-view" class="cart-view">
                 <div class="main-header">
                     <button class="back-btn" onclick="hideCart()">← Continuer</button>
-                    <h1>VOTRE PANIER</h1>
+                    <h1>TON PANIER</h1>
                     <div style="width: 100px;"></div>
                 </div>
                 <div class="cart-items" id="cart-items">
@@ -1262,7 +1568,7 @@
                 <div class="cart-footer">
                     <div class="cart-total">
                         <span>TOTAL</span>
-                        <span class="amount" id="cart-total">0.00€</span>
+                        <span class="amount" id="cart-total">0,00&nbsp;€</span>
                     </div>
                     <div class="cart-buttons">
                         <button class="btn-secondary" onclick="hideCart()">AJOUTER</button>
@@ -1276,14 +1582,17 @@
     <!-- ============ MODAL BUILDER ============ -->
     <div class="modal" id="builder-modal">
         <div class="modal-header">
-            <h2 id="builder-title">Personnaliser</h2>
+            <div class="builder-head">
+                <h2 id="builder-title">Personnaliser</h2>
+                <div class="builder-step-indicator" id="builder-step-indicator"></div>
+            </div>
             <button class="modal-close" onclick="closeBuilder()">FERMER</button>
         </div>
         <div class="modal-content" id="builder-content"></div>
         <div class="modal-footer" style="display: flex; gap: 15px;">
             <button class="btn-secondary" id="btn-builder-prev" onclick="prevBuilderStep()"
                 style="padding: 10px 20px; font-size: clamp(16px, 2vw, 24px); border-radius: 10px; min-width: 120px;">RETOUR</button>
-            <div class="modal-price" id="builder-price" style="flex: 1; text-align: center;">0.00€</div>
+            <div class="modal-price" id="builder-price" style="flex: 1; text-align: center;">0,00&nbsp;€</div>
             <button class="btn-primary" id="btn-builder-next" onclick="nextBuilderStep()"
                 style="margin-top: 0; padding: 10px 20px; font-size: clamp(16px, 2vw, 24px); border-radius: 10px; min-width: 120px;">SUIVANT</button>
         </div>
@@ -1292,24 +1601,29 @@
     <!-- ============ ÉCRAN CONFIRMATION ============ -->
     <div id="screen-confirm" class="confirm-screen">
         <h1>COMMANDE VALIDÉE !</h1>
-        <p class="confirm-message" style="margin-top: 3vh;">Merci de votre visite,</p>
+        <p class="confirm-message" style="margin-top: 3vh;">Merci pour ta commande,</p>
         <div class="order-number" id="confirm-name">SAIF</div>
 
         <p class="confirm-message" style="font-size: clamp(20px, 3vw, 32px); color: var(--yellow); margin-top: 3vh;">
-            Impression automatique de votre ticket en cours...
+            Tes tickets s'impriment...
         </p>
         <p class="confirm-message" style="font-size: clamp(16px, 2vw, 24px); margin-top: 1vh;">
-            Récupérez vos tickets et allez en caisse.
+            Récupère tes tickets et va payer en caisse.
         </p>
     </div>
 
     <!-- ============ ÉCRAN MERCI ============ -->
     <div id="screen-thanks" class="confirm-screen">
         <h1>MERCI <span id="thank-name"></span> !</h1>
-        <p class="confirm-message" style="margin-bottom: 5vh;">Récupérez vos tickets et allez en caisse</p>
+        <p class="confirm-message" style="margin-bottom: 4vh;">Récupère tes tickets et va payer en caisse</p>
         <button class="btn-primary" onclick="resetKiosk()"
             style="font-size: clamp(20px, 3vw, 28px); padding: 20px 40px; border-radius: 20px;">NOUVELLE
             COMMANDE</button>
+        <div class="fidelite grand">
+            <img src="img/qr-fidelite.svg" alt="" class="fidelite-qr">
+            <div class="fidelite-txt"><strong>Fidélité :</strong> montre ta carte en caisse, 1&nbsp;€ = 1&nbsp;point
+                <small>Pas encore de carte ? Scanne ce QR code.</small></div>
+        </div>
     </div>
 
     <!-- ============ MODAL ABANDON ============ -->
@@ -1319,8 +1633,8 @@
             <h2
                 style="font-family: 'Anton', sans-serif; font-size: clamp(28px, 4vw, 42px); color: #ff3333; margin-bottom: 2vh;">
                 ABANDONNER ?</h2>
-            <p style="font-size: clamp(18px, 2.5vw, 26px); color: var(--text-dim); margin-bottom: 4vh;">Êtes-vous sûr de
-                vouloir annuler toute votre commande ?</p>
+            <p style="font-size: clamp(18px, 2.5vw, 26px); color: var(--text-dim); margin-bottom: 4vh;">Tu veux vraiment
+                annuler toute ta commande ?</p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <button class="btn-secondary" onclick="closeCancelModal()"
                     style="padding: 15px 30px; border-radius: 10px; font-family: 'Anton', sans-serif; font-size: clamp(16px, 2vw, 22px); cursor: pointer; flex: 1; min-width: 150px;">NON,
@@ -1423,7 +1737,8 @@
         </div>
     </div>
 
-    <script src="products.js"></script>
+    <!-- ?v= : changer la date à chaque modification de products.js (sinon Chrome peut garder l'ancien en cache) -->
+    <script src="products.js?v=20261113"></script>
     <script>
         // ============ CONFIGURATION IMPRIMANTES ============
         // IMPORTANT: Modifier ces noms pour correspondre aux noms exacts dans Windows
@@ -1764,6 +2079,12 @@
             builderCurrentStep: 0
         };
 
+        // ============ AFFICHAGE ÉCRAN (jamais lu par les tickets) ============
+        // Prix affiché à l'écran : 6.9 -> "6,90 €". Les tickets gardent leur propre format.
+        function prix(montant) {
+            return (Number(montant) || 0).toFixed(2).replace('.', ',') + '\u00a0€';
+        }
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -1819,13 +2140,13 @@
 
             const deleteBtn = document.createElement('div');
             deleteBtn.className = 'key wide delete';
-            deleteBtn.textContent = '⌫';
+            deleteBtn.textContent = 'EFFACER';
             deleteBtn.onclick = deleteLetter;
             keyboard.appendChild(deleteBtn);
 
             const spaceBtn = document.createElement('div');
             spaceBtn.className = 'key wide';
-            spaceBtn.textContent = '⎵';
+            spaceBtn.textContent = 'ESPACE';
             spaceBtn.onclick = () => addLetter(' ');
             keyboard.appendChild(spaceBtn);
         }
@@ -1861,6 +2182,7 @@
             initNavigation();
             showAppLayout();
             selectCategory(CATEGORIES[0].id);
+            updateNavMore();
 
             // Arrêter le timer du screensaver (on n'est plus sur l'écran prénom)
             clearTimeout(screensaverTimer);
@@ -1882,6 +2204,20 @@
                 `;
                 nav.appendChild(item);
             });
+        }
+
+        // Indice « Plus de choix » quand des catégories sont cachées en bas de la barre
+        function updateNavMore() {
+            const nav = document.getElementById('nav-categories');
+            const more = document.getElementById('nav-more');
+            if (!nav || !more) return;
+            const reste = nav.scrollHeight - nav.scrollTop - nav.clientHeight;
+            more.classList.toggle('show', reste > 10);
+        }
+
+        function scrollNavDown() {
+            const nav = document.getElementById('nav-categories');
+            nav.scrollBy({ top: Math.round(nav.clientHeight * 0.7), behavior: 'smooth' });
         }
 
         function selectCategory(categoryId) {
@@ -1911,8 +2247,8 @@
                 card.onclick = () => handleProductClick(product);
 
                 const priceDisplay = product.sizes ?
-                    `À partir de ${product.sizes[0].price.toFixed(2)}€` :
-                    `${product.price.toFixed(2)}€`;
+                    `<span class="des">À partir de</span>${prix(product.sizes[0].price)}` :
+                    prix(product.price);
 
                 const displayName = product.displayName || product.name;
 
@@ -1972,7 +2308,7 @@
             };
             state.cart.push(cartItem);
             updateCartCount();
-            showToast(`${product.name} ajouté !`);
+            showToast(`${product.name} : c'est dans ton panier !`);
         }
 
         // ============ BUILDER ============
@@ -2047,13 +2383,27 @@
                     nextBtn.textContent = 'MODIFIER';
                     nextBtn.onclick = updateCartItemFromBuilder;
                 } else {
-                    nextBtn.textContent = 'COMPLÉTER MA COMMANDE';
                     nextBtn.onclick = addToCartFromBuilder;
                 }
             } else {
                 nextBtn.textContent = 'SUIVANT';
                 nextBtn.onclick = nextBuilderStep;
             }
+            const indicator = document.getElementById('builder-step-indicator');
+            if (indicator) {
+                indicator.textContent = state.builderTotalSteps > 1
+                    ? 'Étape ' + stepNum + '/' + state.builderTotalSteps : '';
+            }
+            refreshBuilderAddLabel();
+        }
+
+        // Libellé du bouton final, avec le prix courant (écran seulement)
+        function refreshBuilderAddLabel() {
+            if (state.editingCartItemId) return;
+            if (state.builderCurrentStep !== state.builderTotalSteps) return;
+            const nextBtn = document.getElementById('btn-builder-next');
+            const total = state.builderSelections ? state.builderSelections.totalPrice : 0;
+            nextBtn.textContent = 'AJOUTER AU PANIER \u00b7 ' + prix(total);
         }
 
         function nextBuilderStep() {
@@ -2085,7 +2435,7 @@
                 html += `<div class="step-title">Taille</div><div class="options-grid big">`;
                 product.sizes.forEach((size, i) => {
                     html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
-                        ${size.name} <span class="option-price">${size.price.toFixed(2)}€</span>
+                        ${size.name} <span class="option-price">${prix(size.price)}</span>
                     </div>`;
                 });
                 html += '</div>';
@@ -2100,14 +2450,14 @@
                 // Viande supplémentaire
                 html += `<div class="step-title">Viande supplémentaire ?</div><div class="options-grid">`;
                 VIANDES.forEach(v => {
-                    html += `<div class="option-btn" onclick="toggleViandeSupp('${v.id}', this)">+${v.name} <span class="option-price">+1.50€</span></div>`;
+                    html += `<div class="option-btn" onclick="toggleViandeSupp('${v.id}', this)">+${v.name} <span class="option-price">+1,50&nbsp;€</span></div>`;
                 });
                 html += '</div>';
 
                 // Menu
                 html += `<div class="step-title">En menu ? (Frites + Boisson)</div><div class="options-grid big">
                     <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL</div>
-                    <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+                    <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2,00&nbsp;€</span></div>
                 </div>`;
                 html += `<div id="menu-drink-section" style="display:none; margin-top: 15px;">
                     <div class="builder-subtitle">Choix de la boisson</div>
@@ -2130,7 +2480,7 @@
             html += `<div class="step-title">Taille</div><div class="options-grid big">`;
             product.sizes.forEach((size, i) => {
                 html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
-                    ${size.name} <span class="option-price">${size.price.toFixed(2)}€ (${size.meatCount} viande${size.meatCount > 1 ? 's' : ''})</span>
+                    ${size.name} <span class="option-price">${prix(size.price)} · ${size.meatCount} viande${size.meatCount > 1 ? 's' : ''}</span>
                 </div>`;
             });
             html += '</div>';
@@ -2154,19 +2504,19 @@
             html += `<div class="builder-subtitle">Gratiner ?</div><div class="options-grid">
                 <div class="option-btn selected" onclick="selectOption('gratin', 'none', this)">Sans gratin</div>`;
             GRATINS.forEach(g => {
-                html += `<div class="option-btn" onclick="selectOption('gratin', '${g.id}', this)">${g.name} <span class="option-price gratin-price-display">+${initialGratinPrice.toFixed(2)}€</span></div>`;
+                html += `<div class="option-btn" onclick="selectOption('gratin', '${g.id}', this)">${g.name} <span class="option-price gratin-price-display">+${prix(initialGratinPrice)}</span></div>`;
             });
             html += '</div>';
             html += `<div class="builder-subtitle" style="margin-top:15px;">Suppléments</div><div class="options-grid">`;
             SUPPLEMENTS.forEach(supp => {
-                html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
+                html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${prix(supp.price)}</span></div>`;
             });
             html += '</div>';
 
             // Menu
             html += `<div class="step-title">En menu ? (Frites + Boisson)</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL</div>
-                <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+                <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2,00&nbsp;€</span></div>
             </div>`;
             html += `<div id="menu-drink-section" style="display:none; margin-top: 15px;">
                 <div class="builder-subtitle">Choix de la boisson</div>
@@ -2192,8 +2542,8 @@
                 // Formule
                 html += `<div class="step-title">Formule</div><div class="options-grid big">
                     <div class="option-btn selected" onclick="selectOption('formula', 'seul', this)" data-price="0">SEUL</div>
-                    <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2€</span></div>
-                    <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3.50€</span></div>
+                    <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2,00&nbsp;€</span></div>
+                    <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3,50&nbsp;€</span></div>
                 </div>`;
                 html += `<div id="menu-drink-section" style="display:none; margin-top: 15px;">
                     <div class="builder-subtitle">Choix de la boisson</div>
@@ -2212,14 +2562,14 @@
                 // Viande supplémentaire
                 html += `<div class="step-title">Viande supplémentaire ?</div><div class="options-grid">`;
                 VIANDES.forEach(v => {
-                    html += `<div class="option-btn" onclick="toggleViandeSupp('${v.id}', this)">+${v.name} <span class="option-price">+1.50€</span></div>`;
+                    html += `<div class="option-btn" onclick="toggleViandeSupp('${v.id}', this)">+${v.name} <span class="option-price">+1,50&nbsp;€</span></div>`;
                 });
                 html += '</div>';
 
                 // Suppléments fromage
                 html += `<div class="step-title">Suppléments ?</div><div class="options-grid">`;
                 SUPPLEMENTS.forEach(supp => {
-                    html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
+                    html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${prix(supp.price)}</span></div>`;
                 });
                 html += '</div>';
 
@@ -2234,10 +2584,10 @@
             }
 
             // NAAN CUSTOM (compose ton sandwich via naan) - redirige vers sandwich builder
-            content.innerHTML = `<div class="step-title">Choisissez la formule</div><div class="options-grid big">
+            content.innerHTML = `<div class="step-title">Choisis ta formule</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('formula', 'seul', this)" data-price="0">SEUL</div>
-                <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2€</span></div>
-                <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3.50€</span></div>
+                <div class="option-btn" onclick="selectOption('formula', 'menu', this)" data-price="2">MENU <span class="option-price">+2,00&nbsp;€</span></div>
+                <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="3.5">MÉGA XL <span class="option-price">+3,50&nbsp;€</span></div>
             </div>`;
             content.innerHTML += `<div id="menu-drink-section" style="display:none; margin-top: 15px;">
                 <div class="builder-subtitle">Choix de la boisson</div>
@@ -2254,8 +2604,8 @@
 
             // Formule (Classique ou Mega XL - pas de boisson incluse)
             html += `<div class="step-title">Formule</div><div class="options-grid big">
-                <div class="option-btn selected" onclick="selectOption('formula', 'classique', this)" data-price="7.9">CLASSIQUE <span class="option-price">7.90€</span></div>
-                <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="11">MÉGA XL <span class="option-price">11€</span></div>
+                <div class="option-btn selected" onclick="selectOption('formula', 'classique', this)" data-price="7.9">CLASSIQUE <span class="option-price">7,90&nbsp;€</span></div>
+                <div class="option-btn" onclick="selectOption('formula', 'mega', this)" data-price="11">MÉGA XL <span class="option-price">11,00&nbsp;€</span></div>
             </div>`;
 
             // Pain
@@ -2289,21 +2639,21 @@
             // Viande supplémentaire avec choix
             html += `<div class="step-title">Viande supplémentaire ?</div><div class="options-grid">`;
             VIANDES.forEach(v => {
-                html += `<div class="option-btn" onclick="toggleViandeSupp('${v.id}', this)">+${v.name} <span class="option-price">+1.50€</span></div>`;
+                html += `<div class="option-btn" onclick="toggleViandeSupp('${v.id}', this)">+${v.name} <span class="option-price">+1,50&nbsp;€</span></div>`;
             });
             html += '</div>';
 
             // Suppléments
             html += `<div class="step-title">Suppléments (optionnels)</div><div class="options-grid">`;
             SUPPLEMENTS.forEach(supp => {
-                html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${supp.price.toFixed(2)}€</span></div>`;
+                html += `<div class="option-btn" onclick="toggleSupplement('${supp.id}', this)">${supp.name} <span class="option-price">+${prix(supp.price)}</span></div>`;
             });
             html += '</div>';
 
             // Menu
             html += `<div class="step-title">En menu ?</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('menuOpt', false, this)">SEUL</div>
-                <div class="option-btn" onclick="selectOption('menuOpt', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+                <div class="option-btn" onclick="selectOption('menuOpt', true, this)" data-price="2">MENU <span class="option-price">+2,00&nbsp;€</span></div>
             </div>`;
             html += `<div id="menu-drink-section" style="display:none; margin-top: 15px;">
                 <div class="builder-subtitle">Choix de la boisson</div>
@@ -2331,10 +2681,10 @@
                 html += `<div class="step-title">Taille ${product.isPromo ? '<span style="background:#ff3333;color:white;padding:2px 8px;border-radius:10px;font-size:0.6em;margin-left:10px;">PROMO</span>' : ''}</div><div class="options-grid big">`;
                 product.sizes.forEach((size, i) => {
                     const promoDisplay = size.originalPrice
-                        ? `<div style="font-size:0.7em;text-decoration:line-through;color:#ff3333;">${size.originalPrice.toFixed(2)}€</div>`
+                        ? `<div style="font-size:0.7em;text-decoration:line-through;color:#ff3333;">${prix(size.originalPrice)}</div>`
                         : '';
                     html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
-                        ${size.name} ${promoDisplay}<span class="option-price" style="color:#00cc66;font-size:1.2em;">${size.price.toFixed(2)}€</span>
+                        ${size.name} ${promoDisplay}<span class="option-price" style="color:#00cc66;font-size:1.2em;">${prix(size.price)}</span>
                     </div>`;
                 });
                 html += '</div>';
@@ -2343,7 +2693,7 @@
             } else {
                 html += `<div class="step-title">Taille</div><div class="options-grid big">
                     <div class="option-btn selected" onclick="selectOption('size', 'normal', this)">NORMAL</div>
-                    <div class="option-btn" onclick="selectOption('size', 'xl', this)" data-price="5">XL <span class="option-price">+5€</span></div>
+                    <div class="option-btn" onclick="selectOption('size', 'xl', this)" data-price="5">XL <span class="option-price">+5,00&nbsp;€</span></div>
                 </div>`;
                 state.builderSelections.size = { id: 'normal', price: 0 };
                 state.builderSelections.basePrice = product.price;
@@ -2368,7 +2718,7 @@
             html += `<div class="step-title">Taille</div><div class="options-grid big">`;
             product.sizes.forEach((size, i) => {
                 html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
-                    ${size.name} <span class="option-price">${size.price.toFixed(2)}€</span>
+                    ${size.name} <span class="option-price">${prix(size.price)}</span>
                 </div>`;
             });
             html += '</div>';
@@ -2389,7 +2739,7 @@
             html += `<div class="step-title">Taille</div><div class="options-grid big">`;
             product.sizes.forEach((size, i) => {
                 html += `<div class="option-btn ${i === 0 ? 'selected' : ''}" onclick="selectOption('size', '${size.id}', this)" data-price="${size.price}">
-                    ${size.name} <span class="option-price">${size.price.toFixed(2)}€</span>
+                    ${size.name} <span class="option-price">${prix(size.price)}</span>
                 </div>`;
             });
             html += '</div>';
@@ -2403,8 +2753,8 @@
 
             // Type d'assiette
             html += `<div class="step-title">Type d'assiette</div><div class="options-grid big">
-                <div class="option-btn selected" onclick="selectAssietteType('1viande', this)" data-price="11">1 VIANDE <span class="option-price">11€</span></div>
-                <div class="option-btn" onclick="selectAssietteType('3viandes', this)" data-price="14.5">3 VIANDES <span class="option-price">14.50€</span></div>
+                <div class="option-btn selected" onclick="selectAssietteType('1viande', this)" data-price="11">1 VIANDE <span class="option-price">11,00&nbsp;€</span></div>
+                <div class="option-btn" onclick="selectAssietteType('3viandes', this)" data-price="14.5">3 VIANDES <span class="option-price">14,50&nbsp;€</span></div>
             </div>`;
 
             // Viande(s) - dynamique selon le type
@@ -2423,8 +2773,8 @@
 
             // Options
             html += `<div class="step-title">Options</div><div class="options-grid big">
-                <div class="option-btn" onclick="toggleOption('naanFromage', this)" data-price="1">Naan Fromage <span class="option-price">+1€</span></div>
-                <div class="option-btn" onclick="toggleOption('boisson', this)" data-price="1">Boisson <span class="option-price">+1€</span></div>
+                <div class="option-btn" onclick="toggleOption('naanFromage', this)" data-price="1">Naan Fromage <span class="option-price">+1,00&nbsp;€</span></div>
+                <div class="option-btn" onclick="toggleOption('boisson', this)" data-price="1">Boisson <span class="option-price">+1,00&nbsp;€</span></div>
             </div>`;
 
             content.innerHTML = html;
@@ -2446,7 +2796,7 @@
             // Mettre à jour le titre
             const title = document.getElementById('assiette-viande-title');
             if (title) {
-                title.textContent = typeId === '3viandes' ? 'Viandes (choisissez 3)' : 'Viande';
+                title.textContent = typeId === '3viandes' ? 'Viandes (choisis-en 3)' : 'Viande';
             }
 
             // Réinitialiser les sélections de viandes
@@ -2467,9 +2817,9 @@
                 <div class="option-btn selected" onclick="selectOption('meat', 'steak', this)">STEAK</div>
                 <div class="option-btn" onclick="selectOption('meat', 'poulet', this)">POULET</div>
             </div>`;
-            content.innerHTML += `<div class="step-title">Boisson (+1€) ?</div><div class="options-grid big">
+            content.innerHTML += `<div class="step-title">Boisson (+1,00&nbsp;€) ?</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('boisson1e', false, this)">SANS BOISSON</div>
-                <div class="option-btn" onclick="selectOption('boisson1e', true, this)" data-price="1">AVEC BOISSON <span class="option-price">+1€</span></div>
+                <div class="option-btn" onclick="selectOption('boisson1e', true, this)" data-price="1">AVEC BOISSON <span class="option-price">+1,00&nbsp;€</span></div>
             </div>`;
             content.innerHTML += `<div id="menu-drink-section" style="display:none; margin-top: 15px;">
                 <div class="builder-subtitle">Choix de la boisson</div>
@@ -2484,8 +2834,8 @@
 
         function buildBurgerBuilder(content, product) {
             content.innerHTML = `<div class="step-title">En menu ?</div><div class="options-grid big">
-                <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL <span class="option-price">${product.price.toFixed(2)}€</span></div>
-                <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2€</span></div>
+                <div class="option-btn selected" onclick="selectOption('menu', false, this)">SEUL <span class="option-price">${prix(product.price)}</span></div>
+                <div class="option-btn" onclick="selectOption('menu', true, this)" data-price="2">MENU <span class="option-price">+2,00&nbsp;€</span></div>
             </div>`;
             content.innerHTML += `<div id="menu-drink-section" style="display:none; margin-top: 15px;">
                 <div class="builder-subtitle">Choix de la boisson</div>
@@ -2506,7 +2856,7 @@
             else if (product.id === 'bucket_4') maxSauces = 3;
 
             // Choix des sauces
-            html += `<div class="step-title">Choisissez vos sauces (${maxSauces} max)</div><div class="options-grid">`;
+            html += `<div class="step-title">Choisis tes sauces (${maxSauces} max)</div><div class="options-grid">`;
             SAUCES.forEach(s => {
                 html += `<div class="option-btn" onclick="toggleBucketSauce('${s.id}', this, ${maxSauces})">${s.name}</div>`;
             });
@@ -2516,16 +2866,16 @@
             if (product.id === 'bucket_4') {
                 html += `<div class="step-title">Ajouter une Boisson ?</div><div class="options-grid big">
                     <div class="option-btn selected" onclick="selectOption('boisson', false, this)">SANS BOISSON</div>
-                    <div class="option-btn" onclick="selectOption('boisson', '33cl', this)" data-price="2">BOISSON 33cl <span class="option-price">+2€</span></div>
-                    <div class="option-btn" onclick="selectOption('boisson', '1.5L', this)" data-price="4">BOISSON 1.5L <span class="option-price">+4€</span></div>
+                    <div class="option-btn" onclick="selectOption('boisson', '33cl', this)" data-price="2">BOISSON 33cl <span class="option-price">+2,00&nbsp;€</span></div>
+                    <div class="option-btn" onclick="selectOption('boisson', '1.5L', this)" data-price="4">BOISSON 1.5L <span class="option-price">+4,00&nbsp;€</span></div>
                 </div>`;
             }
 
             // Frites supplémentaires
             html += `<div class="step-title">Frites supplémentaires ?</div><div class="options-grid big">
                 <div class="option-btn selected" onclick="selectOption('fritesSupp', 'non', this)">NON MERCI</div>
-                <div class="option-btn" onclick="selectOption('fritesSupp', 'M', this)" data-price="2.5">FRITES M <span class="option-price">+2.50€</span></div>
-                <div class="option-btn" onclick="selectOption('fritesSupp', 'XL', this)" data-price="3.5">FRITES XL <span class="option-price">+3.50€</span></div>
+                <div class="option-btn" onclick="selectOption('fritesSupp', 'M', this)" data-price="2.5">FRITES M <span class="option-price">+2,50&nbsp;€</span></div>
+                <div class="option-btn" onclick="selectOption('fritesSupp', 'XL', this)" data-price="3.5">FRITES XL <span class="option-price">+3,50&nbsp;€</span></div>
             </div>`;
 
             content.innerHTML = html;
@@ -2537,7 +2887,7 @@
         }
 
         function buildBoissonBuilder(content, product) {
-            content.innerHTML = `<div class="step-title">Choisissez votre boisson</div><div class="options-grid">
+            content.innerHTML = `<div class="step-title">Choisis ta boisson</div><div class="options-grid">
                 ${getBoissonsHtml()}
             </div>`;
             state.builderSelections.basePrice = product.price;
@@ -2569,7 +2919,7 @@
                 if (state.currentProduct && state.currentProduct.type === 'tacos') {
                     const dynamicGratinPrice = (value === 'L' || value === 'XL') ? 2.50 : 2.00;
                     document.querySelectorAll('.gratin-price-display').forEach(span => {
-                        span.textContent = `+${dynamicGratinPrice.toFixed(2)}€`;
+                        span.textContent = '+' + prix(dynamicGratinPrice);
                     });
                 }
 
@@ -2796,8 +3146,9 @@
                 });
             }
 
-            document.getElementById('builder-price').textContent = price.toFixed(2) + '€';
+            document.getElementById('builder-price').textContent = prix(price);
             state.builderSelections.totalPrice = price;
+            refreshBuilderAddLabel();
         }
 
         function closeBuilder() {
@@ -2928,13 +3279,16 @@
 
             updateCartCount();
             closeBuilder();
-            showToast(`${cartName} ajouté !`);
+            showToast(`${cartName} : c'est dans ton panier !`);
         }
 
         // ============ PANIER ============
         function updateCartCount() {
             const count = state.cart.reduce((sum, item) => sum + item.quantity, 0);
             document.getElementById('cart-count').textContent = count;
+            const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalBtn = document.getElementById('cart-btn-total');
+            if (totalBtn) totalBtn.textContent = count > 0 ? prix(total) : '';
         }
 
         function showCart() {
@@ -2945,33 +3299,31 @@
 
         function hideCart() {
             document.getElementById('cart-view').classList.remove('active');
-            document.getElementById('products-view').style.display = 'block';
+            document.getElementById('products-view').style.display = '';
         }
 
         function renderCart() {
             const content = document.getElementById('cart-items');
 
             if (state.cart.length === 0) {
-                content.innerHTML = `<div class="empty-cart"><h3>Votre panier est vide</h3></div>`;
+                content.innerHTML = `<div class="empty-cart"><h3>Ton panier est vide</h3></div>`;
                 document.getElementById('btn-validate').disabled = true;
             } else {
                 let html = '';
                 state.cart.forEach(item => {
-                    const hasBuilder = item.product && item.product.hasBuilder;
                     html += `<div class="cart-item">
                         <img src="${item.image}" alt="${item.name}" onerror="this.src='../AssetsTv3/chickenzz_logo.jpg'">
                         <div class="cart-item-info">
                             <h4>${item.name}</h4>
                             <p class="details">${item.details}</p>
-                            ${hasBuilder ? `<button class="edit-btn" onclick="editCartItem(${item.id})">✎ Modifier</button>` : ''}
                         </div>
                         <div class="cart-item-qty">
                             <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
                             <span style="font-size: clamp(16px, 2vw, 24px); font-weight: 700; min-width: 30px; text-align: center;">${item.quantity}</span>
                             <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
                         </div>
-                        <div class="cart-item-price">${(item.price * item.quantity).toFixed(2)}€</div>
-                        <button class="delete-btn" onclick="removeFromCart(${item.id})">✕</button>
+                        <div class="cart-item-price">${prix(item.price * item.quantity)}</div>
+                        <button class="delete-btn" onclick="removeFromCart(${item.id})">&times;</button>
                     </div>`;
                 });
                 content.innerHTML = html;
@@ -2979,7 +3331,7 @@
             }
 
             const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cart-total').textContent = total.toFixed(2) + '€';
+            document.getElementById('cart-total').textContent = prix(total);
         }
 
         function updateQty(itemId, delta) {
@@ -3061,35 +3413,51 @@
         }
 
         // ============ HISTORIQUE DES COMMANDES ============
+        // Lecture protégée : un historique illisible ne doit jamais bloquer les tickets
+        function lireHistorique() {
+            try {
+                const history = JSON.parse(localStorage.getItem('chickenzz_orders') || '[]');
+                return Array.isArray(history) ? history : [];
+            } catch (e) {
+                console.error('Historique illisible, on repart de zéro', e);
+                return [];
+            }
+        }
+
         function saveOrderToHistory() {
-            const now = new Date();
-            const order = {
-                id: Date.now(),
-                prenom: state.prenom,
-                mode: state.mode,
-                date: now.toLocaleDateString('fr-FR'),
-                time: now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-                cart: JSON.parse(JSON.stringify(state.cart)),
-                total: state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-            };
+            try {
+                const now = new Date();
+                const order = {
+                    id: Date.now(),
+                    prenom: state.prenom,
+                    mode: state.mode,
+                    date: now.toLocaleDateString('fr-FR'),
+                    time: now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                    cart: JSON.parse(JSON.stringify(state.cart)),
+                    total: state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                };
 
-            // Récupérer l'historique existant
-            let history = JSON.parse(localStorage.getItem('chickenzz_orders') || '[]');
+                // Récupérer l'historique existant
+                let history = lireHistorique();
 
-            // Ajouter la nouvelle commande au début
-            history.unshift(order);
+                // Ajouter la nouvelle commande au début
+                history.unshift(order);
 
-            // Garder seulement les 20 dernières commandes
-            history = history.slice(0, 20);
+                // Garder seulement les 20 dernières commandes
+                history = history.slice(0, 20);
 
-            // Sauvegarder
-            localStorage.setItem('chickenzz_orders', JSON.stringify(history));
+                // Sauvegarder
+                localStorage.setItem('chickenzz_orders', JSON.stringify(history));
+            } catch (e) {
+                // Stockage plein ou refusé : la commande s'imprime quand même
+                console.error('Commande non enregistrée dans l\'historique', e);
+            }
         }
 
         function showOrderHistory() {
             closeAdminModal();
 
-            const history = JSON.parse(localStorage.getItem('chickenzz_orders') || '[]');
+            const history = lireHistorique();
             const content = document.getElementById('history-content');
 
             if (history.length === 0) {
@@ -3130,7 +3498,7 @@
         }
 
         function reprintLastOrder() {
-            const history = JSON.parse(localStorage.getItem('chickenzz_orders') || '[]');
+            const history = lireHistorique();
             if (history.length === 0) {
                 showToast('Aucune commande à réimprimer');
                 return;
@@ -3139,7 +3507,7 @@
         }
 
         function reprintOrder(orderId) {
-            const history = JSON.parse(localStorage.getItem('chickenzz_orders') || '[]');
+            const history = lireHistorique();
             const order = history.find(o => o.id === orderId);
 
             if (!order) {
@@ -3508,6 +3876,11 @@
         function resetKiosk() {
             document.getElementById('screen-thanks').classList.remove('active');
 
+            // Client suivant : pas de composition ni de panier restés ouverts
+            document.getElementById('builder-modal').classList.remove('active');
+            state.editingCartItemId = null;
+            hideCart();
+
             state.prenom = '';
             state.mode = '';
             state.cart = [];
@@ -3711,6 +4084,10 @@
         const VIDEO_MODE = 'local'; // Change en 'youtube' si tu veux utiliser YouTube
 
         function showScreensaver() {
+            state.prenom = '';
+            document.getElementById('prenom-input').value = '';
+            updateSuivantBtn();
+
             const screensaver = document.getElementById('screensaver');
             const youtube = document.getElementById('screensaver-youtube');
             const local = document.getElementById('screensaver-local');
@@ -3761,6 +4138,8 @@
             initKeyboard();
             resetIdleTimer();
             resetScreensaverTimer();
+            document.getElementById('nav-categories').addEventListener('scroll', updateNavMore);
+            window.addEventListener('resize', updateNavMore);
 
             // Ajouter le listener sur tous les logos
             document.querySelectorAll('.logo-big, .sidebar-header img').forEach(logo => {

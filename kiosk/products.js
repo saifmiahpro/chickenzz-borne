@@ -98,22 +98,22 @@ const RETRAITS_TACOS = [
 
 // Catégories
 const CATEGORIES = [
-    { id: 'offres', name: 'Nos Offres', image: '../AssetsTv3/chickenzz_logo.jpg', isHighlight: true },
-    { id: 'tacos', name: 'Tacos', image: '../AssetsTv4/tacos.png' },
-    { id: 'naans', name: 'Naans', image: '../AssetsTv2/naan_royal_real_png.png' },
-    { id: 'sandwichs', name: 'Sandwichs', image: '../AssetsTv2/sandwich deco pain rond.png' },
-    { id: 'buckets', name: 'Buckets', image: '../VALIDATED_TVS/TV1/AssetsTv1/Bucket 1.png' },
-    { id: 'assiettes', name: 'Assiettes', image: '../AssetsTv3/assiette 1 viande.png' },
-    { id: 'bowls', name: 'Bowls', image: '../AssetsTv3/classique bowl.png' },
-    { id: 'boxes', name: 'Boxes', image: '../AssetsTv3/SINGLE BOX.png' },
-    { id: 'burgers', name: 'Burgers', image: '../AssetsTv3/smash_burger_real.png' },
-    { id: 'poutines', name: 'Poutines', image: '../AssetsTv5/poutine.png' },
-    { id: 'tex_mex', name: 'Tex Mex', image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png' },
-    { id: 'frites', name: 'Frites', image: '../AssetsTv3/frite boisson.png' },
-    { id: 'salades', name: 'Salades', image: '../AssetsTv5/salade.png' },
-    { id: 'desserts', name: 'Desserts', image: '../AssetsTv5/panini nutella.png' },
-    { id: 'boissons', name: 'Boissons', image: '../AssetsTv3/frite boisson.png' },
-    { id: 'enfant', name: 'Menu Enfant', image: '../AssetsTv3/chickenzz_logo.jpg' }
+    { id: 'offres', name: 'Nos Offres', image: 'img/chickenzz-logo.webp', isHighlight: true },
+    { id: 'tacos', name: 'Tacos', image: 'img/tacos.webp' },
+    { id: 'naans', name: 'Naans', image: 'img/naan-royal.webp' },
+    { id: 'sandwichs', name: 'Sandwichs', image: 'img/sandwich-deco-pain-rond.webp' },
+    { id: 'buckets', name: 'Buckets', image: 'img/bucket-1.webp' },
+    { id: 'assiettes', name: 'Assiettes', image: 'img/assiette-1-viande.webp' },
+    { id: 'bowls', name: 'Bowls', image: 'img/classique-bowl.webp' },
+    { id: 'boxes', name: 'Boxes', image: 'img/single-box.webp' },
+    { id: 'burgers', name: 'Burgers', image: 'img/smash-burger.webp' },
+    { id: 'poutines', name: 'Poutines', image: 'img/poutine.webp' },
+    { id: 'tex_mex', name: 'Tex Mex', image: 'img/korean-wings.webp' },
+    { id: 'frites', name: 'Frites', image: 'img/frite-boisson.webp' },
+    { id: 'salades', name: 'Salades', image: 'img/salade.webp' },
+    { id: 'desserts', name: 'Desserts', image: 'img/panini-nutella.webp' },
+    { id: 'boissons', name: 'Boissons', image: 'img/frite-boisson.webp' },
+    { id: 'enfant', name: 'Menu Enfant', image: 'img/chickenzz-logo.webp' }
 ];
 
 // Produits
@@ -124,7 +124,7 @@ const PRODUCTS = [
         category: 'offres',
         name: 'Crousty Bowl',
         description: 'Tenders, Sweet Chili, Oignons Frits',
-        image: '../AssetsTv3/classique bowl.png',
+        image: 'img/classique-bowl.webp',
         type: 'bowl',
         hasBuilder: true,
         isPromo: true,
@@ -139,7 +139,7 @@ const PRODUCTS = [
         category: 'offres',
         name: 'Bucket 1',
         description: '3 Wings + 2 Tenders + Frites + Boisson',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/Bucket 1.png',
+        image: 'img/bucket-1.webp',
         price: 7.90,
         type: 'bucket',
         hasBuilder: true,
@@ -153,7 +153,7 @@ const PRODUCTS = [
         category: 'offres',
         name: 'Single Box',
         description: '1 Burger + 2 Mozza Sticks + Frites Cheddar + Sauce',
-        image: '../AssetsTv3/SINGLE BOX.png',
+        image: 'img/single-box.webp',
         price: 9.90,
         type: 'box',
         hasBuilder: true,
@@ -165,7 +165,7 @@ const PRODUCTS = [
         category: 'offres',
         name: 'Mega Box',
         description: '1 Burger + 4 Mozza Sticks + Tenders dés + Frites Cheddar + Sauce',
-        image: '../AssetsTv3/MEGA BOX.png',
+        image: 'img/mega-box.webp',
         price: 11.90,
         type: 'box',
         hasBuilder: true,
@@ -181,7 +181,7 @@ const PRODUCTS = [
         name: 'Tacos',
         displayName: 'Compose ton Tacos',
         description: 'Choisis ta taille, tes viandes et tes sauces',
-        image: '../AssetsTv4/tacos.png',
+        image: 'img/tacos.webp',
         type: 'tacos',
         hasBuilder: true,
         isCustom: true,
@@ -198,7 +198,7 @@ const PRODUCTS = [
         category: 'tacos',
         name: 'Tacos Spicy',
         description: 'Kefta, Tikka, Cheddar, Chili-Thaï',
-        image: '../AssetsTv4/SPICY.png',
+        image: 'img/spicy.webp',
         type: 'tacos',
         hasBuilder: true,
         isSpecial: true,
@@ -214,7 +214,7 @@ const PRODUCTS = [
         category: 'tacos',
         name: 'Tacos Crispy',
         description: 'Tenders, Oignon Frit, Miel',
-        image: '../AssetsTv4/CRISPY.png',
+        image: 'img/crispy.webp',
         type: 'tacos',
         hasBuilder: true,
         isSpecial: true,
@@ -230,7 +230,7 @@ const PRODUCTS = [
         category: 'tacos',
         name: 'Tacos Chef',
         description: 'C. Bleu, Tenders, Boursin, Miami',
-        image: '../AssetsTv4/CHEF.png',
+        image: 'img/chef.webp',
         type: 'tacos',
         hasBuilder: true,
         isSpecial: true,
@@ -246,7 +246,7 @@ const PRODUCTS = [
         category: 'tacos',
         name: 'Tacos Chèvre',
         description: 'Tenders, Steak, Œuf, Chèvre',
-        image: '../AssetsTv4/CHEVRE.png',
+        image: 'img/chevre.webp',
         type: 'tacos',
         hasBuilder: true,
         isSpecial: true,
@@ -262,7 +262,7 @@ const PRODUCTS = [
         category: 'tacos',
         name: 'Tacos Oriental',
         description: 'Kebab, Tenders, Raclette, Algérienne',
-        image: '../AssetsTv4/ORIENTAL.png',
+        image: 'img/oriental.webp',
         type: 'tacos',
         hasBuilder: true,
         isSpecial: true,
@@ -281,7 +281,7 @@ const PRODUCTS = [
         category: 'naans',
         name: 'Compose ton Sandwich',
         description: 'Pain, viande, sauce au choix',
-        image: '../AssetsTv2/sandwich deco pain rond.png',
+        image: 'img/sandwich-deco-pain-rond.webp',
         price: 7.90,
         type: 'sandwich',
         hasBuilder: true,
@@ -293,7 +293,7 @@ const PRODUCTS = [
         category: 'naans',
         name: 'Naan Royal',
         description: 'Poulet Tikka, Tenders, Cheddar, Oignons Frits',
-        image: '../AssetsTv2/naan_royal_real_png.png',
+        image: 'img/naan-royal.webp',
         price: 9.50,
         type: 'naan',
         hasBuilder: true,
@@ -305,7 +305,7 @@ const PRODUCTS = [
         category: 'naans',
         name: 'Naan Cheesy',
         description: 'Steak, Cordon Bleu, Raclette, Sauce Fromage',
-        image: '../AssetsTv2/naan_cheesy_real_png.png',
+        image: 'img/naan-cheesy.webp',
         price: 10.00,
         type: 'naan',
         hasBuilder: true,
@@ -317,7 +317,7 @@ const PRODUCTS = [
         category: 'naans',
         name: 'Naan Spicy',
         description: 'Tikka, Kefta, Sauce Algérienne',
-        image: '../AssetsTv2/naan_spicy_real_png.png',
+        image: 'img/naan-spicy.webp',
         price: 9.50,
         type: 'naan',
         hasBuilder: true,
@@ -329,7 +329,7 @@ const PRODUCTS = [
         category: 'naans',
         name: 'Naan Mexicain',
         description: 'Poulet Tikka, Tenders, Chili-Thaï',
-        image: '../AssetsTv2/naan_mexicain_real_png.png',
+        image: 'img/naan-mexicain.webp',
         price: 9.50,
         type: 'naan',
         hasBuilder: true,
@@ -343,7 +343,7 @@ const PRODUCTS = [
         category: 'sandwichs',
         name: 'Sandwich',
         description: 'Compose ton sandwich',
-        image: '../AssetsTv2/sandwich deco pain rond.png',
+        image: 'img/sandwich-deco-pain-rond.webp',
         price: 7.90,
         type: 'sandwich',
         hasBuilder: true
@@ -355,7 +355,7 @@ const PRODUCTS = [
         category: 'buckets',
         name: 'Bucket 1',
         description: '3 Wings + 2 Tenders + Frites + Boisson',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/Bucket 1.png',
+        image: 'img/bucket-1.webp',
         price: 7.90,
         type: 'bucket',
         hasBuilder: true,
@@ -367,7 +367,7 @@ const PRODUCTS = [
         category: 'buckets',
         name: 'Bucket 2',
         description: '5 Wings + 3 Tenders + Frites + Boisson',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/bucket 2.png',
+        image: 'img/bucket-2.webp',
         price: 9.90,
         type: 'bucket',
         hasBuilder: true,
@@ -379,7 +379,7 @@ const PRODUCTS = [
         category: 'buckets',
         name: 'Bucket 3',
         description: '7 Wings + 5 Tenders + 4 Mozza + 2 Frites + 2 Boissons',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/bucket 3.png',
+        image: 'img/bucket-3.webp',
         price: 18.90,
         type: 'bucket',
         hasBuilder: true,
@@ -391,7 +391,7 @@ const PRODUCTS = [
         category: 'buckets',
         name: 'Bucket 4',
         description: '8 Tenders + 8 Wings + 6 Mozza + 10 Rings + 3 Frites',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/bucket 4.png',
+        image: 'img/bucket-4.webp',
         price: 28.90,
         type: 'bucket',
         hasBuilder: true,
@@ -402,7 +402,7 @@ const PRODUCTS = [
         category: 'buckets',
         name: 'Korean Bucket',
         description: '4 Wings + 4 Tenders + Frites + Boisson 33cl',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_bucket_combo.jpg',
+        image: 'img/korean-bucket-combo.webp',
         price: 13.90,
         type: 'bucket',
         hasBuilder: true,
@@ -416,8 +416,8 @@ const PRODUCTS = [
         id: 'assiette',
         category: 'assiettes',
         name: 'Assiette',
-        description: 'Crudités, Frites, Sauce, Pain Maison',
-        image: '../AssetsTv3/assiette 1 viande.png',
+        description: 'Crudités, Frites, Sauce, Pain',
+        image: 'img/assiette-1-viande.webp',
         price: 11.00,
         type: 'assiette',
         hasBuilder: true
@@ -429,7 +429,7 @@ const PRODUCTS = [
         category: 'bowls',
         name: 'Dynamite Bowl',
         description: 'Viande au choix',
-        image: '../AssetsTv3/crousty bowl.png',
+        image: 'img/crousty-bowl.webp',
         price: 9.90,
         type: 'bowl',
         hasBuilder: true
@@ -439,7 +439,7 @@ const PRODUCTS = [
         category: 'bowls',
         name: 'Bowl Indien',
         description: 'Poulet Tikka, Curry, Oignons Frits',
-        image: '../AssetsTv3/indian bowl.png',
+        image: 'img/indian-bowl.webp',
         price: 9.90,
         type: 'bowl',
         hasBuilder: true
@@ -449,7 +449,7 @@ const PRODUCTS = [
         category: 'bowls',
         name: 'Crousty Bowl',
         description: 'Tenders, Sweet Chili, Oignons Frits',
-        image: '../AssetsTv3/classique bowl.png',
+        image: 'img/classique-bowl.webp',
         type: 'bowl',
         hasBuilder: true,
         isPromo: true,
@@ -464,7 +464,7 @@ const PRODUCTS = [
         category: 'bowls',
         name: 'Hot Bowl',
         description: 'Poulet Tikka, Hot Sauce, Oignons Frits',
-        image: '../AssetsTv3/spicy bowl.png',
+        image: 'img/spicy-bowl.webp',
         price: 9.90,
         type: 'bowl',
         hasBuilder: true
@@ -474,7 +474,7 @@ const PRODUCTS = [
         category: 'bowls',
         name: 'Chef Bowl',
         description: 'Cordon Bleu, Chili-Thaï, Oignons Frits',
-        image: '../AssetsTv3/chef bowl.png',
+        image: 'img/chef-bowl.webp',
         price: 10.90,
         type: 'bowl',
         hasBuilder: true
@@ -486,7 +486,7 @@ const PRODUCTS = [
         category: 'boxes',
         name: 'Single Box',
         description: '1 Burger + 2 Mozza Sticks + Frites Cheddar + Sauce',
-        image: '../AssetsTv3/SINGLE BOX.png',
+        image: 'img/single-box.webp',
         price: 9.90,
         type: 'box',
         hasBuilder: true
@@ -496,7 +496,7 @@ const PRODUCTS = [
         category: 'boxes',
         name: 'Mega Box',
         description: '1 Burger + 4 Mozza Sticks + Tenders dés + Frites Cheddar + Sauce',
-        image: '../AssetsTv3/MEGA BOX.png',
+        image: 'img/mega-box.webp',
         price: 11.90,
         type: 'box',
         hasBuilder: true
@@ -508,7 +508,7 @@ const PRODUCTS = [
         category: 'burgers',
         name: 'Smash Burger',
         description: '1 Steak Smashé',
-        image: '../AssetsTv3/smash_burger_real.png',
+        image: 'img/smash-burger.webp',
         price: 5.90,
         menuUpgrade: 2.00,
         hasBuilder: true
@@ -518,7 +518,7 @@ const PRODUCTS = [
         category: 'burgers',
         name: 'Double Smash',
         description: '2 Steaks Smashés',
-        image: '../AssetsTv3/double_smash_real.png',
+        image: 'img/double-smash.webp',
         price: 7.90,
         menuUpgrade: 2.00,
         hasBuilder: true
@@ -528,7 +528,7 @@ const PRODUCTS = [
         category: 'burgers',
         name: 'Smokey Chick',
         description: '2 Tenders, Bacon, Oignons Frits',
-        image: '../AssetsTv3/smokey_chick_real.png',
+        image: 'img/smokey-chick.webp',
         price: 8.50,
         menuUpgrade: 2.00,
         hasBuilder: true
@@ -538,7 +538,7 @@ const PRODUCTS = [
         category: 'burgers',
         name: 'Délices Smash',
         description: 'Steak Smashé, P.D.T, Œuf, Raclette, Bacon',
-        image: '../AssetsTv3/delices_smash_real.png',
+        image: 'img/delices-smash.webp',
         price: 11.50,
         menuUpgrade: 2.00,
         hasBuilder: true
@@ -548,7 +548,7 @@ const PRODUCTS = [
         category: 'burgers',
         name: 'Smash Tower',
         description: '3 Steaks Smashés, P.D.T, Cheddar, Bacon',
-        image: '../AssetsTv3/smash_tower_real.png',
+        image: 'img/smash-tower.webp',
         price: 14.90,
         menuUpgrade: 2.00,
         hasBuilder: true
@@ -559,8 +559,8 @@ const PRODUCTS = [
         id: 'poutine_classic',
         category: 'poutines',
         name: 'Poutine Classic',
-        description: 'Sauce Fromagère Maison',
-        image: '../AssetsTv5/poutine.png',
+        description: 'Sauce Fromagère',
+        image: 'img/poutine.webp',
         type: 'poutine',
         hasBuilder: true,
         sizes: [
@@ -573,7 +573,7 @@ const PRODUCTS = [
         category: 'poutines',
         name: 'Poutine Chèvre Miel',
         description: 'Tenders & Chèvre Miel',
-        image: '../AssetsTv5/poutine.png',
+        image: 'img/poutine.webp',
         type: 'poutine',
         hasBuilder: true,
         sizes: [
@@ -586,7 +586,7 @@ const PRODUCTS = [
         category: 'poutines',
         name: 'Poutine Boursin',
         description: 'Cordon Bleu & Boursin',
-        image: '../AssetsTv5/poutine.png',
+        image: 'img/poutine.webp',
         type: 'poutine',
         hasBuilder: true,
         sizes: [
@@ -599,7 +599,7 @@ const PRODUCTS = [
         category: 'poutines',
         name: 'Poutine Raclette',
         description: 'Tikka & Raclette',
-        image: '../AssetsTv5/poutine.png',
+        image: 'img/poutine.webp',
         type: 'poutine',
         hasBuilder: true,
         sizes: [
@@ -614,7 +614,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Wings x5',
         description: '5 ailes de poulet croustillantes',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 5.00
     },
     {
@@ -622,7 +622,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Tenders x5',
         description: '5 tenders croustillants',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 6.00
     },
     {
@@ -630,7 +630,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Nuggets x6',
         description: '6 nuggets croustillants',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 5.00
     },
     {
@@ -638,7 +638,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Jalapenos x5',
         description: 'Jalapeños frits au fromage',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 5.50
     },
     {
@@ -646,7 +646,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Oignons Rings x7',
         description: 'Onion rings croustillants',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 5.50
     },
     {
@@ -654,7 +654,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Nems x5',
         description: 'Nems croustillants',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 6.00
     },
     {
@@ -662,7 +662,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Mozza Sticks x6',
         description: 'Bâtonnets de mozzarella',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 5.00
     },
     {
@@ -670,7 +670,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Camembert x6',
         description: 'Camembert pané',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 5.00
     },
     {
@@ -678,7 +678,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Chèvre x5',
         description: 'Fromage de chèvre pané',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 6.00
     },
     {
@@ -686,7 +686,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Samoussas',
         description: 'Samoussas croustillants',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 4.50
     },
     {
@@ -694,7 +694,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Korean Wings x5',
         description: '5 Wings sauce coréenne',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png',
+        image: 'img/korean-wings.webp',
         price: 6.90
     },
     {
@@ -702,7 +702,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Korean Wings x10',
         description: '10 Wings sauce coréenne',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_wings.png',
+        image: 'img/korean-wings.webp',
         price: 12.90
     },
     {
@@ -710,7 +710,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Korean Tenders x4',
         description: '4 Tenders sauce coréenne',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_tenders.png',
+        image: 'img/korean-tenders.webp',
         price: 6.90
     },
     {
@@ -718,7 +718,7 @@ const PRODUCTS = [
         category: 'tex_mex',
         name: 'Korean Tenders x6',
         description: '6 Tenders sauce coréenne',
-        image: '../VALIDATED_TVS/TV1/AssetsTv1/korean_tenders.png',
+        image: 'img/korean-tenders.webp',
         price: 8.90
     },
 
@@ -728,7 +728,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Frite Simple',
         description: 'Portion de frites',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         price: 2.50
     },
     {
@@ -736,7 +736,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Grande Frite',
         description: 'Grande portion de frites',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         price: 3.50
     },
     {
@@ -744,7 +744,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Frites Cheddar',
         description: 'Frites sauce cheddar',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         type: 'frites',
         hasBuilder: true,
         sizes: [
@@ -757,7 +757,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Frites Cheddar Bacon',
         description: 'Frites cheddar & bacon',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         type: 'frites',
         hasBuilder: true,
         sizes: [
@@ -770,7 +770,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Frites Cheddar Lardon',
         description: 'Frites cheddar & lardons',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         type: 'frites',
         hasBuilder: true,
         sizes: [
@@ -783,7 +783,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Frites Cheddar Boursin',
         description: 'Frites cheddar & boursin',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         type: 'frites',
         hasBuilder: true,
         sizes: [
@@ -796,7 +796,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Patate Douce',
         description: 'Frites de patate douce',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         type: 'frites',
         hasBuilder: true,
         sizes: [
@@ -809,7 +809,7 @@ const PRODUCTS = [
         category: 'frites',
         name: 'Potato Pops',
         description: 'Billes de pomme de terre',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         type: 'frites',
         hasBuilder: true,
         sizes: [
@@ -824,7 +824,7 @@ const PRODUCTS = [
         category: 'salades',
         name: 'Salade César',
         description: 'Poulet & Parmesan',
-        image: '../AssetsTv5/salade.png',
+        image: 'img/salade.webp',
         price: 7.50
     },
     {
@@ -832,7 +832,7 @@ const PRODUCTS = [
         category: 'salades',
         name: 'Salade Nems',
         description: 'Poulet & Soja',
-        image: '../AssetsTv5/salade.png',
+        image: 'img/salade.webp',
         price: 7.50
     },
     {
@@ -840,7 +840,7 @@ const PRODUCTS = [
         category: 'salades',
         name: 'Salade Indienne',
         description: 'Tikka & Épices',
-        image: '../AssetsTv5/salade.png',
+        image: 'img/salade.webp',
         price: 7.50
     },
     {
@@ -848,7 +848,7 @@ const PRODUCTS = [
         category: 'salades',
         name: 'Salade Thon',
         description: 'Thon & Œuf',
-        image: '../AssetsTv5/salade.png',
+        image: 'img/salade.webp',
         price: 7.50
     },
 
@@ -857,8 +857,8 @@ const PRODUCTS = [
         id: 'tiramisu',
         category: 'desserts',
         name: 'Tiramisu',
-        description: 'Maison & Café',
-        image: '../AssetsTv2/tiramisu.png',
+        description: 'Au café',
+        image: 'img/tiramisu.webp',
         price: 3.50
     },
     {
@@ -866,7 +866,7 @@ const PRODUCTS = [
         category: 'desserts',
         name: 'Panini Nutella',
         description: 'Panini Fondant',
-        image: '../AssetsTv5/panini nutella.png',
+        image: 'img/panini-nutella.webp',
         price: 4.00
     },
     {
@@ -874,7 +874,7 @@ const PRODUCTS = [
         category: 'desserts',
         name: 'Tarte Daim',
         description: 'Croustillant',
-        image: '../AssetsTv2/tatre daim.png',
+        image: 'img/tatre-daim.webp',
         price: 2.50
     },
 
@@ -884,7 +884,7 @@ const PRODUCTS = [
         category: 'boissons',
         name: 'Boisson 33cl',
         description: 'Au choix',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         price: 1.70,
         type: 'boisson_seule',
         hasBuilder: true
@@ -894,7 +894,7 @@ const PRODUCTS = [
         category: 'boissons',
         name: 'Pepsi 1.5L',
         description: '',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         price: 4.00
     },
     {
@@ -902,7 +902,7 @@ const PRODUCTS = [
         category: 'boissons',
         name: 'Oasis 1.5L',
         description: '',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         price: 4.00
     },
     {
@@ -910,7 +910,7 @@ const PRODUCTS = [
         category: 'boissons',
         name: 'Eau 1.5L',
         description: '',
-        image: '../AssetsTv3/frite boisson.png',
+        image: 'img/frite-boisson.webp',
         price: 3.50
     },
 
@@ -920,7 +920,7 @@ const PRODUCTS = [
         category: 'enfant',
         name: 'Menu Nuggets',
         description: 'Nuggets + Frites + Boisson',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 6.90,
         type: 'enfant',
         hasBuilder: true
@@ -930,7 +930,7 @@ const PRODUCTS = [
         category: 'enfant',
         name: 'Menu Tenders',
         description: 'Tenders + Frites + Boisson',
-        image: '../AssetsTv3/chickenzz_logo.jpg',
+        image: 'img/chickenzz-logo.webp',
         price: 6.90,
         type: 'enfant',
         hasBuilder: true
