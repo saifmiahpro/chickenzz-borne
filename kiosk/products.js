@@ -188,7 +188,7 @@ const PRODUCTS = [
         sizes: [
             { id: 'S', name: 'S', price: 6.90, meatCount: 1 },
             { id: 'M', name: 'M', price: 7.90, meatCount: 2 },
-            { id: 'L', name: 'L', price: 9.90, meatCount: 3 },
+            { id: 'L', name: 'L', price: 10.90, meatCount: 3 },
             { id: 'XL', name: 'XL', price: 14.90, meatCount: 4 }
         ]
     },
